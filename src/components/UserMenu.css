@@ -1,0 +1,37 @@
+.user-info-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.user-email {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+#user-menu-dropdown {
+    text-decoration: none;
+    color: inherit;
+    padding: 0.5rem 1rem;
+}
+
+#user-menu-dropdown::after {
+    margin-left: 0.5rem;
+}
+
+.dropdown-menu {
+    min-width: 220px;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+} 

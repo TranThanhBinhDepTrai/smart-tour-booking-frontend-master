@@ -1,0 +1,252 @@
+.admin-tour-container {
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+.admin-tour-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.admin-tour-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.admin-tour-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0;
+}
+
+.admin-tour-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+}
+
+.add-tour-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #3b82f6;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-tour-button:hover {
+  background-color: #2563eb;
+}
+
+.add-tour-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.search-filter-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.pagination-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #1a202c;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.pagination-button:disabled {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.pagination-button.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.pagination-info {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0 1rem;
+}
+
+.tour-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.tour-table th {
+  background-color: #f9fafb;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tour-table td {
+  padding: 1rem;
+  vertical-align: top;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tour-table tr:hover {
+  background-color: #f9fafb;
+}
+
+.tour-code {
+  font-weight: 600;
+  color: #111827;
+}
+
+.tour-info-primary {
+  font-weight: 500;
+  color: #111827;
+}
+
+.tour-info-secondary {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.tour-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.tour-status-active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.tour-status-inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.tour-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.edit-button {
+  color: #4f46e5;
+  background-color: #eef2ff;
+}
+
+.edit-button:hover {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.delete-button {
+  color: #dc2626;
+  background-color: #fee2e2;
+}
+
+.delete-button:hover {
+  background-color: #fecaca;
+  color: #b91c1c;
+}
+
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-alert {
+  background-color: #fee2e2;
+  border-left: 4px solid #dc2626;
+  color: #991b1b;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.375rem;
+}
+
+.error-alert-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.tour-thumbnail {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 1rem;
+}
+
+.tour-info-cell {
+  display: flex;
+  align-items: center;
+} 

@@ -1,0 +1,360 @@
+.tour-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.back-link {
+  display: inline-block;
+  color: #666;
+  text-decoration: none;
+  margin-bottom: 16px;
+  transition: color 0.3s;
+}
+
+.back-link:hover {
+  color: #007bff;
+}
+
+.error-container {
+  text-align: center;
+  padding: 48px;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 1.2rem;
+  margin-bottom: 24px;
+}
+
+.back-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background: #0056b3;
+}
+
+.tour-detail-header {
+  margin-bottom: 24px;
+}
+
+.tour-detail-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.tour-code {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.tour-detail-images {
+  margin-bottom: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 500px;
+}
+
+.detail-carousel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 18px 20px;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  opacity: 0;
+  z-index: 10;
+}
+
+.carousel-container:hover .carousel-button {
+  opacity: 1;
+}
+
+.carousel-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-button.prev {
+  left: 20px;
+}
+
+.carousel-button.next {
+  right: 20px;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+.tour-detail-content {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 32px;
+}
+
+.tour-section {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tour-section h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item label {
+  color: #666;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.info-item span {
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.price-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.price-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.price-item label {
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.price-item .price {
+  color: #e74c3c;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.tour-description {
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+.itinerary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.itinerary-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.day-number {
+  width: 32px;
+  height: 32px;
+  background: #3498db;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.day-content {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.booking-card {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 32px;
+}
+
+.booking-card h3 {
+  color: #2c3e50;
+  margin-bottom: 16px;
+}
+
+.booking-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.booking-price {
+  text-align: center;
+}
+
+.booking-price label {
+  color: #666;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.booking-price .price {
+  color: #e74c3c;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.booking-button {
+  display: inline-block;
+  width: 100%;
+  padding: 12px;
+  background: #1a73e8;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.booking-button:hover {
+  background: #1557b0;
+  transform: translateY(-1px);
+}
+
+.booking-button:active {
+  transform: translateY(0);
+}
+
+.booking-button:disabled {
+  background: #dadce0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading {
+  text-align: center;
+  padding: 48px;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.export-pdf-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background: #34495e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.export-pdf-button::before {
+  content: "📄";
+  font-size: 16px;
+}
+
+.export-pdf-button:hover {
+  background: #2c3e50;
+  transform: translateY(-1px);
+}
+
+.export-pdf-button:active {
+  transform: translateY(0);
+}
+
+.export-pdf-button:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+} 
