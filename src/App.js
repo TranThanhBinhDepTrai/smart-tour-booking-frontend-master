@@ -17,7 +17,7 @@ import AdminTour from './pages/admin/AdminTour';
 import CreateTour from './pages/admin/CreateTour';
 import EditTour from './pages/admin/EditTour';
 import Permissions from './pages/admin/Permissions';
-import Roles from './pages/admin/Roles';
+import RoleManagement from './pages/RoleManagement';
 import Tour from './pages/tours/Tour';
 import TourDetail from './pages/tours/TourDetail';
 import Profile from './pages/profile/Profile';
@@ -82,7 +82,7 @@ const router = createBrowserRouter(
         <Route path="tours/create" element={<CreateTour />} />
         <Route path="tours/edit/:id" element={<EditTour />} />
         <Route path="permissions" element={<Permissions />} />
-        <Route path="roles" element={<Roles />} />
+        <Route path="roles" element={<RoleManagement />} />
         <Route path="bookings" element={<Dashboard />} />
         <Route path="promotions" element={<Dashboard />} />
         <Route path="revenue" element={<Dashboard />} />

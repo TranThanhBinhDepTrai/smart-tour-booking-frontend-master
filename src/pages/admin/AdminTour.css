@@ -249,4 +249,127 @@
 .tour-info-cell {
   display: flex;
   align-items: center;
+}
+
+/* Method badges */
+.method-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.method-badge.get {
+    background-color: #61affe;
+    color: white;
+}
+
+.method-badge.post {
+    background-color: #49cc90;
+    color: white;
+}
+
+.method-badge.put {
+    background-color: #fca130;
+    color: white;
+}
+
+.method-badge.delete {
+    background-color: #f93e3e;
+    color: white;
+}
+
+/* Table styles */
+.table th {
+    background-color: #f8f9fa;
+    border-bottom-width: 2px;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Modal styles */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+}
+
+/* Form styles */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+/* Pagination styles */
+.pagination-container {
+    margin-top: 1rem;
+}
+
+.page-link {
+    color: #0d6efd;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+.page-link:hover {
+    color: #0a58ca;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Alert styles */
+.alert {
+    margin-bottom: 1rem;
+    border-radius: 4px;
+}
+
+.alert-danger {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+
+/* Loading spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #0d6efd;
 } 

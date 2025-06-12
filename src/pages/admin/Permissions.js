@@ -1,175 +1,340 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import { Container, Table, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { permissionService } from '../../services/permissionService';
 import './AdminTour.css';
 
 const Permissions = () => {
-  const [permissions, setPermissions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
-  const pageSize = 10;
+    const [permissions, setPermissions] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize] = useState(10);
+    const [totalItems, setTotalItems] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState({
+        id: null,
+        name: '',
+        apiPath: '',
+        method: 'GET',
+        module: ''
+    });
 
-  useEffect(() => {
-    fetchPermissions();
-  }, [currentPage]);
+    const loadPermissions = async (page = currentPage) => {
+        try {
+            setLoading(true);
+            const response = await permissionService.getAllPermissions(page, pageSize);
+            console.log('API Response:', response);
 
-  const fetchPermissions = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/permissions?page=${currentPage}&size=${pageSize}`);
-      console.log('API Response:', response);
-
-      let permissionsData = [];
-      let total = 0;
-      let totalPages = 0;
-
-      if (response.data) {
-        if (Array.isArray(response.data)) {
-          permissionsData = response.data;
-          total = response.data.length;
-          totalPages = Math.ceil(total / pageSize);
-        } else if (response.data.content && Array.isArray(response.data.content)) {
-          permissionsData = response.data.content;
-          total = response.data.totalElements || permissionsData.length;
-          totalPages = response.data.totalPages || Math.ceil(total / pageSize);
+            if (response?.meta && response?.result && Array.isArray(response.result)) {
+                setPermissions(response.result);
+                setTotalItems(response.meta.total);
+                setTotalPages(response.meta.pages);
+                setCurrentPage(page);
+                setError('');
+            } else {
+                throw new Error('Invalid response structure');
+            }
+        } catch (err) {
+            console.error('Error loading permissions:', err);
+            setError(err.message || 'Không thể tải danh sách quyền');
+            setPermissions([]);
+        } finally {
+            setLoading(false);
         }
-      }
+    };
 
-      setPermissions(permissionsData);
-      setTotalElements(total);
-      setTotalPages(totalPages);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching permissions:', err);
-      setError('Không thể tải danh sách quyền');
-      setPermissions([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    useEffect(() => {
+        loadPermissions(1);
+    }, []);
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
+    const handleClose = () => {
+        setShowModal(false);
+        setIsEditing(false);
+        setFormData({
+            id: null,
+            name: '',
+            apiPath: '',
+            method: 'GET',
+            module: ''
+        });
+    };
 
-  return (
-    <div className="admin-tour-container p-6">
-      <div className="admin-tour-card p-6">
-        <div className="admin-tour-header">
-          <div>
-            <h1 className="admin-tour-title">Quản Lý Phân Quyền</h1>
-            <p className="admin-tour-subtitle">Danh sách các quyền trong hệ thống</p>
-          </div>
-          <button className="add-tour-button">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Thêm Quyền Mới
-          </button>
-        </div>
+    const handleShow = (permission = null) => {
+        if (permission) {
+            setIsEditing(true);
+            setFormData({
+                id: permission.id,
+                name: permission.name,
+                apiPath: permission.apiPath,
+                method: permission.method,
+                module: permission.module
+            });
+        } else {
+            setIsEditing(false);
+            setFormData({
+                id: null,
+                name: '',
+                apiPath: '',
+                method: 'GET',
+                module: ''
+            });
+        }
+        setShowModal(true);
+    };
 
-        {error && (
-          <div className="error-alert mb-4">
-            <p className="error-alert-title">Lỗi</p>
-            <p>{error}</p>
-          </div>
-        )}
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            setError('');
+            let response;
+            if (isEditing) {
+                // Make sure we have an ID when updating
+                if (!formData.id) {
+                    throw new Error('Thiếu ID quyền để cập nhật');
+                }
+                response = await permissionService.updatePermission(formData);
+                // response now contains the updated permission directly
+                if (response) {
+                    setPermissions(permissions.map(p => 
+                        p.id === response.id ? response : p
+                    ));
+                    handleClose();
+                }
+            } else {
+                response = await permissionService.createPermission(formData);
+                if (response?.data) {
+                    setPermissions([response.data, ...permissions].slice(0, pageSize));
+                    handleClose();
+                }
+            }
+            // Reload to ensure consistency
+            await loadPermissions(currentPage);
+        } catch (err) {
+            console.error('Error saving permission:', err);
+            setError(err.message || (isEditing ? 'Không thể cập nhật quyền' : 'Không thể tạo quyền mới'));
+        }
+    };
 
-        {success && (
-          <div className="success-alert mb-4">
-            <p className="success-alert-title">Thành công</p>
-            <p>{success}</p>
-          </div>
-        )}
+    const handleDelete = async (id) => {
+        if (window.confirm('Bạn có chắc chắn muốn xóa quyền này?')) {
+            try {
+                setError('');
+                const response = await permissionService.deletePermission(id);
+                
+                // Xóa quyền khỏi state ngay lập tức
+                setPermissions(permissions.filter(p => p.id !== id));
+                
+                // Nếu đây là item cuối cùng trong trang và không phải trang đầu,
+                // chuyển về trang trước
+                if (permissions.length === 1 && currentPage > 1) {
+                    await loadPermissions(currentPage - 1);
+                } else if (permissions.length > 1) {
+                    // Nếu còn items khác trong trang hiện tại
+                    await loadPermissions(currentPage);
+                }
+            } catch (err) {
+                console.error('Error deleting permission:', err);
+                setError(err.message || 'Không thể xóa quyền');
+                // Reload lại trang để đồng bộ dữ liệu
+                await loadPermissions(currentPage);
+            }
+        }
+    };
 
-        {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Đang tải dữ liệu...</p>
-          </div>
-        ) : (
-          <>
-            <div className="overflow-x-auto">
-              <table className="tour-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Tên quyền</th>
-                    <th>Mô tả</th>
-                    <th>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {permissions.map((permission) => (
-                    <tr key={permission.id}>
-                      <td>{permission.id}</td>
-                      <td>{permission.name}</td>
-                      <td>{permission.description}</td>
-                      <td>
-                        <div className="tour-actions">
-                          <button className="action-button edit-button">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                            Sửa
-                          </button>
-                          <button className="action-button delete-button">
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            Xóa
-                          </button>
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handlePageChange = async (newPage) => {
+        await loadPermissions(newPage);
+    };
+
+    return (
+        <Container fluid className="mt-4">
+            {error && <Alert variant="danger">{error}</Alert>}
+            
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h2>Quản lý phân quyền</h2>
+                <Button variant="primary" onClick={() => handleShow()}>
+                    Thêm mới quyền
+                </Button>
+            </div>
+
+            {loading ? (
+                <div className="text-center my-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Đang tải...</span>
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên quyền</th>
+                                <th>API Path</th>
+                                <th>Method</th>
+                                <th>Module</th>
+                                <th style={{width: "150px"}}>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {permissions && permissions.length > 0 ? (
+                                permissions.map(permission => (
+                                    <tr key={permission.id}>
+                                        <td>{permission.id}</td>
+                                        <td>{permission.name}</td>
+                                        <td>{permission.apiPath}</td>
+                                        <td>
+                                            <span className={`method-badge ${permission.method.toLowerCase()}`}>
+                                                {permission.method}
+                                            </span>
+                                        </td>
+                                        <td>{permission.module}</td>
+                                        <td>
+                                            <div className="d-flex gap-2 justify-content-center">
+                                                <Button 
+                                                    variant="primary" 
+                                                    size="sm"
+                                                    onClick={() => handleShow(permission)}
+                                                >
+                                                    Sửa
+                                                </Button>
+                                                <Button 
+                                                    variant="danger" 
+                                                    size="sm"
+                                                    onClick={() => handleDelete(permission.id)}
+                                                >
+                                                    Xóa
+                                                </Button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="6" className="text-center">
+                                        Không có quyền nào
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
+
+                    {permissions && permissions.length > 0 && (
+                        <div className="d-flex justify-content-center mt-3">
+                            <Button 
+                                variant="outline-primary" 
+                                onClick={() => handlePageChange(1)}
+                                disabled={currentPage === 1}
+                            >
+                                Đầu
+                            </Button>
+                            <Button 
+                                variant="outline-primary" 
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="mx-2"
+                            >
+                                Trước
+                            </Button>
+                            <span className="mx-3 mt-2">
+                                Trang {currentPage} / {totalPages} (Tổng: {totalItems} quyền)
+                            </span>
+                            <Button 
+                                variant="outline-primary"
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage >= totalPages}
+                                className="mx-2"
+                            >
+                                Sau
+                            </Button>
+                            <Button 
+                                variant="outline-primary"
+                                onClick={() => handlePageChange(totalPages)}
+                                disabled={currentPage >= totalPages}
+                            >
+                                Cuối
+                            </Button>
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                    )}
+                </>
+            )}
 
-            <div className="pagination">
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(0)}
-                disabled={currentPage === 0}
-              >
-                Đầu
-              </button>
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 0}
-              >
-                Trước
-              </button>
-              
-              <span className="pagination-info">
-                Trang {currentPage + 1} / {totalPages} (Tổng: {totalElements} quyền)
-              </span>
+            <Modal show={showModal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{isEditing ? 'Cập nhật quyền' : 'Thêm mới quyền'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Tên quyền</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Form.Group>
 
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage >= totalPages - 1}
-              >
-                Sau
-              </button>
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(totalPages - 1)}
-                disabled={currentPage >= totalPages - 1}
-              >
-                Cuối
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
+                        <Form.Group className="mb-3">
+                            <Form.Label>API Path</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="apiPath"
+                                value={formData.apiPath}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Method</Form.Label>
+                            <Form.Select
+                                name="method"
+                                value={formData.method}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                            </Form.Select>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Module</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="module"
+                                value={formData.module}
+                                onChange={handleChange}
+                                required
+                            />
+                        </Form.Group>
+
+                        <div className="d-flex justify-content-end gap-2">
+                            <Button variant="secondary" onClick={handleClose}>
+                                Hủy
+                            </Button>
+                            <Button variant="primary" type="submit">
+                                {isEditing ? 'Cập nhật' : 'Thêm mới'}
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+        </Container>
+    );
 };
 
 export default Permissions; 
