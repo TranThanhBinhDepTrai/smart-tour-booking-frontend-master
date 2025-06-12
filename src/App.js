@@ -20,8 +20,12 @@ import Permissions from './pages/admin/Permissions';
 import RoleManagement from './pages/RoleManagement';
 import Tour from './pages/tours/Tour';
 import TourDetail from './pages/tours/TourDetail';
+import BookTour from './pages/tours/BookTour';
 import Profile from './pages/profile/Profile';
+import AdminPromotions from './pages/admin/Promotions';
+import Promotions from './pages/Promotions';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Users from './pages/admin/Users';
 import './App.css';
 
 // Protected Route Component
@@ -60,6 +64,8 @@ const router = createBrowserRouter(
         <Route index element={<Home />} />
         <Route path="tours" element={<Tour />} />
         <Route path="tours/:id" element={<TourDetail />} />
+        <Route path="tours/:id/book" element={<BookTour />} />
+        <Route path="promotions" element={<Promotions />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={
@@ -78,13 +84,14 @@ const router = createBrowserRouter(
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="users" element={<Users />} />
         <Route path="tours" element={<AdminTour />} />
         <Route path="tours/create" element={<CreateTour />} />
         <Route path="tours/edit/:id" element={<EditTour />} />
         <Route path="permissions" element={<Permissions />} />
         <Route path="roles" element={<RoleManagement />} />
         <Route path="bookings" element={<Dashboard />} />
-        <Route path="promotions" element={<Dashboard />} />
+        <Route path="promotions" element={<AdminPromotions />} />
         <Route path="revenue" element={<Dashboard />} />
         <Route path="support" element={<Dashboard />} />
       </Route>

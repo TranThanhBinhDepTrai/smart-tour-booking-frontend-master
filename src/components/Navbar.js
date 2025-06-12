@@ -26,6 +26,7 @@ const Navbar = () => {
                     <Nav className="me-auto">
                         <Nav.Link as={Link} to="/">Trang chủ</Nav.Link>
                         <Nav.Link as={Link} to="/tours">Tours</Nav.Link>
+                        <Nav.Link as={Link} to="/promotions">Khuyến mãi</Nav.Link>
                         <Nav.Link as={Link} to="/about">Giới thiệu</Nav.Link>
                         <Nav.Link as={Link} to="/contact">Liên hệ</Nav.Link>
                     </Nav>

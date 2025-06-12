@@ -1,229 +1,190 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Container, Row, Col, Button, Card, Carousel } from "react-bootstrap";
 import axios from "axios";
+import { toast, Toaster } from "react-hot-toast";
+import { API_URL } from "../../config";
 import "./TourDetail.css";
-
-const ImageCarousel = ({ images }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
-
-  const goToImage = (index) => {
-    setCurrentImageIndex(index);
-  };
-
-  return (
-    <div className="detail-carousel">
-      <div className="carousel-container">
-        {images.map((image, index) => (
-          <img
-            key={image.id}
-            src={image.url}
-            alt={`Tour image ${index + 1}`}
-            className={`carousel-image ${index === currentImageIndex ? 'active' : ''}`}
-          />
-        ))}
-        <button className="carousel-button prev" onClick={prevImage}>❮</button>
-        <button className="carousel-button next" onClick={nextImage}>❯</button>
-      </div>
-      <div className="carousel-dots">
-        {images.map((_, index) => (
-          <span
-            key={index}
-            className={`dot ${index === currentImageIndex ? 'active' : ''}`}
-            onClick={() => goToImage(index)}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const TourDetail = () => {
   const { id } = useParams();
+    const navigate = useNavigate();
   const [tour, setTour] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    axios.get(`http://localhost:8080/api/v1/tours/${id}`)
-      .then(res => {
-        console.log('Tour detail:', res.data);
-        if (res.data && res.data.data) {
-          setTour(res.data.data);
-        } else {
-          setError('Không tìm thấy thông tin tour');
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Lỗi khi lấy thông tin tour:", err);
-        setError('Có lỗi xảy ra khi tải thông tin tour');
-        setLoading(false);
-      });
-  }, [id]);
+        loadTourDetails();
+    }, [id]);
 
-  const handleExportPDF = async () => {
-    try {
-      setDownloading(true);
-      const response = await axios.get(
-        `http://localhost:8080/api/v1/tours/${id}/export/pdf`,
-        { responseType: 'blob' }
-      );
-      
-      // Tạo URL cho blob
+    const loadTourDetails = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/tours/${id}`);
+            console.log("Tour detail:", response);
+            if (response?.data?.data) {
+                setTour(response.data.data);
+            }
+        } catch (error) {
+            console.error("Error loading tour:", error);
+            toast.error("Không thể tải thông tin tour");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const handleDownloadPDF = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/tours/${id}/export/pdf`, {
+                responseType: 'blob'
+            });
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      
-      // Tạo link tạm thời và click để tải
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `tour_${tour.code}.pdf`);
+            link.setAttribute('download', `tour-${id}.pdf`);
       document.body.appendChild(link);
       link.click();
-      
-      // Cleanup
-      link.parentNode.removeChild(link);
+            link.remove();
       window.URL.revokeObjectURL(url);
-      setDownloading(false);
-    } catch (err) {
-      console.error("Lỗi khi xuất PDF:", err);
-      alert("Có lỗi xảy ra khi xuất file PDF. Vui lòng thử lại sau.");
-      setDownloading(false);
-    }
-  };
+            toast.success('Tải PDF thành công!');
+        } catch (error) {
+            console.error('Lỗi khi tải PDF:', error);
+            toast.error('Không thể tải PDF. Vui lòng thử lại sau.');
+        }
+    };
+
+    const handleBookTour = () => {
+        navigate(`/tours/${id}/book`);
+    };
 
   if (loading) {
-    return <div className="loading">Đang tải thông tin tour...</div>;
-  }
+        return (
+            <Container className="mt-4 text-center">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Đang tải...</span>
+                </div>
+            </Container>
+        );
+    }
 
-  if (error || !tour) {
+    if (!tour) {
     return (
-      <div className="error-container">
-        <div className="error">{error || 'Không tìm thấy thông tin tour'}</div>
-        <Link to="/tours" className="back-button">Quay lại danh sách tour</Link>
-      </div>
+            <Container className="mt-4">
+                <div className="alert alert-warning">Không tìm thấy thông tin tour</div>
+            </Container>
     );
   }
 
   return (
-    <div className="tour-detail">
-      <div className="tour-detail-header">
-        <Link to="/tours" className="back-link">← Quay lại danh sách tour</Link>
-        <h1>{tour.title}</h1>
-        <div className="tour-code">Mã tour: {tour.code}</div>
+        <Container className="mt-4">
+            <Toaster position="top-right" />
+            <div className="mb-3">
+                <Button variant="link" onClick={() => navigate('/tours')}>
+                    ← Quay lại danh sách tour
+                </Button>
       </div>
 
-      <div className="tour-detail-images">
+            <Row>
+                <Col md={8}>
         {tour.images && tour.images.length > 0 && (
-          <ImageCarousel images={tour.images} />
-        )}
-      </div>
+                        <Card className="mb-4">
+                            <Carousel>
+                                {tour.images.map((image, index) => (
+                                    <Carousel.Item key={image.id}>
+                                        <img
+                                            className="d-block w-100"
+                                            src={image.url}
+                                            alt={`Hình ảnh tour ${index + 1}`}
+                                            style={{ height: '400px', objectFit: 'cover' }}
+                                        />
+                                    </Carousel.Item>
+                                ))}
+                            </Carousel>
+                        </Card>
+                    )}
 
-      <div className="tour-detail-content">
-        <div className="tour-detail-main">
-          <section className="tour-section">
-            <h2>Thông tin chung</h2>
-            <div className="info-grid">
-              <div className="info-item">
-                <label>Điểm đến:</label>
-                <span>{tour.destination}</span>
-              </div>
-              <div className="info-item">
-                <label>Thời gian:</label>
-                <span>{tour.durationDays} ngày {tour.durationNights} đêm</span>
-              </div>
-              <div className="info-item">
-                <label>Ngày khởi hành:</label>
-                <span>{new Date(tour.startDate).toLocaleDateString("vi-VN")}</span>
-              </div>
-              <div className="info-item">
-                <label>Ngày kết thúc:</label>
-                <span>{new Date(tour.endDate).toLocaleDateString("vi-VN")}</span>
-              </div>
-              <div className="info-item">
-                <label>Hãng bay:</label>
-                <span>{tour.airline}</span>
-              </div>
-              <div className="info-item">
-                <label>Loại tour:</label>
-                <span>{tour.category}</span>
-              </div>
-              <div className="info-item">
-                <label>Khu vực:</label>
-                <span>{tour.region === 'DOMESTIC' ? 'Trong nước' : 'Quốc tế'}</span>
-              </div>
-              <div className="info-item">
-                <label>Số chỗ:</label>
-                <span>{tour.capacity} người</span>
-              </div>
-            </div>
-          </section>
+                    <Card className="mb-4">
+                        <Card.Body>
+                            <Card.Title as="h2">{tour.title}</Card.Title>
+                            <Card.Subtitle className="mb-3 text-muted">
+                                Mã tour: {tour.code}
+                            </Card.Subtitle>
 
-          <section className="tour-section">
-            <h2>Giá tour</h2>
-            <div className="price-info">
-              <div className="price-item">
-                <label>Người lớn:</label>
-                <span className="price">{tour.priceAdults.toLocaleString()} VNĐ</span>
-              </div>
-              <div className="price-item">
-                <label>Trẻ em:</label>
-                <span className="price">{tour.priceChildren.toLocaleString()} VNĐ</span>
-              </div>
-            </div>
-          </section>
+                            <h4 className="mt-4">Thông tin chung</h4>
+                            <Row>
+                                <Col md={6}>
+                                    <p><strong>Điểm đến:</strong> {tour.destination}</p>
+                                    <p><strong>Thời gian:</strong> {tour.durationDays} ngày {tour.durationNights} đêm</p>
+                                    <p><strong>Ngày khởi hành:</strong> {formatDate(tour.startDate)}</p>
+                                    <p><strong>Ngày kết thúc:</strong> {formatDate(tour.endDate)}</p>
+                                </Col>
+                                <Col md={6}>
+                                    <p><strong>Hãng bay:</strong> {tour.airline || 'Chưa cập nhật'}</p>
+                                    <p><strong>Loại tour:</strong> {tour.category || 'Chưa cập nhật'}</p>
+                                    <p><strong>Khu vực:</strong> {tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</p>
+                                    <p><strong>Số chỗ:</strong> {tour.capacity} người</p>
+                                </Col>
+                            </Row>
 
-          <section className="tour-section">
-            <h2>Mô tả tour</h2>
-            <p className="tour-description">{tour.description}</p>
-          </section>
+                            <h4 className="mt-4">Mô tả</h4>
+                            <p>{tour.description}</p>
 
-          <section className="tour-section">
-            <h2>Lịch trình chi tiết</h2>
-            <div className="itinerary-list">
+                            <h4 className="mt-4">Lịch trình</h4>
+                            <ul className="list-unstyled">
               {tour.itinerary.map((item, index) => (
-                <div key={index} className="itinerary-item">
-                  <div className="day-number">{index + 1}</div>
-                  <div className="day-content">{item}</div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
+                                    <li key={index} className="mb-2">
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </Card.Body>
+                    </Card>
+                </Col>
 
-        <div className="tour-detail-sidebar">
-          <div className="booking-card">
-            <h3>Đặt tour này</h3>
-            <div className="booking-info">
-              <div className="booking-price">
-                <label>Giá từ:</label>
-                <span className="price">{tour.priceAdults.toLocaleString()} VNĐ</span>
+                <Col md={4}>
+                    <Card className="sticky-top" style={{ top: '20px' }}>
+                        <Card.Body>
+                            <h3 className="mb-4">Đặt tour này</h3>
+                            <div className="mb-3">
+                                <p className="mb-1">Giá người lớn:</p>
+                                <h4 className="text-danger">
+                                    {tour.priceAdults?.toLocaleString('vi-VN')} VNĐ
+                                </h4>
+                                <p className="mb-1 mt-3">Giá trẻ em:</p>
+                                <h5 className="text-danger">
+                                    {tour.priceChildren?.toLocaleString('vi-VN')} VNĐ
+                                </h5>
               </div>
-              <button className="booking-button">Đặt ngay</button>
-              <button 
-                className="export-pdf-button" 
-                onClick={handleExportPDF}
-                disabled={downloading}
-              >
-                {downloading ? 'Đang tải...' : 'Tải thông tin tour (PDF)'}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                            <Button 
+                                variant="primary" 
+                                className="w-100 mb-3"
+                                onClick={handleBookTour}
+                            >
+                                Đặt ngay
+                            </Button>
+                            <Button 
+                                variant="outline-primary" 
+                                className="w-100"
+                                onClick={handleDownloadPDF}
+                            >
+                                Tải thông tin tour (PDF)
+                            </Button>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
   );
 };
 

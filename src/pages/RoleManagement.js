@@ -6,12 +6,15 @@ import './RoleManagement.css';
 const RoleManagement = () => {
     const [roles, setRoles] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showPermissionModal, setShowPermissionModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize] = useState(2); // Đặt pageSize = 2 theo API
+    const [pageSize] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
-    const [isEditing, setIsEditing] = useState(false);
+    const [permissions, setPermissions] = useState([]);
+    const [selectedPermissions, setSelectedPermissions] = useState([]);
+    const [selectedRole, setSelectedRole] = useState(null);
     const [formData, setFormData] = useState({
         id: null,
         name: '',
@@ -20,44 +23,33 @@ const RoleManagement = () => {
         permissions: []
     });
 
-    const loadRoles = async (page = currentPage) => {
+    const loadRoles = async () => {
         try {
             setLoading(true);
-            const response = await roleService.getAllRoles(page, pageSize);
-            console.log('API Response in component:', response);
-            
+            const response = await roleService.getAllRoles(currentPage, pageSize);
             if (response?.data) {
-                const { result, meta } = response.data;
-                
-                if (Array.isArray(result)) {
-                    // Nếu trang hiện tại không có dữ liệu và không phải trang đầu,
-                    // load lại trang trước đó
-                    if (result.length === 0 && page > 1) {
-                        setCurrentPage(page - 1);
-                        await loadRoles(page - 1);
-                        return;
-                    }
-                    
-                    setRoles(result);
-                    setTotalItems(meta?.total || result.length);
-                    setError('');
-                } else {
-                    console.error('Result is not an array:', result);
-                    setRoles([]);
-                    setTotalItems(0);
-                }
-            } else {
-                console.error('Invalid response structure');
-                setRoles([]);
-                setTotalItems(0);
+                setRoles(response.data.result || []);
+                setTotalItems(response.data.meta.total);
             }
         } catch (err) {
             console.error('Error loading roles:', err);
             setError('Không thể tải danh sách vai trò');
-            setRoles([]);
-            setTotalItems(0);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const loadPermissions = async () => {
+        try {
+            const response = await roleService.getAllPermissions();
+            if (response?.data?.result) {
+                setPermissions(response.data.result);
+            } else {
+                setPermissions([]);
+            }
+        } catch (err) {
+            console.error('Error loading permissions:', err);
+            setError('Không thể tải danh sách quyền');
         }
     };
 
@@ -65,9 +57,50 @@ const RoleManagement = () => {
         loadRoles();
     }, [currentPage]);
 
+    const handleShowPermissionModal = (role) => {
+        setSelectedRole(role);
+        setSelectedPermissions(role.permissions?.map(p => p.id) || []);
+        setShowPermissionModal(true);
+        loadPermissions();
+    };
+
+    const handlePermissionModalClose = () => {
+        setShowPermissionModal(false);
+        setSelectedRole(null);
+        setSelectedPermissions([]);
+    };
+
+    const handlePermissionChange = (permissionId) => {
+        setSelectedPermissions(prev => {
+            if (prev.includes(permissionId)) {
+                return prev.filter(id => id !== permissionId);
+            } else {
+                return [...prev, permissionId];
+            }
+        });
+    };
+
+    const handleUpdatePermissions = async () => {
+        try {
+            const updateData = {
+                id: selectedRole.id,
+                name: selectedRole.name,
+                description: selectedRole.description,
+                active: selectedRole.active,
+                permissions: selectedPermissions.map(id => ({ id }))
+            };
+            await roleService.updateRole(updateData);
+            handlePermissionModalClose();
+            loadRoles();
+            setError('');
+        } catch (err) {
+            console.error('Error updating role permissions:', err);
+            setError('Không thể cập nhật quyền: ' + (err.message || 'Đã có lỗi xảy ra'));
+        }
+    };
+
     const handleClose = () => {
         setShowModal(false);
-        setIsEditing(false);
         setFormData({
             id: null,
             name: '',
@@ -79,22 +112,12 @@ const RoleManagement = () => {
 
     const handleShow = (role = null) => {
         if (role) {
-            setIsEditing(true);
             setFormData({
                 id: role.id,
                 name: role.name,
-                description: role.description,
+                description: role.description || '',
                 active: role.active,
                 permissions: role.permissions || []
-            });
-        } else {
-            setIsEditing(false);
-            setFormData({
-                id: null,
-                name: '',
-                description: '',
-                active: true,
-                permissions: []
             });
         }
         setShowModal(true);
@@ -103,47 +126,31 @@ const RoleManagement = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            setError('');
-            if (isEditing) {
-                await roleService.updateRole(formData.id, formData);
+            if (formData.id) {
+                await roleService.updateRole(formData);
             } else {
                 await roleService.createRole(formData);
             }
             handleClose();
-            await loadRoles();
+            loadRoles();
+            setError('');
         } catch (err) {
             console.error('Error saving role:', err);
-            setError(isEditing ? 'Không thể cập nhật vai trò' : 'Không thể tạo vai trò mới');
+            setError('Không thể lưu vai trò: ' + (err.message || 'Đã có lỗi xảy ra'));
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (roleId) => {
         if (window.confirm('Bạn có chắc chắn muốn xóa vai trò này?')) {
             try {
+                await roleService.deleteRole(roleId);
+                loadRoles();
                 setError('');
-                await roleService.deleteRole(id);
-                
-                // Nếu đây là item cuối cùng trong trang và không phải trang đầu,
-                // chuyển về trang trước
-                if (roles.length === 1 && currentPage > 1) {
-                    setCurrentPage(prev => prev - 1);
-                } else {
-                    // Nếu không, load lại trang hiện tại
-                    await loadRoles();
-                }
             } catch (err) {
                 console.error('Error deleting role:', err);
-                setError('Không thể xóa vai trò');
+                setError('Không thể xóa vai trò: ' + (err.message || 'Đã có lỗi xảy ra'));
             }
         }
-    };
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
     };
 
     if (loading) {
@@ -159,7 +166,7 @@ const RoleManagement = () => {
     }
 
     return (
-        <Container className="mt-4">
+        <Container fluid className="mt-4">
             {error && <Alert variant="danger">{error}</Alert>}
             
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -169,32 +176,39 @@ const RoleManagement = () => {
                 </Button>
             </div>
 
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên vai trò</th>
-                        <th>Mô tả</th>
-                        <th>Số quyền</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {roles.length > 0 ? (
-                        roles.map(role => (
+            {loading ? (
+                <div className="text-center my-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Đang tải...</span>
+                    </div>
+                </div>
+            ) : (
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên vai trò</th>
+                            <th>Mô tả</th>
+                            <th>Số quyền</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {roles.map(role => (
                             <tr key={role.id}>
                                 <td>{role.id}</td>
                                 <td>{role.name}</td>
                                 <td>{role.description}</td>
                                 <td>{role.permissions?.length || 0}</td>
                                 <td>
-                                    <span className={`status-badge ${role.active ? 'active' : 'inactive'}`}>
-                                        {role.active ? 'Hoạt động' : 'Không hoạt động'}
-                                    </span>
-                                </td>
-                                <td>
                                     <div className="d-flex gap-2">
+                                        <Button 
+                                            variant="info" 
+                                            size="sm"
+                                            onClick={() => handleShowPermissionModal(role)}
+                                        >
+                                            Cập nhật quyền
+                                        </Button>
                                         <Button 
                                             variant="primary" 
                                             size="sm"
@@ -212,16 +226,10 @@ const RoleManagement = () => {
                                     </div>
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="6" className="text-center">
-                                Không có vai trò nào
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </Table>
+                        ))}
+                    </tbody>
+                </Table>
+            )}
 
             {roles.length > 0 && (
                 <div className="d-flex justify-content-center mt-3">
@@ -247,7 +255,9 @@ const RoleManagement = () => {
 
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{isEditing ? 'Cập nhật vai trò' : 'Tạo mới vai trò'}</Modal.Title>
+                    <Modal.Title>
+                        {formData.id ? 'Cập nhật vai trò' : 'Tạo mới vai trò'}
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
@@ -255,9 +265,8 @@ const RoleManagement = () => {
                             <Form.Label>Tên vai trò</Form.Label>
                             <Form.Control
                                 type="text"
-                                name="name"
                                 value={formData.name}
-                                onChange={handleChange}
+                                onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
                                 required
                             />
                         </Form.Group>
@@ -266,21 +275,9 @@ const RoleManagement = () => {
                             <Form.Label>Mô tả</Form.Label>
                             <Form.Control
                                 as="textarea"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
                                 rows={3}
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Check
-                                type="switch"
-                                id="active-switch"
-                                label="Trạng thái"
-                                name="active"
-                                checked={formData.active}
-                                onChange={handleChange}
+                                value={formData.description}
+                                onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))}
                             />
                         </Form.Group>
 
@@ -289,11 +286,49 @@ const RoleManagement = () => {
                                 Hủy
                             </Button>
                             <Button variant="primary" type="submit">
-                                {isEditing ? 'Cập nhật' : 'Tạo mới'}
+                                {formData.id ? 'Cập nhật' : 'Tạo mới'}
                             </Button>
                         </div>
                     </Form>
                 </Modal.Body>
+            </Modal>
+
+            {/* Modal cập nhật quyền */}
+            <Modal show={showPermissionModal} onHide={handlePermissionModalClose} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        Cập nhật quyền cho vai trò: {selectedRole?.name}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="mb-3">
+                        <strong>Chọn quyền:</strong>
+                        <div style={{ maxHeight: '400px', overflowY: 'auto' }} className="border rounded p-3 mt-2">
+                            {Array.isArray(permissions) && permissions.map(permission => (
+                                <Form.Check
+                                    key={permission.id}
+                                    type="checkbox"
+                                    id={`permission-${permission.id}`}
+                                    label={`${permission.name} (${permission.module} - ${permission.method})`}
+                                    checked={selectedPermissions.includes(permission.id)}
+                                    onChange={() => handlePermissionChange(permission.id)}
+                                    className="mb-2"
+                                />
+                            ))}
+                        </div>
+                        <div className="mt-2 text-muted">
+                            Đã chọn {selectedPermissions.length} quyền
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handlePermissionModalClose}>
+                        Hủy
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdatePermissions}>
+                        Lưu thay đổi
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </Container>
     );

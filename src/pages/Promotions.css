@@ -1,0 +1,107 @@
+.promotion-card {
+    transition: transform 0.2s;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.promotion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.promotion-code {
+    color: #007bff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.promotion-description {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.promotion-details {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.promotion-details p {
+    margin-bottom: 0.5rem;
+}
+
+.discount {
+    color: #dc3545;
+    font-size: 1.2rem;
+}
+
+.dates {
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.usage-limit {
+    color: #28a745;
+    font-size: 0.9rem;
+    margin-bottom: 0 !important;
+}
+
+/* Search bar styles */
+.search-bar {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
+
+/* Modal styles */
+.promotion-details-modal {
+    padding: 1rem;
+}
+
+.promotion-details-modal .promotion-code {
+    color: #007bff;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
+}
+
+.promotion-details-modal .description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.promotion-details-modal .dates ul {
+    list-style: none;
+    padding-left: 1rem;
+}
+
+.promotion-details-modal .dates li {
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.promotion-info {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .promotion-card {
+        margin-bottom: 1rem;
+    }
+    
+    .promotion-details-modal {
+        padding: 0.5rem;
+    }
+    
+    .promotion-code {
+        font-size: 1.2rem;
+    }
+} 

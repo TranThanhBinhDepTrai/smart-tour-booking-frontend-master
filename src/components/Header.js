@@ -42,6 +42,7 @@ function Header() {
               <>
                 <Nav.Link as={Link} to="/">Trang chủ</Nav.Link>
                 <Nav.Link as={Link} to="/tours">Tour du lịch</Nav.Link>
+                <Nav.Link as={Link} to="/promotions">Khuyến mãi</Nav.Link>
                 <Nav.Link as={Link} to="/contact">Liên hệ</Nav.Link>
                 {currentUser && <Nav.Link as={Link} to="/history">Lịch sử</Nav.Link>}
               </>

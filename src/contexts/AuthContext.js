@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api, { authService } from '../services/api';
+import { accountService } from '../services/accountService';
 
 const AuthContext = createContext(null);
 
@@ -26,65 +27,85 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // Kiểm tra user trong localStorage
-    const user = authService.getCurrentUser() || authService.getCurrentAdmin();
-    if (user) {
-      setCurrentUser(user);
-    }
-    setLoading(false);
-  }, []);
-
   const login = async (username, password) => {
     try {
       setError(null);
-      const response = await api.post('/login', { username, password });
-      console.log('Login response:', response.data);
+      const response = await accountService.login(username, password);
+      console.log('Full login response:', response);
+      console.log('Response data structure:', JSON.stringify(response.data, null, 2));
       
-      if (response.data && response.data.accessToken) {
-        const userData = {
-          id: response.data.user.id,
-          email: response.data.user.email,
-          fullName: response.data.user.name,
-          role: response.data.user.role
-        };
-
-        // Lưu token và thông tin user
-        localStorage.setItem('token', response.data.accessToken);
+      // Check if we have a successful response
+      if (response.data && response.data.statusCode === 200 && response.data.data) {
+        const { accessToken } = response.data.data;
         
-        // Kiểm tra role ID
-        const roleId = response.data.user.role?.id;
-        
-        // Role ID 2 = Admin, Role ID 1 = User
-        if (roleId === 2) {
-          localStorage.setItem('admin', JSON.stringify(userData));
-        } else {
-          localStorage.setItem('user', JSON.stringify(userData));
+        if (accessToken) {
+          localStorage.setItem('token', accessToken);
+          
+          // Fetch full user details
+          const userDetailsResponse = await accountService.getCurrentUser();
+          console.log('User details response:', userDetailsResponse);
+          
+          if (userDetailsResponse.data?.data) {
+            const userData = userDetailsResponse.data.data;
+            setCurrentUser(userData);
+            return userData;
+          }
         }
-
-        setCurrentUser(userData);
-        return userData;
       }
-      throw new Error('Invalid response data');
+      throw new Error('Đăng nhập thất bại');
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.message || 'Đăng nhập thất bại');
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+        throw new Error(err.response.data.message);
+      }
+      setError('Đăng nhập thất bại. Vui lòng kiểm tra lại tên đăng nhập và mật khẩu.');
       throw err;
     }
   };
 
+  const loadUser = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setCurrentUser(null);
+        return null;
+      }
+
+      const response = await accountService.getCurrentUser();
+      console.log('Load user response:', response);
+
+      if (response.data?.data) {
+        const userData = response.data.data;
+        setCurrentUser(userData);
+        return userData;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error loading user:', error);
+      logout();
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
-    authService.logout();
+    localStorage.removeItem('token');
     setCurrentUser(null);
   };
 
   const isAdmin = () => {
-    return currentUser?.role?.id === 2; // Role ID 2 = Admin
+    return currentUser?.role?.id === 2;
   };
 
   const isUser = () => {
-    return currentUser?.role?.id === 1; // Role ID 1 = User
+    return currentUser?.role?.id === 1;
   };
+
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   const value = {
     currentUser,
@@ -93,7 +114,8 @@ export const AuthProvider = ({ children }) => {
     isAdmin,
     isUser,
     loading,
-    error
+    error,
+    loadUser
   };
 
   return (

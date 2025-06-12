@@ -4,14 +4,14 @@ import { permissionService } from '../../services/permissionService';
 import './AdminTour.css';
 
 const Permissions = () => {
-    const [permissions, setPermissions] = useState([]);
+  const [permissions, setPermissions] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
     const [totalItems, setTotalItems] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
         id: null,
@@ -22,10 +22,10 @@ const Permissions = () => {
     });
 
     const loadPermissions = async (page = currentPage) => {
-        try {
-            setLoading(true);
+    try {
+      setLoading(true);
             const response = await permissionService.getAllPermissions(page, pageSize);
-            console.log('API Response:', response);
+      console.log('API Response:', response);
 
             if (response?.meta && response?.result && Array.isArray(response.result)) {
                 setPermissions(response.result);
@@ -36,14 +36,14 @@ const Permissions = () => {
             } else {
                 throw new Error('Invalid response structure');
             }
-        } catch (err) {
+    } catch (err) {
             console.error('Error loading permissions:', err);
             setError(err.message || 'Không thể tải danh sách quyền');
-            setPermissions([]);
-        } finally {
-            setLoading(false);
-        }
-    };
+      setPermissions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
     useEffect(() => {
         loadPermissions(1);
@@ -153,9 +153,9 @@ const Permissions = () => {
 
     const handlePageChange = async (newPage) => {
         await loadPermissions(newPage);
-    };
+  };
 
-    return (
+  return (
         <Container fluid className="mt-4">
             {error && <Alert variant="danger">{error}</Alert>}
             
@@ -164,35 +164,35 @@ const Permissions = () => {
                 <Button variant="primary" onClick={() => handleShow()}>
                     Thêm mới quyền
                 </Button>
-            </div>
+        </div>
 
             {loading ? (
                 <div className="text-center my-5">
                     <div className="spinner-border text-primary" role="status">
                         <span className="visually-hidden">Đang tải...</span>
-                    </div>
-                </div>
-            ) : (
-                <>
+          </div>
+          </div>
+        ) : (
+          <>
                     <Table striped bordered hover responsive>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên quyền</th>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tên quyền</th>
                                 <th>API Path</th>
                                 <th>Method</th>
                                 <th>Module</th>
                                 <th style={{width: "150px"}}>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                  </tr>
+                </thead>
+                <tbody>
                             {permissions && permissions.length > 0 ? (
                                 permissions.map(permission => (
-                                    <tr key={permission.id}>
-                                        <td>{permission.id}</td>
-                                        <td>{permission.name}</td>
+                    <tr key={permission.id}>
+                      <td>{permission.id}</td>
+                      <td>{permission.name}</td>
                                         <td>{permission.apiPath}</td>
-                                        <td>
+                      <td>
                                             <span className={`method-badge ${permission.method.toLowerCase()}`}>
                                                 {permission.method}
                                             </span>
@@ -205,18 +205,18 @@ const Permissions = () => {
                                                     size="sm"
                                                     onClick={() => handleShow(permission)}
                                                 >
-                                                    Sửa
+                            Sửa
                                                 </Button>
                                                 <Button 
                                                     variant="danger" 
                                                     size="sm"
                                                     onClick={() => handleDelete(permission.id)}
                                                 >
-                                                    Xóa
+                            Xóa
                                                 </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                        </div>
+                      </td>
+                    </tr>
                                 ))
                             ) : (
                                 <tr>
@@ -225,7 +225,7 @@ const Permissions = () => {
                                     </td>
                                 </tr>
                             )}
-                        </tbody>
+                </tbody>
                     </Table>
 
                     {permissions && permissions.length > 0 && (
@@ -234,39 +234,39 @@ const Permissions = () => {
                                 variant="outline-primary" 
                                 onClick={() => handlePageChange(1)}
                                 disabled={currentPage === 1}
-                            >
-                                Đầu
+              >
+                Đầu
                             </Button>
                             <Button 
                                 variant="outline-primary" 
-                                onClick={() => handlePageChange(currentPage - 1)}
+                onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
                                 className="mx-2"
-                            >
-                                Trước
+              >
+                Trước
                             </Button>
                             <span className="mx-3 mt-2">
                                 Trang {currentPage} / {totalPages} (Tổng: {totalItems} quyền)
-                            </span>
+              </span>
                             <Button 
                                 variant="outline-primary"
-                                onClick={() => handlePageChange(currentPage + 1)}
+                onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage >= totalPages}
                                 className="mx-2"
-                            >
-                                Sau
+              >
+                Sau
                             </Button>
                             <Button 
                                 variant="outline-primary"
                                 onClick={() => handlePageChange(totalPages)}
                                 disabled={currentPage >= totalPages}
-                            >
-                                Cuối
+              >
+                Cuối
                             </Button>
-                        </div>
+            </div>
                     )}
-                </>
-            )}
+          </>
+        )}
 
             <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -329,12 +329,12 @@ const Permissions = () => {
                             <Button variant="primary" type="submit">
                                 {isEditing ? 'Cập nhật' : 'Thêm mới'}
                             </Button>
-                        </div>
+      </div>
                     </Form>
                 </Modal.Body>
             </Modal>
         </Container>
-    );
+  );
 };
 
 export default Permissions; 

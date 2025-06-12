@@ -9,17 +9,20 @@ function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login, currentUser, isAdmin } = useAuth();
+  const { login, currentUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Kiểm tra nếu đã đăng nhập thì chuyển hướng
   useEffect(() => {
     if (currentUser) {
-      const redirectTo = isAdmin() ? '/admin/dashboard' : '/';
+      console.log('Current user in effect:', currentUser);
+      // Chuyển hướng dựa vào role.id
+      const redirectTo = currentUser.role?.id === 2 ? '/admin/dashboard' : '/';
+      console.log('Redirecting to:', redirectTo);
       navigate(redirectTo, { replace: true });
     }
-  }, [currentUser, isAdmin, navigate]);
+  }, [currentUser, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,16 +36,10 @@ function Login() {
       setLoading(true);
       setError('');
       
-      const userData = await login(username, password);
+      const user = await login(username, password);
+      console.log('Login successful, user:', user);
       
-      // Chuyển hướng dựa vào role ID
-      if (userData.role?.id === 2) { // Admin
-        navigate('/admin/dashboard', { replace: true });
-      } else { // User hoặc role khác
-        // Nếu có intended path thì chuyển đến đó, không thì về trang chủ
-        const intendedPath = location.state?.from || '/';
-        navigate(intendedPath, { replace: true });
-      }
+      // Navigation will be handled by the useEffect above when currentUser is set
     } catch (err) {
       console.error('Login error:', err);
       setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
@@ -65,6 +62,7 @@ function Login() {
               onChange={(e) => setUsername(e.target.value)}
               required
               placeholder="Nhập tên đăng nhập"
+              autoComplete="username"
             />
           </Form.Group>
 
@@ -76,6 +74,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Nhập mật khẩu"
+              autoComplete="current-password"
             />
           </Form.Group>
 
