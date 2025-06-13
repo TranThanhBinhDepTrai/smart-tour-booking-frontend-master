@@ -20,6 +20,12 @@ const BookingManagement = () => {
         COMPLETED: { text: 'Hoàn thành', variant: 'info' }
     };
 
+    const REFUND_STATUS_OPTIONS = {
+        IN_PROCESS: { text: 'Đang xử lý', variant: 'warning' },
+        DONE: { text: 'Đã hoàn tiền', variant: 'success' },
+        REJECTED: { text: 'Từ chối', variant: 'danger' }
+    };
+
     // Get the auth token
     const getAuthHeader = () => {
         const token = localStorage.getItem('token');
@@ -82,8 +88,51 @@ const BookingManagement = () => {
         }
     };
 
+    const handleRefundStatusUpdate = async (bookingId) => {
+        try {
+            setUpdateLoading(true);
+            const response = await axios.put(
+                `http://localhost:8080/api/v1/bookings/${bookingId}/update-refund-status`,
+                { status: "DONE" },  // Gửi status DONE
+                { headers: getAuthHeader() }
+            );
+            
+            if (response.data.statusCode === 200) {
+                // Cập nhật trạng thái hoàn tiền trong danh sách bookings
+                setBookings(bookings.map(booking => {
+                    if (booking.id === bookingId) {
+                        return {
+                            ...booking,
+                            refund: {
+                                ...booking.refund,
+                                ...response.data.data,
+                                status: 'DONE'
+                            }
+                        };
+                    }
+                    return booking;
+                }));
+                alert('Xác nhận hoàn tiền thành công!');
+            }
+        } catch (err) {
+            console.error('Lỗi khi cập nhật trạng thái hoàn tiền:', err);
+            if (err.response?.status === 401) {
+                alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            } else {
+                alert('Không thể cập nhật trạng thái hoàn tiền: ' + (err.response?.data?.message || 'Đã có lỗi xảy ra'));
+            }
+        } finally {
+            setUpdateLoading(false);
+        }
+    };
+
     const getStatusBadge = (status) => {
         const statusInfo = STATUS_OPTIONS[status] || { text: status, variant: 'secondary' };
+        return <Badge bg={statusInfo.variant}>{statusInfo.text}</Badge>;
+    };
+
+    const getRefundStatusBadge = (status) => {
+        const statusInfo = REFUND_STATUS_OPTIONS[status] || { text: status, variant: 'secondary' };
         return <Badge bg={statusInfo.variant}>{statusInfo.text}</Badge>;
     };
 
@@ -157,6 +206,40 @@ const BookingManagement = () => {
         );
     };
 
+    const renderRefundStatusDropdown = (booking) => {
+        // Nếu đơn không phải trạng thái đã hủy, không hiển thị gì cả
+        if (booking.status !== 'CANCELLED') {
+            return 'Không có';
+        }
+
+        // Nếu đã có thông tin hoàn tiền, hiển thị trạng thái
+        if (booking.refund) {
+            return (
+                <div className="d-flex align-items-center">
+                    {getRefundStatusBadge(booking.refund.status)}
+                    {booking.refund.status === 'IN_PROCESS' && (
+                        <Button 
+                            variant="outline-success" 
+                            size="sm"
+                            className="ms-2"
+                            onClick={() => handleRefundStatusUpdate(booking.id)}
+                            disabled={updateLoading}
+                        >
+                            Xác nhận hoàn tiền
+                        </Button>
+                    )}
+                </div>
+            );
+        }
+
+        // Nếu đơn đã hủy nhưng chưa có thông tin hoàn tiền
+        return (
+            <div className="d-flex align-items-center">
+                <Badge bg="secondary">Chưa hoàn tiền</Badge>
+            </div>
+        );
+    };
+
     if (loading) {
         return (
             <Container className="py-4">
@@ -194,6 +277,7 @@ const BookingManagement = () => {
                             <th>Tổng tiền</th>
                             <th>Trạng thái</th>
                             <th>Khuyến mãi</th>
+                            <th>Hoàn tiền</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -224,6 +308,7 @@ const BookingManagement = () => {
                                         'Không có'
                                     )}
                                 </td>
+                                <td>{renderRefundStatusDropdown(booking)}</td>
                                 <td>
                                     <Button 
                                         variant="primary" 

@@ -1,46 +1,52 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
+import TourCategories from '../../components/TourCategories/TourCategories';
 import './Home.css';
 
 const Home = () => {
-  return (
-    <div className="home">
-      <div className="search-section">
-        <div className="search-container">
-          <div className="search-box">
-            <input 
-              type="text" 
-              placeholder="Tìm kiếm tour du lịch, địa điểm..." 
-              className="search-input"
-            />
-            <button className="voice-search">
-              <i className="fas fa-microphone"></i>
-            </button>
-          </div>
-          <div className="filter-buttons">
-            <button className="filter-btn">
-              <i className="fas fa-dollar-sign"></i>
-              Giá
-            </button>
-            <button className="filter-btn">
-              <i className="fas fa-calendar"></i>
-              Ngày Khởi Hành
-            </button>
-            <button className="filter-btn">
-              <i className="fas fa-map-marker-alt"></i>
-              Điểm Đến
-            </button>
-            <button className="filter-btn">
-              <i className="fas fa-star"></i>
-              Đánh Giá
-            </button>
-          </div>
+    return (
+        <div className="home-page">
+            {/* Hero Section with Search */}
+            <div className="hero-section">
+                <div className="hero-content">
+                    <h1>Khám phá những điểm đến tuyệt vời</h1>
+                    <p>Tìm kiếm và đặt tour du lịch dễ dàng</p>
+                    <div className="search-container">
+                        <input 
+                            type="text" 
+                            placeholder="Tìm kiếm tour du lịch, địa điểm..." 
+                            className="search-input"
+                        />
+                        <button className="search-button">
+                            <i className="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div className="search-filters">
+                        <button className="filter-button">
+                            <i className="fas fa-dollar-sign"></i> Giá
+                        </button>
+                        <button className="filter-button">
+                            <i className="fas fa-calendar"></i> Ngày Khởi Hành
+                        </button>
+                        <button className="filter-button">
+                            <i className="fas fa-map-marker-alt"></i> Điểm Đến
+                        </button>
+                        <button className="filter-button">
+                            <i className="fas fa-star"></i> Đánh Giá
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Tour Categories Section */}
+            <section className="tour-categories-section">
+                <Container>
+                    <h2 className="section-title">Khám phá theo chủ đề</h2>
+                    <TourCategories />
+                </Container>
+            </section>
         </div>
-      </div>
-      <div className="featured-tours">
-        {/* Phần nội dung tour sẽ thêm sau */}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Home; 

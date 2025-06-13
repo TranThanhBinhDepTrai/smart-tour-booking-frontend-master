@@ -1,0 +1,226 @@
+/* Tổng thể container */
+.tour-categories-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Danh sách nút danh mục */
+.category-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 320px);
+    gap: 2.5rem;
+    justify-content: center;
+    width: 100%;
+    max-width: 1600px;
+    padding: 0 2rem;
+}
+
+/* Nút danh mục */
+.category-card {
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+    border: 3px solid #e0e0e0;
+    border-radius: 24px;
+    padding: 4rem 2rem;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(0, 186, 148, 0.1));
+    transition: all 0.4s ease;
+    z-index: 0;
+}
+
+.category-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
+}
+
+.category-card:hover::before {
+    height: 100%;
+}
+
+.category-icon {
+    font-size: 6rem;
+    margin-bottom: 2.5rem;
+    color: #007bff;
+    position: relative;
+    z-index: 1;
+    transition: all 0.4s ease;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1);
+    color: #0056b3;
+}
+
+.category-card h4 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #343a40;
+    position: relative;
+    z-index: 1;
+    transition: all 0.4s ease;
+}
+
+.category-card:hover h4 {
+    color: #0056b3;
+}
+
+/* Responsive styles */
+@media (max-width: 1600px) {
+    .category-buttons {
+        grid-template-columns: repeat(4, 280px);
+        gap: 2rem;
+    }
+    
+    .category-card {
+        padding: 3.5rem 1.5rem;
+    }
+    
+    .category-icon {
+        font-size: 5rem;
+    }
+    
+    .category-card h4 {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 1300px) {
+    .category-buttons {
+        grid-template-columns: repeat(2, 320px);
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .tour-categories-container {
+        padding: 2rem 1rem;
+    }
+    
+    .category-buttons {
+        grid-template-columns: repeat(1, 100%);
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .category-card {
+        padding: 3rem 1.5rem;
+    }
+    
+    .category-icon {
+        font-size: 4.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .category-card h4 {
+        font-size: 1.6rem;
+    }
+}
+
+/* Tour Card */
+.tour-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    height: auto; /* Cho phép chiều cao tự động điều chỉnh */
+    min-height: 500px; /* Đặt chiều cao tối thiểu lớn hơn */
+    transition: all 0.3s ease-in-out;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.tour-card .card-img-top {
+    width: 100%;
+    height: 250px; /* Tăng chiều cao ảnh */
+    object-fit: cover;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tour-card .card-body {
+    padding: 2rem; /* Tăng padding */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.tour-card .card-title {
+    font-size: 1.6rem; /* Tăng kích thước tiêu đề */
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    color: #212529;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 3.8rem; /* Đảm bảo đủ chỗ cho 2 dòng */
+    line-height: 1.9rem;
+}
+
+.tour-info {
+    font-size: 1.1rem; /* Tăng kích thước chữ */
+    color: #6c757d;
+    margin-bottom: 1.2rem;
+    flex: 1;
+}
+
+.tour-info p {
+    margin: 0.8rem 0; /* Tăng margin */
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Tăng khoảng cách */
+}
+
+.tour-info i {
+    width: 25px; /* Icon lớn hơn */
+    color: #007bff;
+    font-size: 1.3rem;
+}
+
+.tour-price {
+    font-weight: 800;
+    color: #28a745;
+    font-size: 1.8rem; /* Giá lớn hơn */
+    margin-bottom: 1.8rem;
+}
+
+.btn-detail {
+    width: 100%;
+    padding: 1.2rem; /* Tăng padding */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease-in-out;
+    font-size: 1.25rem; /* Tăng kích thước chữ */
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    letter-spacing: 0.5px;
+}

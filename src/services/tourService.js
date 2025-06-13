@@ -114,5 +114,34 @@ export const tourService = {
         } catch (error) {
             throw error;
         }
+    },
+
+    // Search tours with filters
+    searchTours: async (params) => {
+        try {
+            const config = getAuthConfig();
+            // Format search parameters
+            const searchParams = {
+                pageNo: params.page || 0,
+                pageSize: params.size || 10,
+                category: params.category,
+                available: true
+            };
+
+            console.log('Sending search request with params:', searchParams);
+            console.log('Using config:', config);
+
+            const response = await axios.post(`${API_URL}/tours/search`, searchParams, config);
+            console.log('Search response:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error searching tours:', error);
+            if (error.response) {
+                console.error('Error response data:', error.response.data);
+                console.error('Error response status:', error.response.status);
+                console.error('Error response headers:', error.response.headers);
+            }
+            throw error;
+        }
     }
 }; 
