@@ -34,4 +34,24 @@
 .info-group p {
   margin: 0;
   color: #333;
+}
+
+.profile-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+}
+
+.profile-card .card-header {
+    border-radius: 8px 8px 0 0;
+}
+
+.profile-card label {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.profile-card .fw-bold {
+    font-size: 1rem;
+    color: #2c3e50;
 } 

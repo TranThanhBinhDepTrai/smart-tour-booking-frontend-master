@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { Container, Nav, Navbar, Form, Button, Dropdown } from 'react-bootstrap';
-import { FaHome, FaMapMarkedAlt, FaUsers, FaCheckCircle, FaBullhorn, FaChartLine, FaHeadset, FaUserCircle, FaLock, FaUserShield } from 'react-icons/fa';
+import { FaHome, FaMapMarkedAlt, FaUsers, FaCheckCircle, FaBullhorn, FaChartLine, FaHeadset, FaUserCircle, FaLock, FaUserShield, FaFilePdf, FaFileExcel } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 
 function AdminLayout() {
@@ -23,7 +23,16 @@ function AdminLayout() {
     { icon: <FaUserShield className="me-2" />, label: 'Vai trò', path: '/admin/roles' },
     { icon: <FaCheckCircle className="me-2" />, label: 'Số tour được đặt', path: '/admin/bookings' },
     { icon: <FaBullhorn className="me-2" />, label: 'Khuyến mãi', path: '/admin/promotions' },
-    { icon: <FaChartLine className="me-2" />, label: 'Tổng doanh thu', path: '/admin/revenue' },
+    {
+      icon: <FaChartLine className="me-2" />,
+      label: 'Tổng doanh thu',
+      path: '/admin/revenue',
+      subItems: [
+        { icon: <FaHome className="me-2" />, label: 'Trang chính', path: '/admin/revenue' },
+        { icon: <FaFilePdf className="me-2" />, label: 'Export PDF', path: '/admin/revenue/export-pdf' },
+        { icon: <FaFileExcel className="me-2" />, label: 'Export Excel', path: '/admin/revenue/export-excel' }
+      ]
+    },
     { icon: <FaHeadset className="me-2" />, label: 'Hỗ trợ chờ phản hồi', path: '/admin/support' },
   ];
 
@@ -62,16 +71,34 @@ function AdminLayout() {
           </Form>
           <Nav className="flex-column">
             {menuItems.map((item, index) => (
-              <NavLink
-                key={index}
-                to={item.path}
-                className={({ isActive }) => 
-                  `nav-link py-2 ${isActive ? 'active text-white' : 'text-secondary'}`
-                }
-              >
-                {item.icon}
-                {item.label}
-              </NavLink>
+              <div key={index}>
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) => 
+                    `nav-link py-2 ${isActive ? 'active text-white' : 'text-secondary'}`
+                  }
+                >
+                  {item.icon}
+                  {item.label}
+                </NavLink>
+                {item.subItems && (
+                  <Nav className="flex-column ms-4">
+                    {item.subItems.map((subItem, subIndex) => (
+                      <NavLink
+                        key={subIndex}
+                        to={subItem.path}
+                        className={({ isActive }) => 
+                          `nav-link py-2 ${isActive ? 'active text-white' : 'text-secondary'}`
+                        }
+                        style={{ fontSize: '0.9em' }}
+                      >
+                        {subItem.icon}
+                        {subItem.label}
+                      </NavLink>
+                    ))}
+                  </Nav>
+                )}
+              </div>
             ))}
           </Nav>
         </div>
@@ -116,7 +143,7 @@ function AdminLayout() {
         </Navbar>
 
         {/* Page content */}
-        <div className="p-0">
+        <div className="p-4">
           <Outlet />
         </div>
       </div>

@@ -8,3 +8,7 @@ const routes = [
         role: ['admin']
     },
 ]; 
+
+const canShowCancelButton = (booking) => {
+    return booking.status === 'PENDING' && !booking.refund;
+}; 

@@ -24,8 +24,13 @@ import BookTour from './pages/tours/BookTour';
 import Profile from './pages/profile/Profile';
 import AdminPromotions from './pages/admin/Promotions';
 import Promotions from './pages/Promotions';
+import CheckBooking from './components/CheckBooking/CheckBooking';
+import BookingManagement from './pages/admin/BookingManagement';
+import ExportPDF from './pages/admin/ExportPDF';
+import ExportExcel from './pages/admin/ExportExcel';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Users from './pages/admin/Users';
+import PaymentResult from './pages/payment/PaymentResult';
 import './App.css';
 
 // Protected Route Component
@@ -66,6 +71,7 @@ const router = createBrowserRouter(
         <Route path="tours/:id" element={<TourDetail />} />
         <Route path="tours/:id/book" element={<BookTour />} />
         <Route path="promotions" element={<Promotions />} />
+        <Route path="check-booking" element={<CheckBooking />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={
@@ -90,11 +96,16 @@ const router = createBrowserRouter(
         <Route path="tours/edit/:id" element={<EditTour />} />
         <Route path="permissions" element={<Permissions />} />
         <Route path="roles" element={<RoleManagement />} />
-        <Route path="bookings" element={<Dashboard />} />
+        <Route path="bookings" element={<BookingManagement />} />
         <Route path="promotions" element={<AdminPromotions />} />
         <Route path="revenue" element={<Dashboard />} />
+        <Route path="revenue/export-pdf" element={<ExportPDF />} />
+        <Route path="revenue/export-excel" element={<ExportExcel />} />
         <Route path="support" element={<Dashboard />} />
       </Route>
+
+      {/* Payment Result Route */}
+      <Route path="/payment-result" element={<PaymentResult />} />
 
       {/* Catch all route */}
       <Route path="*" element={<Navigate to="/" replace />} />

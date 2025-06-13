@@ -121,26 +121,36 @@ const BookTour = () => {
         try {
             const bookingData = {
                 tourId: parseInt(id),
-                ...formData
+                adults: parseInt(formData.numAdults),
+                children: parseInt(formData.numChildren || 0),
+                guestName: currentUser ? currentUser.fullName : formData.fullName,
+                guestEmail: currentUser ? currentUser.email : formData.email,
+                guestPhone: currentUser ? currentUser.phone : formData.phone,
+                promotionCode: formData.promotionCode || null,
+                isCashPayment: formData.paymentMethod === 'CASH',
+                participants: formData.participants.map(p => ({
+                    name: p.fullName,
+                    phone: p.phone,
+                    gender: p.gender
+                }))
             };
 
+            // Thêm userId nếu đã đăng nhập
             if (currentUser) {
                 bookingData.userId = currentUser.id;
-                if (formData.promotionCode) {
-                    bookingData.promotionCode = formData.promotionCode;
-                }
             }
 
             console.log('Submitting booking data:', bookingData); // Debug
             const response = await tourService.bookTour(bookingData);
-            if (response.success) {
-                navigate('/bookings');
+            
+            if (response.statusCode === 200) {
+                navigate('/history');
             } else {
                 setError(response.message || 'Có lỗi xảy ra khi đặt tour');
             }
         } catch (err) {
             console.error('Error booking tour:', err);
-            setError('Không thể đặt tour: ' + (err.message || 'Đã có lỗi xảy ra'));
+            setError('Không thể đặt tour: ' + (err.response?.data?.message || 'Đã có lỗi xảy ra'));
         }
     };
 
