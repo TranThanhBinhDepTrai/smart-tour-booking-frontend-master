@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Row, Col, Button, Form } from 'react-bootstrap';
+import { Container, Card, Row, Col, Button, Form, Modal } from 'react-bootstrap';
 import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
@@ -11,6 +11,17 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(null);
     const navigate = useNavigate();
+
+    // State cho modal đổi mật khẩu
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [passwordData, setPasswordData] = useState({
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    });
+
+    // State cho modal xóa tài khoản
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -106,6 +117,41 @@ const Profile = () => {
             const errorMessage = err.response?.data?.message || err.message || 'Không thể cập nhật thông tin tài khoản';
             setError(errorMessage);
             alert('Lỗi: ' + errorMessage);
+        }
+    };
+
+    const handlePasswordChange = async (e) => {
+        e.preventDefault();
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            alert('Mật khẩu mới không khớp!');
+            return;
+        }
+        try {
+            const response = await api.put('/users', {
+                id: userProfile.id,
+                password: passwordData.newPassword
+            });
+            if (response.data) {
+                setShowPasswordModal(false);
+                setPasswordData({
+                    oldPassword: '',
+                    newPassword: '',
+                    confirmPassword: ''
+                });
+                alert('Đổi mật khẩu thành công!');
+            }
+        } catch (err) {
+            alert('Đổi mật khẩu thất bại: ' + (err.response?.data?.message || err.message));
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        try {
+            await api.delete(`/users/${userProfile.id}`);
+            localStorage.removeItem('token');
+            navigate('/login');
+        } catch (err) {
+            alert('Xóa tài khoản thất bại: ' + (err.response?.data?.message || err.message));
         }
     };
 
@@ -251,11 +297,72 @@ const Profile = () => {
                                 <Button variant="primary" onClick={() => setIsEditing(true)}>
                                     Chỉnh sửa thông tin
                                 </Button>
+                                <Button variant="warning" onClick={() => setShowPasswordModal(true)}>
+                                    Đổi mật khẩu
+                                </Button>
+                                <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+                                    Xóa tài khoản
+                                </Button>
                             </div>
                         </>
                     )}
                 </Card.Body>
             </Card>
+
+            {/* Modal đổi mật khẩu */}
+            <Modal show={showPasswordModal} onHide={() => setShowPasswordModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Đổi mật khẩu</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handlePasswordChange}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Mật khẩu mới</Form.Label>
+                            <Form.Control
+                                type="password"
+                                value={passwordData.newPassword}
+                                onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Xác nhận mật khẩu mới</Form.Label>
+                            <Form.Control
+                                type="password"
+                                value={passwordData.confirmPassword}
+                                onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                                required
+                            />
+                        </Form.Group>
+                        <div className="d-flex justify-content-end gap-2">
+                            <Button variant="secondary" onClick={() => setShowPasswordModal(false)}>
+                                Hủy
+                            </Button>
+                            <Button variant="primary" type="submit">
+                                Xác nhận
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+
+            {/* Modal xác nhận xóa tài khoản */}
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Xác nhận xóa tài khoản</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác!</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Hủy
+                    </Button>
+                    <Button variant="danger" onClick={handleDeleteAccount}>
+                        Xác nhận xóa
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
