@@ -17,21 +17,27 @@ const CheckBooking = () => {
         setCancelSuccess(null);
         setLoading(true);
 
+        if (!bookingId.trim()) {
+            setError('Vui lòng nhập mã đơn hàng');
+            setLoading(false);
+            return;
+        }
+
         try {
             const response = await axios.get(`http://localhost:8080/api/v1/bookings/${bookingId}`);
             if (response.data.statusCode === 200) {
                 setBookingData(response.data.data);
             } else {
-                setError('Không tìm thấy thông tin đơn hàng');
+                setError('Không tìm thấy thông tin đơn hàng với mã ' + bookingId);
             }
         } catch (err) {
             console.error('Lỗi khi tìm đơn hàng:', err);
-            if (err.response) {
-                // Nếu server trả về lỗi
-                setError(err.response.data?.message || 'Không thể tìm thấy đơn hàng. Vui lòng kiểm tra lại mã đơn hàng.');
+            if (err.response && err.response.status === 400) {
+                setError(`Không tìm thấy đơn hàng với mã ${bookingId}. Vui lòng kiểm tra lại mã đơn hàng của bạn.`);
+            } else if (err.response) {
+                setError(err.response.data?.message || 'Không thể tìm thấy thông tin đơn hàng. Vui lòng thử lại sau.');
             } else if (err.request) {
-                // Nếu không thể kết nối đến server
-                setError('Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng của bạn.');
+                setError('Không thể kết nối đến hệ thống. Vui lòng kiểm tra kết nối mạng của bạn và thử lại.');
             } else {
                 setError('Có lỗi xảy ra. Vui lòng thử lại sau.');
             }
@@ -150,9 +156,14 @@ const CheckBooking = () => {
             </Card>
 
             {error && (
-                <Alert variant="danger">
-                    <Alert.Heading>Đã xảy ra lỗi!</Alert.Heading>
-                    <p>{error}</p>
+                <Alert variant="warning" className="text-center">
+                    <i className="fas fa-exclamation-circle me-2"></i>
+                    {error}
+                    <div className="mt-2">
+                        <small>
+                            Nếu bạn cần hỗ trợ, vui lòng liên hệ hotline: <strong>1900 8000</strong>
+                        </small>
+                    </div>
                 </Alert>
             )}
 

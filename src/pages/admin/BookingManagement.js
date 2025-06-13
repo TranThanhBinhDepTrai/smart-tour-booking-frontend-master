@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Badge, Button, Pagination } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Pagination, Dropdown } from 'react-bootstrap';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
 import './BookingManagement.css';
 
 const BookingManagement = () => {
@@ -9,7 +10,21 @@ const BookingManagement = () => {
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const [updateLoading, setUpdateLoading] = useState(false);
     const limit = 10;
+
+    const STATUS_OPTIONS = {
+        PENDING: { text: 'Chờ xử lý', variant: 'warning' },
+        CONFIRMED: { text: 'Đã xác nhận', variant: 'success' },
+        CANCELLED: { text: 'Đã hủy', variant: 'danger' },
+        COMPLETED: { text: 'Hoàn thành', variant: 'info' }
+    };
+
+    // Get the auth token
+    const getAuthHeader = () => {
+        const token = localStorage.getItem('token');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    };
 
     useEffect(() => {
         fetchBookings();
@@ -18,28 +33,57 @@ const BookingManagement = () => {
     const fetchBookings = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://localhost:8080/api/v1/bookings/search?page=${currentPage}&limit=${limit}`);
+            const response = await axios.get(
+                `http://localhost:8080/api/v1/bookings/search?page=${currentPage}&limit=${limit}`,
+                { headers: getAuthHeader() }
+            );
             if (response.data.statusCode === 200) {
                 setBookings(response.data.data);
-                // Tạm thời set totalPages là 5, sau này sẽ lấy từ response
                 setTotalPages(5);
             }
         } catch (err) {
             console.error('Lỗi khi tải danh sách đơn đặt tour:', err);
-            setError('Không thể tải danh sách đơn đặt tour');
+            if (err.response?.status === 401) {
+                setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            } else {
+                setError('Không thể tải danh sách đơn đặt tour');
+            }
         } finally {
             setLoading(false);
         }
     };
 
+    const handleStatusUpdate = async (bookingId, newStatus) => {
+        try {
+            setUpdateLoading(true);
+            const response = await axios.put(
+                `http://localhost:8080/api/v1/bookings/${bookingId}/status?status=${newStatus}`,
+                {},  // empty body
+                { headers: getAuthHeader() }
+            );
+            
+            if (response.data.statusCode === 200) {
+                setBookings(bookings.map(booking => 
+                    booking.id === bookingId 
+                        ? { ...booking, status: newStatus }
+                        : booking
+                ));
+                alert('Cập nhật trạng thái thành công!');
+            }
+        } catch (err) {
+            console.error('Lỗi khi cập nhật trạng thái:', err);
+            if (err.response?.status === 401) {
+                alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            } else {
+                alert('Không thể cập nhật trạng thái: ' + (err.response?.data?.message || 'Đã có lỗi xảy ra'));
+            }
+        } finally {
+            setUpdateLoading(false);
+        }
+    };
+
     const getStatusBadge = (status) => {
-        const statusMap = {
-            'PENDING': { text: 'Chờ xử lý', variant: 'warning' },
-            'CONFIRMED': { text: 'Đã xác nhận', variant: 'success' },
-            'CANCELLED': { text: 'Đã hủy', variant: 'danger' },
-            'COMPLETED': { text: 'Hoàn thành', variant: 'info' }
-        };
-        const statusInfo = statusMap[status] || { text: status, variant: 'secondary' };
+        const statusInfo = STATUS_OPTIONS[status] || { text: status, variant: 'secondary' };
         return <Badge bg={statusInfo.variant}>{statusInfo.text}</Badge>;
     };
 
@@ -62,6 +106,55 @@ const BookingManagement = () => {
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+    };
+
+    const renderStatusDropdown = (booking) => {
+        // Determine which status options should be available based on current status
+        const getAvailableStatuses = (currentStatus) => {
+            switch (currentStatus) {
+                case 'PENDING':
+                    return ['CONFIRMED', 'CANCELLED'];
+                case 'CONFIRMED':
+                    return ['COMPLETED', 'CANCELLED'];
+                case 'COMPLETED':
+                case 'CANCELLED':
+                    return []; // No further status changes allowed
+                default:
+                    return Object.keys(STATUS_OPTIONS);
+            }
+        };
+
+        const availableStatuses = getAvailableStatuses(booking.status);
+
+        if (availableStatuses.length === 0) {
+            return getStatusBadge(booking.status);
+        }
+
+        return (
+            <div className="d-flex align-items-center">
+                {getStatusBadge(booking.status)}
+                <Dropdown className="ms-2">
+                    <Dropdown.Toggle 
+                        variant="outline-secondary" 
+                        size="sm"
+                        disabled={updateLoading}
+                    >
+                        Cập nhật
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {availableStatuses.map(status => (
+                            <Dropdown.Item
+                                key={status}
+                                onClick={() => handleStatusUpdate(booking.id, status)}
+                                className={`text-${STATUS_OPTIONS[status].variant}`}
+                            >
+                                {STATUS_OPTIONS[status].text}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
+        );
     };
 
     if (loading) {
@@ -120,7 +213,7 @@ const BookingManagement = () => {
                                 </td>
                                 <td>{booking.bookingAt}</td>
                                 <td>{formatPrice(booking.totalPrice)}</td>
-                                <td>{getStatusBadge(booking.status)}</td>
+                                <td>{renderStatusDropdown(booking)}</td>
                                 <td>
                                     {booking.promotionDto ? (
                                         <>
@@ -140,15 +233,6 @@ const BookingManagement = () => {
                                     >
                                         Chi tiết
                                     </Button>
-                                    {booking.status === 'PENDING' && (
-                                        <Button 
-                                            variant="success" 
-                                            size="sm"
-                                            onClick={() => {/* Xác nhận */}}
-                                        >
-                                            Xác nhận
-                                        </Button>
-                                    )}
                                 </td>
                             </tr>
                         ))}

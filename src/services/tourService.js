@@ -47,47 +47,16 @@ export const tourService = {
             const response = await axios.post(`${API_URL}/bookings/create`, bookingData, config);
             console.log('Booking response:', response.data);
             
-            // Nếu thanh toán qua ngân hàng và đặt tour thành công
-            if (!bookingData.isCashPayment && response.data.statusCode === 200) {
-                // Kiểm tra và log dữ liệu booking
-                const bookingResponse = response.data;
-                console.log('Booking details:', bookingResponse);
-                
-                // Lấy ID từ response
-                const bookingId = bookingResponse.data?.id;
-                // Lấy tổng tiền từ bookingData
-                const amount = bookingData.totalPrice || (bookingData.adults * bookingData.adultPrice + bookingData.children * bookingData.childPrice);
-                
-                if (!bookingId || !amount) {
-                    console.error('Missing booking data:', { bookingId, amount });
-                    throw new Error('Missing required booking data');
+            // Nếu đặt tour thành công
+            if (response.data.statusCode === 200) {
+                // Nếu là thanh toán tiền mặt, trả về response luôn
+                if (bookingData.isCashPayment) {
+                    return response.data;
                 }
                 
-                console.log('Payment params:', { bookingId, amount });
-                
-                // Tạo URL với các tham số được encode đúng cách
-                const params = new URLSearchParams({
-                    bookingId: bookingId.toString(), // Đảm bảo chuyển sang string
-                    amount: Math.round(amount).toString(), // Làm tròn và chuyển sang string
-                    orderInfo: `Thanh toan tour booking ${bookingId}`,
-                    returnUrl: 'http://localhost:3000/payment-result'
-                }).toString();
-                
-                console.log('Payment URL:', `${API_URL}/bookings/vnpay-payment?${params}`);
-                
-                // Gọi API tạo URL thanh toán VNPay
-                const paymentResponse = await axios.get(
-                    `${API_URL}/bookings/vnpay-payment?${params}`,
-                    config
-                );
-                
-                console.log('Payment response:', paymentResponse.data);
-                
-                // Chuyển hướng đến trang thanh toán VNPay
-                if (paymentResponse.data.paymentUrl) {
-                    window.location.href = paymentResponse.data.paymentUrl;
-                } else {
-                    throw new Error('No payment URL received from VNPay');
+                // Nếu response đã có vnPayUrl, trả về luôn
+                if (response.data.data?.vnPayUrl) {
+                    return response.data;
                 }
             }
             

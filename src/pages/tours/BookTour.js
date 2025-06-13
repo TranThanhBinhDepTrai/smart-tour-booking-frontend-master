@@ -119,15 +119,18 @@ const BookTour = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Validate số lượng người tham gia
+            const totalParticipants = parseInt(formData.numAdults) + parseInt(formData.numChildren || 0);
+            if (formData.participants.length !== totalParticipants) {
+                setError('Số lượng người tham gia không khớp với thông tin đã nhập');
+                return;
+            }
+
             const bookingData = {
                 tourId: parseInt(id),
                 adults: parseInt(formData.numAdults),
                 children: parseInt(formData.numChildren || 0),
-                guestName: currentUser ? currentUser.fullName : formData.fullName,
-                guestEmail: currentUser ? currentUser.email : formData.email,
-                guestPhone: currentUser ? currentUser.phone : formData.phone,
                 promotionCode: formData.promotionCode || null,
-                isCashPayment: formData.paymentMethod === 'CASH',
                 participants: formData.participants.map(p => ({
                     name: p.fullName,
                     phone: p.phone,
@@ -135,16 +138,34 @@ const BookTour = () => {
                 }))
             };
 
-            // Thêm userId nếu đã đăng nhập
+            // Nếu user đã đăng nhập, thêm userId
             if (currentUser) {
                 bookingData.userId = currentUser.id;
+            } else {
+                // Nếu chưa đăng nhập, thêm thông tin khách
+                bookingData.guestName = formData.fullName;
+                bookingData.guestEmail = formData.email;
+                bookingData.guestPhone = formData.phone;
             }
 
-            console.log('Submitting booking data:', bookingData); // Debug
+            // Chỉ thêm isCashPayment khi thanh toán tiền mặt
+            if (formData.paymentMethod === 'CASH') {
+                bookingData.isCashPayment = true;
+            }
+
+            console.log('Submitting booking data:', bookingData);
             const response = await tourService.bookTour(bookingData);
+            console.log('Booking response:', response);
             
             if (response.statusCode === 200) {
-                navigate('/history');
+                if (response.data.vnPayUrl) {
+                    // Nếu có URL VNPay, chuyển hướng đến trang thanh toán
+                    window.location.href = response.data.vnPayUrl;
+                } else {
+                    // Nếu thanh toán tiền mặt, chuyển đến trang lịch sử
+                    alert('Đặt tour thành công!');
+                    navigate('/history');
+                }
             } else {
                 setError(response.message || 'Có lỗi xảy ra khi đặt tour');
             }
@@ -152,6 +173,23 @@ const BookTour = () => {
             console.error('Error booking tour:', err);
             setError('Không thể đặt tour: ' + (err.response?.data?.message || 'Đã có lỗi xảy ra'));
         }
+    };
+
+    const handleAddParticipant = () => {
+        setFormData(prev => ({
+            ...prev,
+            participants: [
+                ...prev.participants,
+                { fullName: '', phone: '', gender: 'MALE' }
+            ]
+        }));
+    };
+
+    const handleRemoveParticipant = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            participants: prev.participants.filter((_, i) => i !== index)
+        }));
     };
 
     if (loading) {
@@ -252,10 +290,30 @@ const BookTour = () => {
                                     </section>
 
                                     <section className="booking-section">
-                                        <h3>Thông tin người tham gia</h3>
+                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                            <h3>Thông tin người tham gia</h3>
+                                            <Button 
+                                                variant="outline-primary" 
+                                                onClick={handleAddParticipant}
+                                                className="d-flex align-items-center"
+                                            >
+                                                <i className="fas fa-plus me-1"></i> Thêm người
+                                            </Button>
+                                        </div>
                                         {formData.participants.map((participant, index) => (
                                             <div key={index} className="participant-section">
-                                                <h4>Người thứ {index + 1}</h4>
+                                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                                    <h4>Người thứ {index + 1}</h4>
+                                                    {index > 0 && (
+                                                        <Button 
+                                                            variant="outline-danger" 
+                                                            size="sm"
+                                                            onClick={() => handleRemoveParticipant(index)}
+                                                        >
+                                                            <i className="fas fa-times"></i>
+                                                        </Button>
+                                                    )}
+                                                </div>
                                                 <Row>
                                                     <Col md={6}>
                                                         <Form.Group className="mb-3">

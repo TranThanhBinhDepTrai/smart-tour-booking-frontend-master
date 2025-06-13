@@ -31,6 +31,8 @@ import ExportExcel from './pages/admin/ExportExcel';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Users from './pages/admin/Users';
 import PaymentResult from './pages/payment/PaymentResult';
+import History from './pages/history/History';
+import Contact from './pages/contact/Contact';
 import './App.css';
 
 // Protected Route Component
@@ -72,11 +74,17 @@ const router = createBrowserRouter(
         <Route path="tours/:id/book" element={<BookTour />} />
         <Route path="promotions" element={<Promotions />} />
         <Route path="check-booking" element={<CheckBooking />} />
+        <Route path="contact" element={<Contact />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="history" element={
+          <ProtectedRoute>
+            <History />
           </ProtectedRoute>
         } />
       </Route>
