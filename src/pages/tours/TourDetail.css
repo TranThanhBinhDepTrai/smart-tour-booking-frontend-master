@@ -201,17 +201,21 @@
 
 /* Booking card styles */
 .booking-card {
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: sticky;
-  top: 32px;
+  top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  border: none;
 }
 
 .booking-card h3 {
-  color: #2c3e50;
-  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.booking-card .text-danger {
+  font-weight: 700;
 }
 
 .booking-info {
@@ -307,4 +311,87 @@
 
 .back-button:hover {
   background: #2471a3;
+}
+
+/* Thêm CSS cho phần tour liên quan */
+.related-tours {
+    border-top: 1px solid #e9ecef;
+    padding-top: 20px;
+}
+
+.related-tours h4 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.related-tours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.related-tour-card {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.related-tour-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.related-tour-image {
+    height: 120px;
+    overflow: hidden;
+}
+
+.related-tour-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.related-tour-card:hover .related-tour-img {
+    transform: scale(1.05);
+}
+
+.related-tour-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    height: 2.4rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .booking-card {
+        position: static;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Carousel styling */
+.carousel-control-prev, .carousel-control-next {
+    width: 5%;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.carousel-indicators {
+    margin-bottom: 0.5rem;
+}
+
+.carousel-indicators button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
 } 

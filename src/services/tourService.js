@@ -37,6 +37,80 @@ export const tourService = {
         }
     },
 
+    // Lấy các tour gợi ý liên quan
+    getRelatedTours: async (tourId) => {
+        try {
+            // Sử dụng API giả để test
+            // Trong thực tế, bạn cần sửa API backend để hỗ trợ CORS
+            // Đây là giải pháp tạm thời để demo
+            // const response = await axios.get(`http://localhost:5000/api/tour-recommendations?tour_id=${tourId}`);
+            
+            // Giả lập response để test
+            const mockResponse = {
+                related_tours: [18, 23, 26]
+            };
+            return mockResponse;
+        } catch (error) {
+            console.error("Error fetching related tours:", error);
+            // Trả về mảng rỗng nếu có lỗi
+            return { related_tours: [] };
+        }
+    },
+    
+    // Lấy gợi ý tour cho người dùng
+    getUserRecommendations: async (userId) => {
+        try {
+            console.log(`Fetching recommendations for user ${userId}`);
+            
+            // Thử gọi API gợi ý tour
+            try {
+                const response = await axios.get(`http://localhost:5000/api/user-recommendations?user_id=${userId}`);
+                console.log('Recommendations API response:', response.data);
+                return response.data;
+            } catch (apiError) {
+                console.error("Error calling recommendations API:", apiError);
+                console.log("Using fallback recommendations");
+                
+                // Nếu API không hoạt động, sử dụng danh sách ID cố định
+                return {
+                    recommended_tours: [18, 23, 30, 31, 26, 32]
+                };
+            }
+        } catch (error) {
+            console.error("Error in getUserRecommendations:", error);
+            // Trả về mảng rỗng nếu có lỗi
+            return { recommended_tours: [] };
+        }
+    },
+    
+    // Lấy thông tin nhiều tour theo danh sách ID
+    getMultipleTours: async (tourIds) => {
+        try {
+            if (!tourIds || tourIds.length === 0) return [];
+            
+            console.log('Fetching multiple tours with IDs:', tourIds);
+            
+            // Sử dụng API thực tế để lấy thông tin tour
+            const tourPromises = tourIds.map(id => 
+                axios.get(`${API_URL}/tours/${id}`)
+                    .then(response => {
+                        console.log(`Tour ${id} data:`, response.data);
+                        return response.data.data;
+                    })
+                    .catch(error => {
+                        console.error(`Error fetching tour ${id}:`, error);
+                        return null;
+                    })
+            );
+            
+            const tours = await Promise.all(tourPromises);
+            return tours.filter(tour => tour !== null); // Lọc bỏ các tour null (lỗi)
+        } catch (error) {
+            console.error("Error fetching multiple tours:", error);
+            return [];
+        }
+    },
+
     // Đặt tour
     bookTour: async (bookingData) => {
         try {

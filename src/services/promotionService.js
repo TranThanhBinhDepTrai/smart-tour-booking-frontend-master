@@ -66,6 +66,17 @@ export const promotionService = {
         }
     },
 
+    // Kiểm tra mã giảm giá có hợp lệ không
+    validatePromotionCode: async (code) => {
+        try {
+            const response = await axios.get(`${API_URL}/promotions/validate/${code}`);
+            return response.data;
+        } catch (error) {
+            console.error('Error validating promotion code:', error);
+            throw error.response?.data || { message: error.message };
+        }
+    },
+
     sendPromotionEmails: async (promotionCode, emails) => {
         try {
             const response = await axios.post(

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Form, Button, Card, Row, Col, Alert } from 'react-bootstrap';
+import { Container, Form, Button, Card, Row, Col, Alert, InputGroup } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import { tourService } from '../../services/tourService';
 import { promotionService } from '../../services/promotionService';
@@ -13,8 +13,11 @@ const BookTour = () => {
     const [tour, setTour] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [promotions, setPromotions] = useState([]);
-    const [promotionError, setPromotionError] = useState('');
+    const [promotionCode, setPromotionCode] = useState('');
+    const [promotionStatus, setPromotionStatus] = useState(''); // 'success', 'error', ''
+    const [promotionMessage, setPromotionMessage] = useState('');
+    const [checkingPromotion, setCheckingPromotion] = useState(false);
+    const [appliedDiscount, setAppliedDiscount] = useState(0); // Lưu % giảm giá
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -22,7 +25,6 @@ const BookTour = () => {
         numAdults: 1,
         numChildren: 0,
         paymentMethod: 'CASH',
-        promotionCode: '',
         participants: [{ fullName: '', phone: '', gender: 'MALE' }]
     });
 
@@ -42,7 +44,6 @@ const BookTour = () => {
                     gender: currentUser.gender || 'MALE'
                 }]
             }));
-            loadPromotions();
         }
     }, [id, currentUser]);
 
@@ -58,22 +59,6 @@ const BookTour = () => {
             setError('Không thể tải thông tin tour');
         } finally {
             setLoading(false);
-        }
-    };
-
-    const loadPromotions = async () => {
-        try {
-            console.log('Loading promotions...'); // Debug
-            const response = await promotionService.getAllPromotions();
-            console.log('Promotions response:', response); // Debug
-            if (response?.data) {
-                // Chỉ lấy các khuyến mãi đang active
-                const activePromotions = response.data.filter(p => p.active === true);
-                setPromotions(activePromotions);
-            }
-        } catch (err) {
-            console.error('Error loading promotions:', err);
-            setPromotionError('Không thể tải danh sách mã giảm giá');
         }
     };
 
@@ -108,12 +93,71 @@ const BookTour = () => {
                 [name]: value,
                 participants: newParticipants
             });
+        } else if (name === 'promotionCode') {
+            setPromotionCode(value);
+            // Reset promotion status when user types
+            if (promotionStatus) {
+                setPromotionStatus('');
+                setPromotionMessage('');
+                setAppliedDiscount(0); // Reset discount when user changes promotion code
+            }
         } else {
             setFormData({
                 ...formData,
                 [name]: value
             });
         }
+    };
+
+    const validatePromotionCode = async () => {
+        if (!promotionCode.trim()) {
+            setPromotionStatus('error');
+            setPromotionMessage('Vui lòng nhập mã giảm giá');
+            return;
+        }
+
+        setCheckingPromotion(true);
+        setPromotionStatus('');
+        setPromotionMessage('Đang kiểm tra mã...');
+
+        try {
+            // Kiểm tra mã giảm giá từ danh sách có sẵn
+            const allPromotions = await promotionService.getAllPromotions();
+            console.log('All promotions:', allPromotions);
+            
+            const foundPromotion = allPromotions.data.find(
+                promo => promo.code === promotionCode && promo.active === true
+            );
+            
+            if (foundPromotion) {
+                setPromotionStatus('success');
+                setPromotionMessage(`Áp dụng mã giảm giá thành công! Giảm ${foundPromotion.discountPercent}%`);
+                setAppliedDiscount(foundPromotion.discountPercent); // Lưu % giảm giá
+            } else {
+                setPromotionStatus('error');
+                setPromotionMessage('Mã giảm giá không hợp lệ hoặc đã hết hạn');
+                // Xóa mã giảm giá không hợp lệ
+                setPromotionCode('');
+                setAppliedDiscount(0); // Reset discount
+            }
+        } catch (error) {
+            console.error('Error validating promotion code:', error);
+            setPromotionStatus('error');
+            setPromotionMessage('Lỗi khi kiểm tra mã giảm giá');
+            // Xóa mã giảm giá khi có lỗi
+            setPromotionCode('');
+            setAppliedDiscount(0); // Reset discount
+        } finally {
+            setCheckingPromotion(false);
+        }
+    };
+
+    // Hàm để xóa mã giảm giá
+    const clearPromotionCode = () => {
+        setPromotionCode('');
+        setPromotionStatus('');
+        setPromotionMessage('');
+        setAppliedDiscount(0); // Reset discount when clearing promotion
     };
 
     const handleSubmit = async (e) => {
@@ -130,14 +174,21 @@ const BookTour = () => {
                 tourId: parseInt(id),
                 adults: parseInt(formData.numAdults),
                 children: parseInt(formData.numChildren || 0),
-                promotionCode: formData.promotionCode || null,
                 participants: formData.participants.map(p => ({
                     name: p.fullName,
                     phone: p.phone,
                     gender: p.gender
                 }))
             };
-
+            
+            // Chỉ thêm mã giảm giá nếu đã xác thực thành công
+            if (promotionStatus === 'success' && promotionCode && promotionCode.trim() !== '') {
+                console.log('Adding validated promotion code:', promotionCode);
+                bookingData.promotionCode = promotionCode.trim();
+            } else {
+                console.log('No promotion code added');
+            }
+            
             // Nếu user đã đăng nhập, thêm userId
             if (currentUser) {
                 bookingData.userId = currentUser.id;
@@ -153,7 +204,7 @@ const BookTour = () => {
                 bookingData.isCashPayment = true;
             }
 
-            console.log('Submitting booking data:', bookingData);
+            console.log('Final booking data to be sent:', JSON.stringify(bookingData));
             const response = await tourService.bookTour(bookingData);
             console.log('Booking response:', response);
             
@@ -190,6 +241,29 @@ const BookTour = () => {
             ...prev,
             participants: prev.participants.filter((_, i) => i !== index)
         }));
+    };
+
+    // Tính tổng tiền
+    const calculateTotalPrice = () => {
+        if (!tour) return 0;
+        
+        const basePrice = (formData.numAdults * tour.priceAdults) + (formData.numChildren * tour.priceChildren);
+        
+        // Áp dụng giảm giá nếu có
+        if (promotionStatus === 'success' && appliedDiscount > 0) {
+            const discountAmount = (basePrice * appliedDiscount) / 100;
+            return basePrice - discountAmount;
+        }
+        
+        return basePrice;
+    };
+
+    // Tính số tiền được giảm
+    const calculateDiscountAmount = () => {
+        if (!tour || promotionStatus !== 'success' || appliedDiscount <= 0) return 0;
+        
+        const basePrice = (formData.numAdults * tour.priceAdults) + (formData.numChildren * tour.priceChildren);
+        return (basePrice * appliedDiscount) / 100;
     };
 
     if (loading) {
@@ -392,21 +466,45 @@ const BookTour = () => {
                                     <section className="booking-section">
                                         <h3>Mã giảm giá</h3>
                                         <Form.Group className="mb-3">
-                                            <Form.Select
-                                                name="promotionCode"
-                                                value={formData.promotionCode}
-                                                onChange={handleInputChange}
-                                            >
-                                                <option value="">Chọn mã giảm giá</option>
-                                                {promotions.map((promotion) => (
-                                                    <option key={promotion.id} value={promotion.code}>
-                                                        {promotion.code} - Giảm {promotion.discountPercent}% - {promotion.description}
-                                                    </option>
-                                                ))}
-                                            </Form.Select>
-                                            {promotionError && (
-                                                <Form.Text className="text-danger">
-                                                    {promotionError}
+                                            <InputGroup>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="promotionCode"
+                                                    value={promotionCode}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Nhập mã giảm giá (nếu có)"
+                                                    isValid={promotionStatus === 'success'}
+                                                    isInvalid={promotionStatus === 'error'}
+                                                    disabled={promotionStatus === 'success'}
+                                                />
+                                                {promotionStatus === 'success' ? (
+                                                    <Button 
+                                                        variant="outline-danger" 
+                                                        onClick={clearPromotionCode}
+                                                    >
+                                                        Xóa
+                                                    </Button>
+                                                ) : (
+                                                    <Button 
+                                                        variant="outline-primary" 
+                                                        onClick={validatePromotionCode}
+                                                        disabled={checkingPromotion || !promotionCode.trim()}
+                                                    >
+                                                        {checkingPromotion ? 'Đang kiểm tra...' : 'Áp dụng'}
+                                                    </Button>
+                                                )}
+                                            </InputGroup>
+                                            {promotionMessage && (
+                                                <Form.Text 
+                                                    className={
+                                                        promotionStatus === 'success' 
+                                                            ? 'text-success' 
+                                                            : promotionStatus === 'error' 
+                                                                ? 'text-danger' 
+                                                                : ''
+                                                    }
+                                                >
+                                                    {promotionMessage}
                                                 </Form.Text>
                                             )}
                                         </Form.Group>
@@ -423,7 +521,7 @@ const BookTour = () => {
                     </Col>
 
                     <Col md={4}>
-                        <Card className="sticky-top" style={{ top: '20px' }}>
+                        <Card>
                             <Card.Body>
                                 <h5 className="mb-3">Thông tin tour</h5>
                                 <p><strong>Tên tour:</strong> {tour.title}</p>
@@ -436,7 +534,37 @@ const BookTour = () => {
                                 <p><strong>Giá người lớn:</strong> {tour.priceAdults?.toLocaleString('vi-VN')} VNĐ</p>
                                 <p><strong>Giá trẻ em:</strong> {tour.priceChildren?.toLocaleString('vi-VN')} VNĐ</p>
                                 <hr />
-                                <p><strong>Tổng tiền:</strong> {((formData.numAdults * tour.priceAdults) + (formData.numChildren * tour.priceChildren))?.toLocaleString('vi-VN')} VNĐ</p>
+                                
+                                {/* Hiển thị thông tin giá và giảm giá */}
+                                <div className="price-summary">
+                                    <div className="d-flex justify-content-between">
+                                        <p><strong>Tạm tính:</strong></p>
+                                        <p>
+                                            {((formData.numAdults * tour.priceAdults) + (formData.numChildren * tour.priceChildren)).toLocaleString('vi-VN')} VNĐ
+                                        </p>
+                                    </div>
+                                    
+                                    {promotionStatus === 'success' && appliedDiscount > 0 && (
+                                        <div className="d-flex justify-content-between text-success">
+                                            <p><strong>Giảm giá ({appliedDiscount}%):</strong></p>
+                                            <p>- {calculateDiscountAmount().toLocaleString('vi-VN')} VNĐ</p>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="d-flex justify-content-between mt-2">
+                                        <p><strong>Tổng tiền:</strong></p>
+                                        <p className="text-danger fw-bold fs-5">{calculateTotalPrice().toLocaleString('vi-VN')} VNĐ</p>
+                                    </div>
+                                </div>
+                                
+                                {promotionStatus === 'success' && promotionCode && (
+                                    <div className="promotion-applied mt-2 p-2 bg-light rounded">
+                                        <small className="text-success">
+                                            <i className="fas fa-check-circle me-1"></i>
+                                            Đã áp dụng mã giảm giá: {promotionCode}
+                                        </small>
+                                    </div>
+                                )}
                             </Card.Body>
                         </Card>
                     </Col>

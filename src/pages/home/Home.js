@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
 import TourCategories from '../../components/TourCategories/TourCategories';
+import RecommendedTours from '../../components/RecommendedTours/RecommendedTours';
 import './Home.css';
 
 const Home = () => {
@@ -37,6 +38,9 @@ const Home = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Recommended Tours Section - Only visible for logged in users */}
+            <RecommendedTours />
 
             {/* Tour Categories Section */}
             <section className="tour-categories-section">
