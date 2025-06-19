@@ -1,4 +1,6 @@
 import Users from '../pages/admin/Users';
+import CustomTour from '../components/CustomTour/CustomTour';
+import CustomTourPage from '../pages/custom-tour/CustomTourPage';
 
 const routes = [
     {
@@ -6,6 +8,10 @@ const routes = [
         component: Users,
         layout: AdminLayout,
         role: ['admin']
+    },
+    {
+        path: '/custom-tour',
+        element: <CustomTourPage />
     },
 ]; 
 

@@ -1,40 +1,57 @@
 .navbar {
-    background: #333333 !important;
+    background-color: #1a1a1a !important;
     padding: 0.5rem 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .navbar-brand {
-    color: white !important;
-    font-size: 1.5rem;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    transition: all 0.3s ease;
-    color: #0056b3;
+    display: flex;
+    align-items: center;
 }
 
-.navbar-brand:hover {
-    transform: translateY(-2px);
-    color: rgba(255, 255, 255, 0.9) !important;
+.brand-name {
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.company-text {
+    color: #00bcd4;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .nav-link {
-    color: #333;
-    font-weight: 500;
+    color: #fff !important;
+    font-size: 14px;
     padding: 0.5rem 1rem !important;
-    transition: color 0.2s;
+    transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-    color: #0056b3;
+    color: #00bcd4 !important;
 }
 
 .navbar-toggler {
-    border-color: rgba(255, 255, 255, 0.5) !important;
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+.navbar-dark .navbar-toggler-icon {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Căn giữa menu items */
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Spacing cho menu items */
+.px-3 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
 }
 
 .user-name {

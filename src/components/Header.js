@@ -71,6 +71,7 @@ function Header() {
               <>
                 <Nav.Link as={Link} to="/" className={location.pathname === '/' ? 'active' : ''}>Trang chủ</Nav.Link>
                 <Nav.Link as={Link} to="/tours" className={location.pathname.includes('/tours') ? 'active' : ''}>Tour du lịch</Nav.Link>
+                <Nav.Link as={Link} to="/custom-tour" className={location.pathname.includes('/custom-tour') ? 'active' : ''}>Tour theo yêu cầu</Nav.Link>
                 <Nav.Link as={Link} to="/promotions" className={location.pathname.includes('/promotions') ? 'active' : ''}>Khuyến mãi</Nav.Link>
                 <Nav.Link as={Link} to="/check-booking" className={location.pathname.includes('/check-booking') ? 'active' : ''}>Kiểm tra đơn hàng</Nav.Link>
                 <Nav.Link as={Link} to="/contact" className={location.pathname.includes('/contact') ? 'active' : ''}>Liên hệ</Nav.Link>

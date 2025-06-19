@@ -1,0 +1,198 @@
+.custom-tour-page {
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+.custom-tour-header {
+  background: linear-gradient(135deg, #0062cc, #0097a7);
+  color: white;
+  padding: 60px 0;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.custom-tour-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.custom-tour-header p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0.9;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.card-body {
+  padding: 25px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.counter-section h5, .special-requests h5 {
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 15px;
+}
+
+.counter-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.counter-controls {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.counter-value {
+  font-size: 1.1rem;
+  font-weight: 500;
+  width: 40px;
+  text-align: center;
+}
+
+.counter-controls button {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+button[type="submit"] {
+  background-color: #0062cc;
+  border-color: #0062cc;
+  padding: 10px 30px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border-radius: 5px;
+}
+
+button[type="submit"]:hover, 
+button[type="submit"]:focus {
+  background-color: #004c9e;
+  border-color: #004c9e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-check-input:checked {
+  background-color: #0062cc;
+  border-color: #0062cc;
+}
+
+.form-select:focus,
+.form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+@media (max-width: 768px) {
+  .custom-tour-header {
+    padding: 40px 0;
+  }
+  
+  .custom-tour-header h1 {
+    font-size: 2rem;
+  }
+  
+  .card-body {
+    padding: 20px 15px;
+  }
+}
+
+.custom-tour-page .hero-section {
+    background: linear-gradient(135deg, #0061f2 0%, #00bcd4 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.custom-tour-page .hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.custom-tour-page .hero-section p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.custom-tour-page .info-section {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    height: 100%;
+}
+
+.custom-tour-page .info-section h2 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.custom-tour-page .info-section ul {
+    padding-left: 1.2rem;
+}
+
+.custom-tour-page .info-section li {
+    margin-bottom: 1rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.custom-tour-page .form-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.custom-tour-page .form-section h3 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.custom-tour-page .form-control {
+    padding: 0.75rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.custom-tour-page .btn-primary {
+    background: linear-gradient(135deg, #0061f2 0%, #00bcd4 100%);
+    border: none;
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.2s;
+}
+
+.custom-tour-page .btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.custom-tour-page .alert {
+    border-radius: 5px;
+    padding: 1rem;
+} 

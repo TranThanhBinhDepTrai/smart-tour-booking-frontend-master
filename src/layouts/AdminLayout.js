@@ -17,12 +17,12 @@ function AdminLayout() {
 
   const menuItems = [
     { icon: <FaHome className="me-2" />, label: 'Trang chính', path: '/admin' },
-    { icon: <FaMapMarkedAlt className="me-2" />, label: 'Số tour đang hoạt động', path: '/admin/tours' },
+    { icon: <FaMapMarkedAlt className="me-2" />, label: 'Quản lý tour', path: '/admin/tours' },
     { icon: <FaUsers className="me-2" />, label: 'Số người dùng', path: '/admin/users' },
     { icon: <FaLock className="me-2" />, label: 'Phân quyền', path: '/admin/permissions' },
     { icon: <FaUserShield className="me-2" />, label: 'Vai trò', path: '/admin/roles' },
-    { icon: <FaCheckCircle className="me-2" />, label: 'Số tour được đặt', path: '/admin/bookings' },
-    { icon: <FaBullhorn className="me-2" />, label: 'Khuyến mãi', path: '/admin/promotions' },
+    { icon: <FaCheckCircle className="me-2" />, label: 'Quản lý đơn đặt tour', path: '/admin/bookings' },
+    { icon: <FaBullhorn className="me-2" />, label: 'Quản lý khuyến mãi', path: '/admin/promotions' },
     {
       icon: <FaChartLine className="me-2" />,
       label: 'Tổng doanh thu',
@@ -33,7 +33,7 @@ function AdminLayout() {
         { icon: <FaFileExcel className="me-2" />, label: 'Export Excel', path: '/admin/revenue/export-excel' }
       ]
     },
-    { icon: <FaHeadset className="me-2" />, label: 'Hỗ trợ chờ phản hồi', path: '/admin/support' },
+    { icon: <FaHeadset className="me-2" />, label: 'Quản lý tour theo yêu cầu', path: '/admin/support' },
   ];
 
   const handleLogout = () => {

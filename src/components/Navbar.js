@@ -1,70 +1,40 @@
 import React from 'react';
-import { Navbar as BootstrapNavbar, Nav, Container, NavDropdown } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import { authService } from '../services/api';
+import { Link } from 'react-router-dom';
+import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap';
 import './Navbar.css';
 
 const Navbar = () => {
-    const navigate = useNavigate();
-    const currentUser = authService.getCurrentUser();
-    const currentAdmin = authService.getCurrentAdmin();
-    const user = currentAdmin || currentUser;
-
-    const handleLogout = () => {
-        authService.logout();
-        navigate('/login');
-    };
-
     return (
-        <BootstrapNavbar expand="lg" className="bg-white shadow-sm">
+        <BootstrapNavbar bg="dark" variant="dark" expand="lg" className="navbar">
             <Container>
-                <BootstrapNavbar.Brand as={Link} to="/">
-                    Smart Tour Booking
+                <BootstrapNavbar.Brand as={Link} to="/" className="d-flex align-items-center">
+                    <img
+                        src="/logo.png"
+                        width="40"
+                        height="40"
+                        className="d-inline-block align-top"
+                        alt="Tour Thông Minh"
+                    />
+                    <div className="ms-2">
+                        <div className="brand-name">TOUR THÔNG MINH</div>
+                        <div className="company-text">CÔNG TY</div>
+                    </div>
                 </BootstrapNavbar.Brand>
                 <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
                 <BootstrapNavbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
-                        <Nav.Link as={Link} to="/">Trang chủ</Nav.Link>
-                        <Nav.Link as={Link} to="/tours">Tours</Nav.Link>
-                        <Nav.Link as={Link} to="/promotions">Khuyến mãi</Nav.Link>
-                        <Nav.Link as={Link} to="/about">Giới thiệu</Nav.Link>
-                        <Nav.Link as={Link} to="/contact">Liên hệ</Nav.Link>
+                    <Nav className="mx-auto">
+                        <Nav.Link as={Link} to="/" className="px-3">Trang chủ</Nav.Link>
+                        <Nav.Link as={Link} to="/tours" className="px-3">Tour du lịch</Nav.Link>
+                        <Nav.Link as={Link} to="/custom-tour" className="px-3">Tour theo yêu cầu</Nav.Link>
+                        <Nav.Link as={Link} to="/promotions" className="px-3">Khuyến mãi</Nav.Link>
+                        <Nav.Link as={Link} to="/check-booking" className="px-3">Kiểm tra đơn hàng</Nav.Link>
+                        <Nav.Link as={Link} to="/contact" className="px-3">Liên hệ</Nav.Link>
+                        <Nav.Link as={Link} to="/history" className="px-3">Lịch sử</Nav.Link>
                     </Nav>
                     <Nav>
-                        {user ? (
-                            <NavDropdown 
-                                title={
-                                    <span className="user-name">
-                                        {user.fullName || user.username}
-                                    </span>
-                                } 
-                                id="user-nav-dropdown"
-                            >
-                                <NavDropdown.Item as={Link} to="/profile">
-                                    Thông tin tài khoản
-                                </NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/my-bookings">
-                                    Đơn đặt tour
-                                </NavDropdown.Item>
-                                {currentAdmin && (
-                                    <>
-                                        <NavDropdown.Divider />
-                                        <NavDropdown.Item as={Link} to="/admin/dashboard">
-                                            Quản lý hệ thống
-                                        </NavDropdown.Item>
-                                    </>
-                                )}
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item onClick={handleLogout}>
-                                    Đăng xuất
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        ) : (
-                            <>
-                                <Nav.Link as={Link} to="/login">Đăng nhập</Nav.Link>
-                                <Nav.Link as={Link} to="/register">Đăng ký</Nav.Link>
-                            </>
-                        )}
+                        <Nav.Link as={Link} to="/admin" className="px-3">Trang quản trị</Nav.Link>
+                        <Nav.Link as={Link} to="/profile" className="px-3">Tài khoản</Nav.Link>
+                        <Nav.Link as={Link} to="/logout" className="px-3">Đăng xuất</Nav.Link>
                     </Nav>
                 </BootstrapNavbar.Collapse>
             </Container>

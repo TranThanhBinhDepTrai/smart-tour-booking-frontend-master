@@ -217,5 +217,14 @@ export const tourService = {
             }
             throw error;
         }
+    },
+
+    createCustomTour: async (customTourData) => {
+        try {
+            const response = await axios.post(`${API_URL}/tour/custom`, customTourData);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     }
 }; 

@@ -21,6 +21,7 @@ import RoleManagement from './pages/RoleManagement';
 import Tour from './pages/tours/Tour';
 import TourDetail from './pages/tours/TourDetail';
 import BookTour from './pages/tours/BookTour';
+import CustomTourPage from './pages/custom-tour/CustomTourPage';
 import Profile from './pages/profile/Profile';
 import AdminPromotions from './pages/admin/Promotions';
 import Promotions from './pages/Promotions';
@@ -28,6 +29,7 @@ import CheckBooking from './components/CheckBooking/CheckBooking';
 import BookingManagement from './pages/admin/BookingManagement';
 import ExportPDF from './pages/admin/ExportPDF';
 import ExportExcel from './pages/admin/ExportExcel';
+import CustomTourManagement from './pages/admin/CustomTourManagement';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Users from './pages/admin/Users';
 import PaymentResult from './pages/payment/PaymentResult';
@@ -72,6 +74,7 @@ const router = createBrowserRouter(
         <Route path="tours" element={<Tour />} />
         <Route path="tours/:id" element={<TourDetail />} />
         <Route path="tours/:id/book" element={<BookTour />} />
+        <Route path="custom-tour" element={<CustomTourPage />} />
         <Route path="promotions" element={<Promotions />} />
         <Route path="check-booking" element={<CheckBooking />} />
         <Route path="contact" element={<Contact />} />
@@ -109,7 +112,7 @@ const router = createBrowserRouter(
         <Route path="revenue" element={<Dashboard />} />
         <Route path="revenue/export-pdf" element={<ExportPDF />} />
         <Route path="revenue/export-excel" element={<ExportExcel />} />
-        <Route path="support" element={<Dashboard />} />
+        <Route path="support" element={<CustomTourManagement />} />
       </Route>
 
       {/* Payment Result Route */}
