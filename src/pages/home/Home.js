@@ -39,9 +39,6 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Recommended Tours Section - Only visible for logged in users */}
-            <RecommendedTours />
-
             {/* Tour Categories Section */}
             <section className="tour-categories-section">
                 <Container>
@@ -49,6 +46,9 @@ const Home = () => {
                     <TourCategories />
                 </Container>
             </section>
+
+            {/* Recommended Tours Section */}
+            <RecommendedTours />
         </div>
     );
 };

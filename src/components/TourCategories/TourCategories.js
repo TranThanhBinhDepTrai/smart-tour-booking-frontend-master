@@ -8,12 +8,12 @@ const TourCategories = () => {
     const categories = [
         { id: 'ADVENTURE', name: 'Phiêu Lưu Mạo Hiểm', icon: 'fas fa-hiking' },
         { id: 'CULTURAL', name: 'Văn Hóa', icon: 'fas fa-landmark' },
-        { id: 'RELAXATION', name: 'Nghỉ Dưỡng', icon: 'fas fa-umbrella-beach' },
+        { id: 'HOLIDAY', name: 'Nghỉ Dưỡng', icon: 'fas fa-umbrella-beach' },
         { id: 'SEASONAL', name: 'Theo Mùa', icon: 'fas fa-leaf' }
     ];
 
     const handleCategoryClick = (categoryId) => {
-        navigate(`/tours?category=${categoryId}`);
+        navigate(`/tours/category/${categoryId}`);
     };
 
     return (

@@ -36,6 +36,7 @@ import PaymentResult from './pages/payment/PaymentResult';
 import History from './pages/history/History';
 import Contact from './pages/contact/Contact';
 import Revenue from './pages/admin/Revenue';
+import TourCategoryList from './pages/tours/TourCategoryList';
 import './App.css';
 
 // Protected Route Component
@@ -91,6 +92,7 @@ const router = createBrowserRouter(
             <History />
           </ProtectedRoute>
         } />
+        <Route path="tours/category/:category" element={<TourCategoryList />} />
       </Route>
 
       {/* Admin Routes */}

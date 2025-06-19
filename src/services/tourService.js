@@ -226,5 +226,15 @@ export const tourService = {
         } catch (error) {
             throw error;
         }
+    },
+
+    getAllTours: async () => {
+        try {
+            // Lấy tất cả tour, size lớn hơn tổng số tour
+            const response = await axios.get(`${API_URL}/tours`, { params: { page: 0, size: 100 } });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     }
 }; 
