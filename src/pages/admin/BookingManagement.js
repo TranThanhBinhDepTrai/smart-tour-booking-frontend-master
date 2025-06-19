@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Badge, Button, Pagination, Dropdown } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Pagination, Dropdown, Row, Col, Form, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import './BookingManagement.css';
@@ -12,6 +12,7 @@ const BookingManagement = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [updateLoading, setUpdateLoading] = useState(false);
     const limit = 10;
+    const [searchTerm, setSearchTerm] = useState("");
 
     const STATUS_OPTIONS = {
         PENDING: { text: 'Chờ xử lý', variant: 'warning' },
@@ -263,11 +264,28 @@ const BookingManagement = () => {
     }
 
     return (
-        <Container fluid className="py-4">
-            <h2 className="mb-4">Quản lý đơn đặt tour</h2>
+        <Container fluid className="admin-page-container py-4">
+            <div className="admin-header mb-3">
+                <h2 className="admin-title">Quản lý đơn đặt tour</h2>
+                <div className="admin-subtitle">Danh sách các đơn đặt tour của khách hàng</div>
+            </div>
+            <div className="search-filter-section mb-3">
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Tìm kiếm theo tên khách, email, SĐT, tên tour, mã đơn, trạng thái..."
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                />
+                <button className="search-button" type="button">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
+            </div>
             
             <div className="table-responsive">
-                <Table striped bordered hover>
+                <Table striped bordered hover className="admin-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -282,7 +300,17 @@ const BookingManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {bookings.map((booking) => (
+                        {bookings.filter(booking => {
+                            const s = searchTerm.toLowerCase();
+                            return (
+                                booking.id.toString().includes(s) ||
+                                booking.customerName.toLowerCase().includes(s) ||
+                                booking.customerEmail.toLowerCase().includes(s) ||
+                                booking.customerPhone.toLowerCase().includes(s) ||
+                                booking.tour.title.toLowerCase().includes(s) ||
+                                (booking.status && booking.status.toLowerCase().includes(s))
+                            );
+                        }).map((booking) => (
                             <tr key={booking.id}>
                                 <td>{booking.id}</td>
                                 <td>

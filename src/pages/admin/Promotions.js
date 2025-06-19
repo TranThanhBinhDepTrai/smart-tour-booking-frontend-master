@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Modal, Form, Alert, Nav } from 'react-bootstrap';
+import { Container, Table, Button, Modal, Form, Alert, Nav, InputGroup } from 'react-bootstrap';
 import { promotionService } from '../../services/promotionService';
 import { userService } from '../../services/userService';
 import './AdminTour.css';
@@ -32,6 +32,7 @@ const Promotions = () => {
         endAt: '',
         usageLimit: 0
     });
+    const [searchTerm, setSearchTerm] = useState("");
 
     const loadUsers = async () => {
         try {
@@ -280,14 +281,25 @@ const Promotions = () => {
     };
 
     return (
-        <Container fluid className="mt-4">
+        <Container fluid className="admin-page-container mt-4">
             {error && <Alert variant="danger">{error}</Alert>}
-            
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Quản lý khuyến mãi</h2>
-                <Button variant="primary" onClick={() => handleShow()}>
-                    Thêm mới khuyến mãi
-                </Button>
+            <div className="admin-header mb-3">
+                <h2 className="admin-title">Quản lý khuyến mãi</h2>
+                <div className="admin-subtitle">Danh sách các chương trình khuyến mãi</div>
+            </div>
+            <div className="search-filter-section mb-3">
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Tìm kiếm theo mã, mô tả, phần trăm giảm, ngày bắt đầu, ngày kết thúc..."
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                />
+                <button className="search-button" type="button">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
             </div>
 
             {loading ? (
@@ -298,7 +310,7 @@ const Promotions = () => {
                 </div>
             ) : (
                 <>
-                    <Table striped bordered hover responsive>
+                    <Table striped bordered hover responsive className="admin-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -312,50 +324,51 @@ const Promotions = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {promotions && promotions.length > 0 ? (
-                                promotions.map((promotion) => (
-                                    <tr key={promotion.id}>
-                                        <td>{promotion.id}</td>
-                                        <td>{promotion.code}</td>
-                                        <td>{promotion.description}</td>
-                                        <td>{promotion.discountPercent}%</td>
-                                        <td>{formatDate(promotion.startAt)}</td>
-                                        <td>{formatDate(promotion.endAt)}</td>
-                                        <td>{promotion.usageLimit}</td>
-                                        <td>
-                                            <div className="d-flex gap-2 justify-content-center">
-                                                <Button 
-                                                    variant="primary" 
-                                                    size="sm"
-                                                    onClick={() => handleShow(promotion)}
-                                                >
-                                                    Sửa
-                                                </Button>
-                                                <Button 
-                                                    variant="danger" 
-                                                    size="sm"
-                                                    onClick={() => handleDelete(promotion)}
-                                                >
-                                                    Xóa
-                                                </Button>
-                                                <Button
-                                                    variant="success"
-                                                    size="sm"
-                                                    onClick={() => handleEmailModalShow(promotion)}
-                                                >
-                                                    Gửi Email
-                                                </Button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="8" className="text-center">
-                                        Không có khuyến mãi đang hoạt động
+                            {promotions && promotions.filter(promotion => {
+                                const s = searchTerm.toLowerCase();
+                                return (
+                                    promotion.code.toLowerCase().includes(s) ||
+                                    promotion.description.toLowerCase().includes(s) ||
+                                    promotion.discountPercent.toString().includes(s) ||
+                                    (promotion.startAt && promotion.startAt.toLowerCase().includes(s)) ||
+                                    (promotion.endAt && promotion.endAt.toLowerCase().includes(s))
+                                );
+                            }).map((promotion) => (
+                                <tr key={promotion.id}>
+                                    <td>{promotion.id}</td>
+                                    <td>{promotion.code}</td>
+                                    <td>{promotion.description}</td>
+                                    <td>{promotion.discountPercent}%</td>
+                                    <td>{formatDate(promotion.startAt)}</td>
+                                    <td>{formatDate(promotion.endAt)}</td>
+                                    <td>{promotion.usageLimit}</td>
+                                    <td>
+                                        <div className="d-flex gap-2 justify-content-center">
+                                            <Button 
+                                                variant="primary" 
+                                                size="sm"
+                                                onClick={() => handleShow(promotion)}
+                                            >
+                                                Sửa
+                                            </Button>
+                                            <Button 
+                                                variant="danger" 
+                                                size="sm"
+                                                onClick={() => handleDelete(promotion)}
+                                            >
+                                                Xóa
+                                            </Button>
+                                            <Button
+                                                variant="success"
+                                                size="sm"
+                                                onClick={() => handleEmailModalShow(promotion)}
+                                            >
+                                                Gửi Email
+                                            </Button>
+                                        </div>
                                     </td>
                                 </tr>
-                            )}
+                            ))}
                         </tbody>
                     </Table>
 

@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { Container, Nav, Navbar, Form, Button, Dropdown } from 'react-bootstrap';
+import { Container, Nav, Navbar, Form, Button, Dropdown, Modal } from 'react-bootstrap';
 import { FaHome, FaMapMarkedAlt, FaUsers, FaCheckCircle, FaBullhorn, FaChartLine, FaHeadset, FaUserCircle, FaLock, FaUserShield, FaFilePdf, FaFileExcel } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
+import UserBookingHistory from '../components/UserBookingHistory';
 
 function AdminLayout() {
   const navigate = useNavigate();
   const { logout, currentUser, isAdmin } = useAuth();
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyUser, setHistoryUser] = useState(null);
   
   // Kiểm tra quyền admin khi vào trang
   useEffect(() => {
@@ -39,6 +42,11 @@ function AdminLayout() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleShowHistory = (user) => {
+    setHistoryUser(user);
+    setShowHistoryModal(true);
   };
 
   // Nếu không phải admin, không render gì cả
@@ -147,6 +155,15 @@ function AdminLayout() {
           <Outlet />
         </div>
       </div>
+
+      <Modal show={showHistoryModal} onHide={() => setShowHistoryModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Lịch sử đặt tour: {historyUser?.fullName}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {historyUser && <UserBookingHistory userId={historyUser.id} />}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

@@ -7,17 +7,82 @@ import './AdminTour.css';
 const AdminTour = () => {
   const navigate = useNavigate();
   const [tours, setTours] = useState([]);
+  const [filteredTours, setFilteredTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchCategory, setSearchCategory] = useState('all');
   const pageSize = 10;
 
   useEffect(() => {
     fetchTours();
   }, [currentPage]);
+
+  // Filter tours when search term changes
+  useEffect(() => {
+    if (!tours || tours.length === 0) {
+      setFilteredTours([]);
+      return;
+    }
+
+    if (!searchTerm.trim()) {
+      setFilteredTours(tours);
+      setTotalElements(tours.length);
+      setTotalPages(Math.ceil(tours.length / pageSize));
+      return;
+    }
+
+    const term = searchTerm.trim().toLowerCase();
+    let results = tours;
+
+    // Filter by specific category if selected
+    if (searchCategory === 'code') {
+      results = tours.filter(tour => 
+        tour.code && tour.code.toLowerCase().includes(term)
+      );
+    } else if (searchCategory === 'title') {
+      results = tours.filter(tour => 
+        tour.title && tour.title.toLowerCase().includes(term)
+      );
+    } else if (searchCategory === 'destination') {
+      results = tours.filter(tour => 
+        tour.destination && tour.destination.toLowerCase().includes(term)
+      );
+    } else if (searchCategory === 'price') {
+      // Try to parse search term as number
+      if (!isNaN(parseInt(term))) {
+        const searchPrice = parseInt(term);
+        results = tours.filter(tour => 
+          tour.priceAdults <= searchPrice * 1.2 && tour.priceAdults >= searchPrice * 0.8
+        );
+      }
+    } else if (searchCategory === 'status') {
+      if (term.includes('hoạt động') || term.includes('active')) {
+        results = tours.filter(tour => tour.available === true);
+      } else if (term.includes('ngừng') || term.includes('inactive')) {
+        results = tours.filter(tour => tour.available === false);
+      }
+    } else {
+      // Search in all fields
+      results = tours.filter(tour => 
+        (tour.code && tour.code.toLowerCase().includes(term)) ||
+        (tour.title && tour.title.toLowerCase().includes(term)) ||
+        (tour.destination && tour.destination.toLowerCase().includes(term)) ||
+        (tour.region === 'DOMESTIC' && 'trong nước'.includes(term)) ||
+        (tour.region === 'INTERNATIONAL' && 'quốc tế'.includes(term)) ||
+        (tour.airline && tour.airline.toLowerCase().includes(term))
+      );
+    }
+
+    setFilteredTours(results);
+    setTotalElements(results.length);
+    setTotalPages(Math.ceil(results.length / pageSize));
+    setCurrentPage(0); // Reset to first page when searching
+  }, [searchTerm, searchCategory, tours]);
 
   const fetchTours = async () => {
     try {
@@ -42,6 +107,7 @@ const AdminTour = () => {
       }
 
       setTours(toursData);
+      setFilteredTours(toursData);
       setTotalElements(total);
       setTotalPages(totalPages);
       setError(null);
@@ -54,6 +120,7 @@ const AdminTour = () => {
       });
       setError('Không thể tải danh sách tour');
       setTours([]);
+      setFilteredTours([]);
     } finally {
       setLoading(false);
     }
@@ -105,6 +172,22 @@ const AdminTour = () => {
     }
   };
 
+  // Reset search
+  const handleResetSearch = () => {
+    setSearchTerm('');
+    setSearchCategory('all');
+  };
+
+  // Get current tours for current page
+  const getCurrentPageItems = () => {
+    const start = currentPage * pageSize;
+    const end = start + pageSize;
+    return filteredTours.slice(start, end);
+  };
+
+  // Current items to display
+  const currentTours = getCurrentPageItems();
+
   return (
     <div className="admin-tour-container p-6">
       <div className="admin-tour-card p-6">
@@ -122,6 +205,48 @@ const AdminTour = () => {
             </svg>
             Thêm Tour Mới
           </button>
+        </div>
+
+        {/* Search Bar */}
+        <div className="search-filter-section">
+          <select
+            className="search-category"
+            value={searchCategory}
+            onChange={(e) => setSearchCategory(e.target.value)}
+          >
+            <option value="all">Tất cả</option>
+            <option value="code">Mã tour</option>
+            <option value="title">Tên tour</option>
+            <option value="destination">Điểm đến</option>
+            <option value="price">Giá</option>
+            <option value="status">Trạng thái</option>
+          </select>
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Tìm kiếm tour du lịch..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="search-button" onClick={handleResetSearch}>
+            {searchTerm ? (
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        <div className="search-results-info">
+          {searchTerm ? (
+            <>Tìm thấy <strong>{totalElements}</strong> tour phù hợp</>
+          ) : (
+            <>Hiển thị <strong>{totalElements}</strong> tour</>
+          )}
         </div>
 
         {error && (
@@ -159,121 +284,129 @@ const AdminTour = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {tours.map((tour) => (
-                    <tr key={tour.id}>
-                      <td>
-                        <span className="tour-code">{tour.code}</span>
-                      </td>
-                      <td>
-                        <div className="tour-info-cell">
-                          <img 
-                            src={Array.isArray(tour.images) && tour.images.length > 0 
-                              ? (typeof tour.images[0] === 'string' 
-                                ? tour.images[0] 
-                                : tour.images[0]?.url || 'https://via.placeholder.com/80x60?text=Tour')
-                              : 'https://via.placeholder.com/80x60?text=Tour'} 
-                            alt={tour.title}
-                            className="tour-thumbnail"
-                            onError={(e) => {
-                              e.target.src = 'https://via.placeholder.com/80x60?text=Tour';
-                            }}
-                          />
-                          <div>
-                            <div className="tour-info-primary">{tour.title}</div>
-                            <div className="tour-info-secondary">{tour.airline}</div>
+                  {currentTours.length > 0 ? (
+                    currentTours.map((tour) => (
+                      <tr key={tour.id}>
+                        <td>
+                          <span className="tour-code">{tour.code}</span>
+                        </td>
+                        <td>
+                          <div className="tour-info-cell">
+                            <img 
+                              src={Array.isArray(tour.images) && tour.images.length > 0 
+                                ? (typeof tour.images[0] === 'string' 
+                                  ? tour.images[0] 
+                                  : tour.images[0]?.url || 'https://via.placeholder.com/80x60?text=Tour')
+                                : 'https://via.placeholder.com/80x60?text=Tour'} 
+                              alt={tour.title}
+                              className="tour-thumbnail"
+                              onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/80x60?text=Tour';
+                              }}
+                            />
+                            <div>
+                              <div className="tour-info-primary">{tour.title}</div>
+                              <div className="tour-info-secondary">{tour.airline}</div>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="tour-info-primary">{tour.destination}</div>
-                        <div className="tour-info-secondary">
-                          {tour.region === 'DOMESTIC' ? 'Trong nước' : 'Quốc tế'}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="tour-info-primary">
-                          {format(new Date(tour.startDate), 'dd/MM/yyyy')}
-                        </div>
-                        <div className="tour-info-secondary">
-                          {format(new Date(tour.endDate), 'dd/MM/yyyy')}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="tour-info-primary">
-                          {tour.priceAdults.toLocaleString('vi-VN')} (Người lớn)
-                        </div>
-                        <div className="tour-info-secondary">
-                          {tour.priceChildren.toLocaleString('vi-VN')} (Trẻ em)
-                        </div>
-                      </td>
-                      <td>
-                        <span className={`tour-status ${tour.available ? 'tour-status-active' : 'tour-status-inactive'}`}>
-                          {tour.available ? 'Đang hoạt động' : 'Ngừng hoạt động'}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="tour-actions">
-                          <button
-                            onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
-                            className="action-button edit-button"
-                          >
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                            Sửa
-                          </button>
-                          <button
-                            onClick={() => handleDelete(tour.id)}
-                            className="action-button delete-button"
-                          >
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            Xóa
-                          </button>
-                        </div>
-                      </td>
+                        </td>
+                        <td>
+                          <div className="tour-info-primary">{tour.destination}</div>
+                          <div className="tour-info-secondary">
+                            {tour.region === 'DOMESTIC' ? 'Trong nước' : 'Quốc tế'}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="tour-info-primary">
+                            {format(new Date(tour.startDate), 'dd/MM/yyyy')}
+                          </div>
+                          <div className="tour-info-secondary">
+                            {format(new Date(tour.endDate), 'dd/MM/yyyy')}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="tour-info-primary">
+                            {tour.priceAdults.toLocaleString('vi-VN')} (Người lớn)
+                          </div>
+                          <div className="tour-info-secondary">
+                            {tour.priceChildren.toLocaleString('vi-VN')} (Trẻ em)
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`tour-status ${tour.available ? 'tour-status-active' : 'tour-status-inactive'}`}>
+                            {tour.available ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="tour-actions">
+                            <button
+                              onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
+                              className="action-button edit-button"
+                            >
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                              Sửa
+                            </button>
+                            <button
+                              onClick={() => handleDelete(tour.id)}
+                              className="action-button delete-button"
+                            >
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                              Xóa
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="empty-table">Không tìm thấy dữ liệu</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
 
-            <div className="pagination">
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(0)}
-                disabled={currentPage === 0}
-              >
-                Đầu
-              </button>
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 0}
-              >
-                Trước
-              </button>
-              
-              <span className="pagination-info">
-                Trang {currentPage + 1} / {totalPages} (Tổng: {totalElements} tour)
-              </span>
+            {totalPages > 1 && (
+              <div className="pagination">
+                <button
+                  className="pagination-button"
+                  onClick={() => handlePageChange(0)}
+                  disabled={currentPage === 0}
+                >
+                  Đầu
+                </button>
+                <button
+                  className="pagination-button"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 0}
+                >
+                  Trước
+                </button>
+                
+                <span className="pagination-info">
+                  Trang {currentPage + 1} / {totalPages} (Tổng: {totalElements} tour)
+                </span>
 
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage >= totalPages - 1}
-              >
-                Sau
-              </button>
-              <button
-                className="pagination-button"
-                onClick={() => handlePageChange(totalPages - 1)}
-                disabled={currentPage >= totalPages - 1}
-              >
-                Cuối
-              </button>
-            </div>
+                <button
+                  className="pagination-button"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage >= totalPages - 1}
+                >
+                  Sau
+                </button>
+                <button
+                  className="pagination-button"
+                  onClick={() => handlePageChange(totalPages - 1)}
+                  disabled={currentPage >= totalPages - 1}
+                >
+                  Cuối
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

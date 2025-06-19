@@ -94,4 +94,6 @@
 /* Status badge spacing */
 .d-flex.align-items-center .badge {
     margin-right: 0.5rem;
-} 
+}
+
+/* Đảm bảo không ghi đè .admin-search-bar */ 

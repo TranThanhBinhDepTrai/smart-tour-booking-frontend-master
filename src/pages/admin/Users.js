@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Button, Modal, Form, Alert, Badge } from 'react-bootstrap';
+import { Container, Table, Button, Modal, Form, Alert, Badge, InputGroup } from 'react-bootstrap';
 import { userService } from '../../services/userService';
 import { roleService } from '../../services/roleService';
 import './AdminTour.css';
+import UserBookingHistory from '../../components/UserBookingHistory';
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -35,6 +36,9 @@ const Users = () => {
         active: true,
         permissions: []
     });
+    const [searchTerm, setSearchTerm] = useState("");
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
+    const [historyUser, setHistoryUser] = useState(null);
 
     const loadUsers = async (page = currentPage) => {
         try {
@@ -246,12 +250,31 @@ const Users = () => {
         }
     };
 
+    const handleShowHistory = (user) => {
+        setHistoryUser(user);
+        setShowHistoryModal(true);
+    };
+
     return (
-        <Container fluid className="mt-4">
+        <Container fluid className="admin-page-container mt-4">
             {error && <Alert variant="danger">{error}</Alert>}
-            
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Quản lý người dùng</h2>
+            <div className="admin-header mb-3">
+                <h2 className="admin-title">Quản lý người dùng</h2>
+                <div className="admin-subtitle">Danh sách người dùng hệ thống</div>
+            </div>
+            <div className="search-filter-section mb-3">
+                <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Tìm kiếm theo tên, email, SĐT, địa chỉ, vai trò..."
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                />
+                <button className="search-button" type="button">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </button>
             </div>
 
             {loading ? (
@@ -262,7 +285,7 @@ const Users = () => {
                 </div>
             ) : (
                 <>
-                    <Table striped bordered hover responsive>
+                    <Table striped bordered hover responsive className="admin-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -276,7 +299,16 @@ const Users = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map(user => (
+                            {users.filter(user => {
+                                const s = searchTerm.toLowerCase();
+                                return (
+                                    user.fullName.toLowerCase().includes(s) ||
+                                    user.email.toLowerCase().includes(s) ||
+                                    user.phone.toLowerCase().includes(s) ||
+                                    user.address.toLowerCase().includes(s) ||
+                                    user.role.name.toLowerCase().includes(s)
+                                );
+                            }).map(user => (
                                 <tr key={user.id}>
                                     <td>{user.id}</td>
                                     <td>{user.fullName}</td>
@@ -337,6 +369,14 @@ const Users = () => {
                                                 title="Xóa tài khoản"
                                             >
                                                 <i className="fas fa-trash"></i>
+                                            </Button>
+                                            <Button 
+                                                variant="secondary" 
+                                                size="sm"
+                                                onClick={() => handleShowHistory(user)}
+                                                title="Xem lịch sử đặt tour"
+                                            >
+                                                <i className="fas fa-history"></i>
                                             </Button>
                                         </div>
                                     </td>
@@ -572,6 +612,16 @@ const Users = () => {
                             </Button>
                         </div>
                     </Form>
+                </Modal.Body>
+            </Modal>
+
+            {/* History Modal */}
+            <Modal show={showHistoryModal} onHide={() => setShowHistoryModal(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Lịch sử đặt tour: {historyUser?.fullName}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {historyUser && <UserBookingHistory userId={historyUser.id} />}
                 </Modal.Body>
             </Modal>
         </Container>
