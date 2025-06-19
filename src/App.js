@@ -35,6 +35,7 @@ import Users from './pages/admin/Users';
 import PaymentResult from './pages/payment/PaymentResult';
 import History from './pages/history/History';
 import Contact from './pages/contact/Contact';
+import Revenue from './pages/admin/Revenue';
 import './App.css';
 
 // Protected Route Component
@@ -109,7 +110,7 @@ const router = createBrowserRouter(
         <Route path="roles" element={<RoleManagement />} />
         <Route path="bookings" element={<BookingManagement />} />
         <Route path="promotions" element={<AdminPromotions />} />
-        <Route path="revenue" element={<Dashboard />} />
+        <Route path="revenue" element={<Revenue />} />
         <Route path="revenue/export-pdf" element={<ExportPDF />} />
         <Route path="revenue/export-excel" element={<ExportExcel />} />
         <Route path="support" element={<CustomTourManagement />} />
