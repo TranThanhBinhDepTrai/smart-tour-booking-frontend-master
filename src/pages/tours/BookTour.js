@@ -192,6 +192,10 @@ const BookTour = () => {
             // Nếu user đã đăng nhập, thêm userId
             if (currentUser) {
                 bookingData.userId = currentUser.id;
+                // Always send user info, even when logged in, for backend processing (e.g., sending email)
+                bookingData.guestName = currentUser.fullName || formData.fullName;
+                bookingData.guestEmail = currentUser.email || formData.email;
+                bookingData.guestPhone = currentUser.phone || formData.phone;
             } else {
                 // Nếu chưa đăng nhập, thêm thông tin khách
                 bookingData.guestName = formData.fullName;

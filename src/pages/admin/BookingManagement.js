@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Badge, Button, Pagination, Dropdown, Row, Col, Form, InputGroup } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Pagination, Dropdown, Row, Col, Form, InputGroup, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import './BookingManagement.css';
@@ -13,6 +13,11 @@ const BookingManagement = () => {
     const [updateLoading, setUpdateLoading] = useState(false);
     const limit = 10;
     const [searchTerm, setSearchTerm] = useState("");
+
+    // State for the details modal
+    const [showModal, setShowModal] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [modalLoading, setModalLoading] = useState(false);
 
     const STATUS_OPTIONS = {
         PENDING: { text: 'Chờ xử lý', variant: 'warning' },
@@ -36,6 +41,25 @@ const BookingManagement = () => {
     useEffect(() => {
         fetchBookings();
     }, [currentPage]);
+
+    const fetchBookingDetails = async (bookingId) => {
+        try {
+            setModalLoading(true);
+            const response = await axios.get(
+                `http://localhost:8080/api/v1/bookings/${bookingId}`,
+                { headers: getAuthHeader() }
+            );
+            if (response.data.statusCode === 200) {
+                setSelectedBooking(response.data.data);
+                setShowModal(true);
+            }
+        } catch (err) {
+            console.error(`Lỗi khi tải chi tiết đơn đặt tour ${bookingId}:`, err);
+            alert('Không thể tải chi tiết đơn đặt tour.');
+        } finally {
+            setModalLoading(false);
+        }
+    };
 
     const fetchBookings = async () => {
         try {
@@ -339,10 +363,9 @@ const BookingManagement = () => {
                                 <td>{renderRefundStatusDropdown(booking)}</td>
                                 <td>
                                     <Button 
-                                        variant="primary" 
-                                        size="sm" 
-                                        className="me-2"
-                                        onClick={() => {/* Xem chi tiết */}}
+                                        variant="info" 
+                                        size="sm"
+                                        onClick={() => fetchBookingDetails(booking.id)}
                                     >
                                         Chi tiết
                                     </Button>
@@ -384,6 +407,82 @@ const BookingManagement = () => {
                     />
                 </Pagination>
             </div>
+
+            {/* Booking Details Modal */}
+            <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Chi tiết đơn đặt tour #{selectedBooking?.id}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {modalLoading ? (
+                        <div className="text-center">
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Đang tải...</span>
+                            </div>
+                        </div>
+                    ) : selectedBooking ? (
+                        <div>
+                            <Row>
+                                <Col md={6}>
+                                    <h5>Thông tin khách hàng</h5>
+                                    <p><strong>Tên:</strong> {selectedBooking.customerName}</p>
+                                    <p><strong>Email:</strong> {selectedBooking.customerEmail}</p>
+                                    <p><strong>SĐT:</strong> {selectedBooking.customerPhone}</p>
+                                    <p><strong>Ngày đặt:</strong> {formatDate(selectedBooking.bookingAt)}</p>
+                                </Col>
+                                <Col md={6}>
+                                    <h5>Thông tin tour</h5>
+                                    <p><strong>Tên tour:</strong> {selectedBooking.tour.title}</p>
+                                    <p><strong>Bắt đầu:</strong> {formatDate(selectedBooking.tour.startDate)}</p>
+                                    <p><strong>Kết thúc:</strong> {formatDate(selectedBooking.tour.endDate)}</p>
+                                </Col>
+                            </Row>
+                            <hr/>
+                            <Row>
+                                <Col md={6}>
+                                    <h5>Thanh toán & Trạng thái</h5>
+                                    <p><strong>Tổng tiền:</strong> {formatPrice(selectedBooking.totalPrice)}</p>
+                                    <p><strong>Trạng thái:</strong> {getStatusBadge(selectedBooking.status)}</p>
+                                    <p><strong>Khuyến mãi:</strong> {selectedBooking.promotionDto ? `${selectedBooking.promotionDto.code} (${selectedBooking.promotionDto.discountPercent}%)` : 'Không có'}</p>
+                                </Col>
+                            </Row>
+                            <hr/>
+                            <h5>Danh sách người tham gia</h5>
+                            {selectedBooking.participants && selectedBooking.participants.length > 0 ? (
+                                <Table striped bordered size="sm">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tên</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Giới tính</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {selectedBooking.participants.map((p, index) => (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{p.name}</td>
+                                                <td>{p.phone}</td>
+                                                <td>{p.gender === 'MALE' ? 'Nam' : 'Nữ'}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            ) : (
+                                <p>Không có thông tin người tham gia.</p>
+                            )}
+                        </div>
+                    ) : (
+                        <p>Không thể tải dữ liệu.</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Đóng
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };

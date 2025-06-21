@@ -361,29 +361,78 @@
   }
 
   .clear-search-button:hover {
-    background: #f8f9fa;
-    transform: translateY(-1px);
+    background-color: #d32f2f;
   }
 
   .no-tours-message {
     text-align: center;
-    padding: 48px;
-    background: white;
-    border-radius: 12px;
-    color: #5f6368;
-    font-size: 1.1rem;
-    grid-column: 1 / -1;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    font-size: 1.2rem;
+    color: #555;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .error-message {
-    background: #fce8e6;
-    color: #d93025;
-    padding: 12px 16px;
+    color: #d32f2f;
+    background-color: #ffcdd2;
+    border: 1px solid #d32f2f;
+    padding: 15px;
     border-radius: 8px;
-    margin-bottom: 16px;
-    font-size: 0.9rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  /* Redesigned Search Form Styles */
+  .search-form-redesigned {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 32px;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .main-search-bar {
+    width: 100%;
+  }
+
+  .main-search-input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #333; /* Explicitly set text color to be dark */
+  }
+
+  .main-search-input::placeholder {
+    color: #999; /* Set a placeholder color */
+  }
+
+  .main-search-input:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+  }
+
+  .filter-bar .search-group {
+    flex: 1 1 180px; /* Allow items to grow and shrink, with a base width */
+  }
+
+  .filter-bar .search-button {
+    flex-grow: 0; /* Prevent button from growing */
+    padding: 10px 24px;
   }

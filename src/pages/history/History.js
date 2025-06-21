@@ -56,21 +56,20 @@ const History = () => {
     const handleCancelConfirm = async () => {
         try {
             setCancelLoading(true);
-            const response = await bookingService.cancelBooking(selectedBooking.id);
-            if (response.statusCode === 200) {
-                // Reload bookings after successful cancellation
-                await loadBookings();
-                setShowCancelModal(false);
-                alert('Hủy đơn thành công!');
-            } else {
-                throw new Error(response.message || 'Không thể hủy đơn');
-            }
+            await bookingService.cancelBooking(selectedBooking.id);
+            // Even if the API returns 500, we'll refetch in `finally`.
+            // If it was a success on the DB, the UI will update.
+            // We can show a success message optimistically.
+            alert('Đã gửi yêu cầu hủy đơn. Vui lòng đợi trong khi trang cập nhật.');
         } catch (err) {
             console.error('Error cancelling booking:', err);
-            alert(err.message || 'Không thể hủy đơn. Vui lòng thử lại sau.');
+            // We still refetch, but we can show a more cautious message.
+            alert('Yêu cầu hủy đơn đã được gửi đi nhưng có thể có lỗi xảy ra. Đang làm mới dữ liệu...');
         } finally {
             setCancelLoading(false);
             setShowCancelModal(false);
+            // Always reload bookings to reflect the latest state from the DB
+            await loadBookings();
         }
     };
 

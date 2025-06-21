@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import "./Tour.css";
 import api from "../../services/api";
 
-const SearchForm = ({ onSearch }) => {
+const SearchForm = ({ onSearch, initialValues }) => {
   const [searchParams, setSearchParams] = useState({
     keyword: "",
     startDate: "",
@@ -12,6 +12,32 @@ const SearchForm = ({ onSearch }) => {
     minPrice: "",
     maxPrice: ""
   });
+
+  // Sync form state with initial values from URL
+  useEffect(() => {
+    if (initialValues) {
+      setSearchParams(prev => ({
+        ...prev,
+        keyword: initialValues.keyword || "",
+        location: initialValues.location || ""
+      }));
+    }
+  }, [initialValues]);
+
+  // Debounced auto-search on keyword change
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      // We only want to trigger auto-search when the user is typing in the main search box.
+      // We check if the keyword is not empty to fire the search.
+      if (searchParams.keyword) {
+        onSearch(searchParams);
+      }
+    }, 500); // 500ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchParams.keyword, onSearch]); // Rerun when keyword changes
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,108 +49,82 @@ const SearchForm = ({ onSearch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Tạo object mới chỉ chứa các trường có giá trị
-    const formattedParams = {};
-
-    if (searchParams.keyword.trim()) {
-      formattedParams.keyword = searchParams.keyword.trim();
-    }
-
-    if (searchParams.location) {
-      formattedParams.location = searchParams.location;
-    }
-
-    if (searchParams.startDate) {
-      formattedParams.startDate = searchParams.startDate;
-    }
-
-    if (searchParams.endDate) {
-      formattedParams.endDate = searchParams.endDate;
-    }
-
-    if (searchParams.minPrice) {
-      formattedParams.minPrice = Number(searchParams.minPrice);
-    }
-
-    if (searchParams.maxPrice) {
-      formattedParams.maxPrice = Number(searchParams.maxPrice);
-    }
-
-    onSearch(formattedParams);
+    onSearch(searchParams);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="search-form">
-      <div className="search-group">
-        <label>Tìm kiếm</label>
+    <form onSubmit={handleSubmit} className="search-form-redesigned">
+      <div className="main-search-bar">
         <input
           type="text"
           name="keyword"
-          placeholder="Tên tour, điểm đến..."
+          placeholder="Tìm kiếm theo tên tour, điểm đến, hoặc bất cứ thứ gì bạn muốn..."
           value={searchParams.keyword}
           onChange={handleChange}
+          className="main-search-input"
         />
       </div>
       
-      <div className="search-group">
-        <label>Khu vực</label>
-        <select 
-          name="location" 
-          value={searchParams.location}
-          onChange={handleChange}
-        >
-          <option value="">Tất cả</option>
-          <option value="DOMESTIC">Trong nước</option>
-          <option value="INTERNATIONAL">Quốc tế</option>
-        </select>
-      </div>
+      <div className="filter-bar">
+        <div className="search-group">
+          <label>Khu vực</label>
+          <select 
+            name="location" 
+            value={searchParams.location}
+            onChange={handleChange}
+          >
+            <option value="">Tất cả</option>
+            <option value="DOMESTIC">Trong nước</option>
+            <option value="INTERNATIONAL">Quốc tế</option>
+          </select>
+        </div>
 
-      <div className="search-group">
-        <label>Từ ngày</label>
-        <input
-          type="date"
-          name="startDate"
-          value={searchParams.startDate}
-          onChange={handleChange}
-        />
-      </div>
-      
-      <div className="search-group">
-        <label>Đến ngày</label>
-        <input
-          type="date"
-          name="endDate"
-          value={searchParams.endDate}
-          onChange={handleChange}
-        />
-      </div>
+        <div className="search-group">
+          <label>Từ ngày</label>
+          <input
+            type="date"
+            name="startDate"
+            value={searchParams.startDate}
+            onChange={handleChange}
+          />
+        </div>
+        
+        <div className="search-group">
+          <label>Đến ngày</label>
+          <input
+            type="date"
+            name="endDate"
+            value={searchParams.endDate}
+            onChange={handleChange}
+          />
+        </div>
 
-      <div className="search-group">
-        <label>Giá từ</label>
-        <input
-          type="number"
-          name="minPrice"
-          placeholder="VNĐ"
-          value={searchParams.minPrice}
-          onChange={handleChange}
-        />
-      </div>
-      
-      <div className="search-group">
-        <label>Đến giá</label>
-        <input
-          type="number"
-          name="maxPrice"
-          placeholder="VNĐ"
-          value={searchParams.maxPrice}
-          onChange={handleChange}
-        />
-      </div>
+        <div className="search-group">
+          <label>Giá từ</label>
+          <input
+            type="number"
+            name="minPrice"
+            placeholder="VNĐ"
+            value={searchParams.minPrice}
+            onChange={handleChange}
+          />
+        </div>
+        
+        <div className="search-group">
+          <label>Đến giá</label>
+          <input
+            type="number"
+            name="maxPrice"
+            placeholder="VNĐ"
+            value={searchParams.maxPrice}
+            onChange={handleChange}
+          />
+        </div>
 
-      <button type="submit" className="search-button">
-        Tìm tour
-      </button>
+        <button type="submit" className="search-button">
+          Lọc kết quả
+        </button>
+      </div>
     </form>
   );
 };
@@ -182,32 +182,58 @@ const Tour = () => {
   const [totalElements, setTotalElements] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState(null);
+  const [searchParamsFromUrl, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Check for search params from URL on initial load
+    const keyword = searchParamsFromUrl.get('keyword');
+    const location = searchParamsFromUrl.get('location');
+    // Add other params like dates if needed
+
+    if (keyword || location) {
+      const paramsFromUrl = {
+        keyword: keyword || "",
+        location: location || "",
+        startDate: "", // You can add logic for dates if passed
+        endDate: "",
+        minPrice: "",
+        maxPrice: ""
+      };
+      handleSearch(paramsFromUrl);
+    } else {
+      fetchTours();
+    }
+  }, [page, size]); // Depend on page and size for pagination
 
   const fetchTours = async (searchParams = null) => {
     try {
       let response;
-      if (searchParams) {
+      if (searchParams && Object.values(searchParams).some(v => v !== "")) {
         setIsSearching(true);
-        console.log('Original search params:', searchParams);
         
         // Format params to match backend expectations
-        const formattedParams = {
-          keyword: searchParams.keyword || null,
-          location: searchParams.location || null,
-          startDate: searchParams.startDate ? searchParams.startDate : null,
-          endDate: searchParams.endDate ? searchParams.endDate : null,
-          minPrice: searchParams.minPrice ? parseInt(searchParams.minPrice) : null,
-          maxPrice: searchParams.maxPrice ? parseInt(searchParams.maxPrice) : null
-        };
-
-        // Remove null values
-        Object.keys(formattedParams).forEach(key => 
-          formattedParams[key] === null && delete formattedParams[key]
-        );
+        const formattedParams = {};
+        if (searchParams.keyword && searchParams.keyword.trim()) {
+          formattedParams.keyword = searchParams.keyword.trim();
+        }
+        if (searchParams.location) {
+          formattedParams.location = searchParams.location;
+        }
+        if (searchParams.startDate) {
+          formattedParams.startDate = searchParams.startDate;
+        }
+        if (searchParams.endDate) {
+          formattedParams.endDate = searchParams.endDate;
+        }
+        if (searchParams.minPrice) {
+          formattedParams.minPrice = Number(searchParams.minPrice);
+        }
+        if (searchParams.maxPrice) {
+          formattedParams.maxPrice = Number(searchParams.maxPrice);
+        }
         
         console.log('Formatted search params:', formattedParams);
         
-        // Call search API with proper endpoint
         response = await api.post('/tours/search', formattedParams);
         console.log('Search response:', response.data);
         
@@ -256,21 +282,27 @@ const Tour = () => {
     }
   };
 
-  useEffect(() => {
-    if (!isSearching) {
-      fetchTours();
-    }
-  }, [page, size, isSearching]);
-
-  const handleSearch = (searchParams) => {
+  const handleSearch = useCallback((params) => {
     setPage(0);
-    fetchTours(searchParams);
-  };
+    // Update URL search params for bookmarking/sharing
+    const newSearchParams = new URLSearchParams();
+    if (params.keyword) newSearchParams.set('keyword', params.keyword);
+    if (params.location) newSearchParams.set('location', params.location);
+    setSearchParams(newSearchParams);
+    
+    fetchTours(params);
+  }, [setSearchParams]);
 
   const handleClearSearch = () => {
     setIsSearching(false);
-    setError(null);
-    fetchTours();
+    setPage(0); // Reset page to 0
+    setSearchParams({}); // Clear URL params
+    // The useEffect listening to `page` will refetch all tours.
+  };
+
+  const initialValues = {
+    keyword: searchParamsFromUrl.get('keyword') || '',
+    location: searchParamsFromUrl.get('location') || '',
   };
 
   return (
@@ -283,7 +315,7 @@ const Tour = () => {
           </button>
         )}
       </div>
-      <SearchForm onSearch={handleSearch} />
+      <SearchForm onSearch={handleSearch} initialValues={initialValues} />
       {error && (
         <div className="error-message">
           {error}
