@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .icon {
+            font-size: 50px;
+        }
+        .success .icon {
+            color: #28a745;
+        }
+        .failure .icon {
+            color: #dc3545;
+        }
+        h1 {
+            font-size: 24px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 16px;
+            color: #666;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        #loading {
+            display: block;
+        }
+        #result {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="loading">
+            <p>Đang xử lý kết quả thanh toán, vui lòng đợi...</p>
+        </div>
+        <div id="result">
+            <div id="icon-container"></div>
+            <h1 id="status"></h1>
+            <p id="message"></p>
+            <a href="/">Quay về trang chủ</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loadingDiv = document.getElementById('loading');
+            const resultDiv = document.getElementById('result');
+            const iconContainer = document.getElementById('icon-container');
+            const statusH1 = document.getElementById('status');
+            const messageP = document.getElementById('message');
+
+            const params = new URLSearchParams(window.location.search);
+            const backendUrl = 'http://localhost:8080/api/v1/bookings/vnpay-return?' + params.toString();
+            
+            try {
+                const response = await fetch(backendUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+                
+                // The actual data is nested inside a 'data' property
+                const paymentStatus = data.data.paymentStatus;
+
+                if (paymentStatus === 'PAID') {
+                    resultDiv.classList.add('success');
+                    iconContainer.innerHTML = '<div class="icon">✔</div>';
+                    statusH1.textContent = 'Thanh toán thành công!';
+                    messageP.textContent = 'Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.';
+                } else {
+                    resultDiv.classList.add('failure');
+                    iconContainer.innerHTML = '<div class="icon">✖</div>';
+                    statusH1.textContent = 'Thanh toán thất bại!';
+                    messageP.textContent = 'Đã có lỗi xảy ra trong quá trình xử lý. Vui lòng thử lại.';
+                }
+
+            } catch (error) {
+                console.error('Error fetching payment status:', error);
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+                resultDiv.classList.add('failure');
+                iconContainer.innerHTML = '<div class="icon">✖</div>';
+                statusH1.textContent = 'Lỗi xử lý';
+                messageP.textContent = 'Không thể kết nối để xác nhận trạng thái thanh toán. Vui lòng liên hệ bộ phận hỗ trợ.';
+            }
+        });
+    </script>
+
+</body>
+</html> 

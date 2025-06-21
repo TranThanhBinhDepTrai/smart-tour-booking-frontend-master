@@ -1,0 +1,45 @@
+.vnpay-return-container {
+    padding-top: 5rem;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.vnpay-return-container .card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 12px;
+}
+
+.vnpay-return-container .card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.vnpay-return-container .alert {
+    border-radius: 8px;
+    border: none;
+    padding: 1.5rem;
+}
+
+.vnpay-return-container .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.vnpay-return-container .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.vnpay-return-container .btn {
+    border-radius: 6px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+}
+
+.vnpay-return-container .spinner-border {
+    width: 3rem;
+    height: 3rem;
+} 

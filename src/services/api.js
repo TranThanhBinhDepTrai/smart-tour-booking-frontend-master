@@ -62,6 +62,11 @@ api.interceptors.request.use(
 // Interceptor để xử lý response
 api.interceptors.response.use(
     (response) => {
+        // For VNPay, return the raw data object directly to avoid nested data structures.
+        if (response.config.url.includes('/bookings/vnpay-return')) {
+            return response.data;
+        }
+        
         // Nếu response có cấu trúc {statusCode, data, message}
         if (response.data && response.data.statusCode === 200) {
             response.data = response.data.data;

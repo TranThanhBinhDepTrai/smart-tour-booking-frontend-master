@@ -1,20 +1,22 @@
-import axios from 'axios';
+import api from './api';
+import { API_URL } from '../config';
 
-const API_URL = 'http://localhost:8080/api/v1';
+const getAuthConfig = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('No token found');
+    }
+    return {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    };
+};
 
 export const bookingService = {
     getUserBookings: async (userId) => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('No token found');
-            }
-
-            const response = await axios.get(`${API_URL}/bookings/user/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            const response = await api.get(`/bookings/user/${userId}`, getAuthConfig());
             return response.data;
         } catch (error) {
             console.error('Error in getUserBookings:', error);
@@ -24,14 +26,9 @@ export const bookingService = {
 
     cancelBooking: async (bookingId) => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                throw new Error('No token found');
-            }
-
-            const response = await axios.delete(`${API_URL}/bookings/${bookingId}/cancel`, {
+            const response = await api.delete(`/bookings/${bookingId}/cancel`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -49,6 +46,28 @@ export const bookingService = {
                 // Lỗi khi setting up request
                 throw new Error('Có lỗi xảy ra. Vui lòng thử lại sau.');
             }
+        }
+    },
+
+    verifyVNPayPayment: async (params) => {
+        try {
+            // The interceptor now directly returns the data payload for this URL
+            const responseData = await api.get(`/bookings/vnpay-return`, { params });
+            return responseData;
+        } catch (error) {
+            console.error('Error verifying VNPay payment:', error);
+            throw error.response?.data || error.data || { message: 'Lỗi xác thực thanh toán' };
+        }
+    },
+
+    // Lấy lịch sử đặt tour của người dùng
+    getUserBookingHistory: async (userId) => {
+        try {
+            const response = await api.get(`/bookings/user/${userId}/history`, getAuthConfig());
+            return response.data;
+        } catch (error) {
+            console.error('Error in getUserBookingHistory:', error);
+            throw error;
         }
     }
 }; 

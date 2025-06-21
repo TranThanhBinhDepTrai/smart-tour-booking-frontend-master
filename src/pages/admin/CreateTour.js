@@ -32,10 +32,28 @@ const CreateTour = () => {
     if (name === 'itinerary') {
       setFormData(prev => ({ ...prev, itinerary: value.split('\n') }));
     } else {
+      const newValue = type === 'checkbox' ? checked : (type === 'number' ? Number(value) : value);
       setFormData(prev => ({
         ...prev,
-        [name]: type === 'checkbox' ? checked : (type === 'number' ? Number(value) : value)
+        [name]: newValue
       }));
+
+      // Date validation
+      if (name === 'startDate' || name === 'endDate') {
+        const otherDateName = name === 'startDate' ? 'endDate' : 'startDate';
+        const otherDateValue = formData[otherDateName];
+        const currentDateValue = newValue;
+
+        if (otherDateValue && currentDateValue) {
+          const start = new Date(name === 'startDate' ? currentDateValue : otherDateValue);
+          const end = new Date(name === 'endDate' ? currentDateValue : otherDateValue);
+          if (start >= end) {
+            setError('Ngày kết thúc phải sau ngày bắt đầu.');
+          } else {
+            setError('');
+          }
+        }
+      }
     }
   };
 
@@ -309,18 +327,19 @@ const CreateTour = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="category">Loại hình</label>
+                <label className="form-label" htmlFor="category">Loại hình *</label>
                 <select
                   id="category"
                   name="category"
                   className="form-input"
                   value={formData.category}
                   onChange={handleInputChange}
+                  required
                 >
-                  <option value="ADVENTURE">Mạo hiểm</option>
-                  <option value="BEACH">Biển</option>
-                  <option value="CULTURE">Văn hóa</option>
-                  <option value="ECO">Sinh thái</option>
+                  <option value="ADVENTURE">Phiêu lưu</option>
+                  <option value="CULTURAL">Văn hóa</option>
+                  <option value="HOLIDAY">Nghỉ hè</option>
+                  <option value="SEASONAL">Theo mùa</option>
                 </select>
               </div>
             </div>

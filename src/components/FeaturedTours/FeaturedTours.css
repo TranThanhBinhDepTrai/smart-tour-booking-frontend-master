@@ -1,0 +1,76 @@
+.featured-tours-section {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+.section-title.text-center {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 3rem;
+    color: #333;
+}
+
+.tour-type-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0056b3;
+    border-left: 4px solid #0056b3;
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+}
+
+.featured-tour-card {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.featured-tour-card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+}
+
+.featured-tour-card .card-img-top {
+    width: 40%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.featured-tour-card .card-body {
+    width: 60%;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.featured-tour-card .card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+}
+
+.featured-tour-card .card-text {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.featured-tour-card .price {
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.featured-tour-card .view-details-btn {
+    align-self: flex-end;
+    margin-top: 1rem;
+}
+
+.text-center .btn-outline-primary {
+    margin-top: 1rem;
+    font-weight: bold;
+} 

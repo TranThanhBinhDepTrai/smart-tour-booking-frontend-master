@@ -5,6 +5,7 @@ import { FaHome, FaMapMarkedAlt, FaUsers, FaCheckCircle, FaBullhorn, FaChartLine
 import { useAuth } from '../contexts/AuthContext';
 import UserBookingHistory from '../components/UserBookingHistory';
 import axios from 'axios';
+import { exportService } from '../services/exportService';
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -19,9 +20,35 @@ function AdminLayout() {
     }
   }, [currentUser, isAdmin, navigate]);
 
+  const handleExportPDF = async (e) => {
+    e.preventDefault();
+    try {
+      await exportService.exportPDF();
+    } catch (error) {
+      console.error('Failed to export PDF:', error);
+    }
+  };
+
+  const handleExportExcel = async (e) => {
+    e.preventDefault();
+    try {
+      await exportService.exportExcel();
+    } catch (error) {
+      console.error('Failed to export Excel:', error);
+    }
+  };
+
   const menuItems = [
     { icon: <FaHome className="me-2" />, label: 'Trang chính', path: '/admin' },
-    { icon: <FaMapMarkedAlt className="me-2" />, label: 'Quản lý tour', path: '/admin/tours' },
+    { 
+      icon: <FaMapMarkedAlt className="me-2" />, 
+      label: 'Quản lý tour', 
+      path: '/admin/tours',
+      subItems: [
+        { icon: <FaFilePdf className="me-2" />, label: 'Export PDF', onClick: handleExportPDF, isExternal: true },
+        { icon: <FaFileExcel className="me-2" />, label: 'Export Excel', onClick: handleExportExcel, isExternal: true }
+      ] 
+    },
     { icon: <FaUsers className="me-2" />, label: 'Số người dùng', path: '/admin/users' },
     { icon: <FaLock className="me-2" />, label: 'Phân quyền', path: '/admin/permissions' },
     { icon: <FaUserShield className="me-2" />, label: 'Vai trò', path: '/admin/roles' },
@@ -31,11 +58,6 @@ function AdminLayout() {
       icon: <FaChartLine className="me-2" />,
       label: 'Tổng doanh thu',
       path: '/admin/revenue',
-      subItems: [
-        { icon: <FaHome className="me-2" />, label: 'Trang chính', path: '/admin/revenue' },
-        { icon: <FaFilePdf className="me-2" />, label: 'Export PDF', path: '/admin/revenue/export-pdf' },
-        { icon: <FaFileExcel className="me-2" />, label: 'Export Excel', path: '/admin/revenue/export-excel' }
-      ]
     },
     { icon: <FaHeadset className="me-2" />, label: 'Quản lý tour theo yêu cầu', path: '/admin/support' },
   ];
@@ -92,19 +114,35 @@ function AdminLayout() {
                 </NavLink>
                 {item.subItems && (
                   <Nav className="flex-column ms-4">
-                    {item.subItems.map((subItem, subIndex) => (
-                      <NavLink
-                        key={subIndex}
-                        to={subItem.path}
-                        className={({ isActive }) => 
-                          `nav-link py-2 ${isActive ? 'active text-white' : 'text-secondary'}`
-                        }
-                        style={{ fontSize: '0.9em' }}
-                      >
-                        {subItem.icon}
-                        {subItem.label}
-                      </NavLink>
-                    ))}
+                    {item.subItems.map((subItem, subIndex) => {
+                      if (subItem.isExternal) {
+                        return (
+                          <a
+                            key={subIndex}
+                            href="#"
+                            onClick={subItem.onClick}
+                            className="nav-link py-2 text-secondary"
+                            style={{ fontSize: '0.9em' }}
+                          >
+                            {subItem.icon}
+                            {subItem.label}
+                          </a>
+                        );
+                      }
+                      return (
+                        <NavLink
+                          key={subIndex}
+                          to={subItem.path}
+                          className={({ isActive }) => 
+                            `nav-link py-2 ${isActive ? 'active text-white' : 'text-secondary'}`
+                          }
+                          style={{ fontSize: '0.9em' }}
+                        >
+                          {subItem.icon}
+                          {subItem.label}
+                        </NavLink>
+                      );
+                    })}
                   </Nav>
                 )}
               </div>

@@ -63,6 +63,13 @@ const RecommendedTours = () => {
     const smallRight2 = tours[4];
     const bigRight = tours[5];
 
+    const categoryTranslations = {
+        ADVENTURE: 'Phiêu lưu',
+        CULTURAL: 'Văn hóa',
+        HOLIDAY: 'Nghỉ hè',
+        SEASONAL: 'Theo mùa'
+    };
+
     const renderCard = (tour, type, key) => {
         if (!tour) return null;
         return (
@@ -84,7 +91,7 @@ const RecommendedTours = () => {
                         <i className="fas fa-heart"></i>
                     </div>
                     {tour.category && (
-                        <div className="tour-badge">{tour.category}</div>
+                        <div className="tour-badge">{categoryTranslations[tour.category] || tour.category}</div>
                     )}
                 </div>
                 <div className="tour-card-body">

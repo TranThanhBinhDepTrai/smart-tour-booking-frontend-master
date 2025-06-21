@@ -2,6 +2,7 @@ import React from 'react';
 import { Container } from 'react-bootstrap';
 import TourCategories from '../../components/TourCategories/TourCategories';
 import RecommendedTours from '../../components/RecommendedTours/RecommendedTours';
+import FeaturedTours from '../../components/FeaturedTours/FeaturedTours';
 import './Home.css';
 
 const Home = () => {
@@ -49,6 +50,9 @@ const Home = () => {
 
             {/* Recommended Tours Section */}
             <RecommendedTours />
+
+            {/* Featured Tours Section */}
+            <FeaturedTours />
         </div>
     );
 };

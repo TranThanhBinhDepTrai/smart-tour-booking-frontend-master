@@ -231,7 +231,7 @@ export const tourService = {
     getAllTours: async () => {
         try {
             // Lấy tất cả tour, size lớn hơn tổng số tour
-            const response = await axios.get(`${API_URL}/tours`, { params: { page: 0, size: 100 } });
+            const response = await axios.get(`${API_URL}/tours`, { params: { page: 0, size: 1000 } });
             return response.data;
         } catch (error) {
             throw error;

@@ -9,6 +9,7 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState(null);
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
 
     // State cho modal đổi mật khẩu
     const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -63,10 +64,31 @@ const Profile = () => {
             ...prev,
             [name]: value || null
         }));
+
+        if (name === 'birthDate') {
+            const birthDate = new Date(value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            if (age < 18) {
+                setErrors(prev => ({ ...prev, birthDate: 'Bạn phải đủ 18 tuổi.' }));
+            } else {
+                setErrors(prev => ({ ...prev, birthDate: null }));
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (errors.birthDate) {
+            alert(errors.birthDate);
+            return;
+        }
+
         try {
             console.log('Current form data:', formData);
             const token = localStorage.getItem('token');
@@ -253,9 +275,13 @@ const Profile = () => {
                                         <Form.Control
                                             type="date"
                                             name="birthDate"
-                                            value={formData.birthDate || ''}
+                                            value={formData.birthDate ? formData.birthDate.split('T')[0] : ''}
                                             onChange={handleChange}
+                                            isInvalid={!!errors.birthDate}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.birthDate}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group className="mb-3">
                                         <Form.Label>Giới tính</Form.Label>

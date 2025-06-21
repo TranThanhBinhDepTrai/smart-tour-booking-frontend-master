@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết Quả Thanh Toán VNPAY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        #message {
+            font-size: 24px;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .loading {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kết Quả Thanh Toán</h1>
+        <h1 id="message" class="loading">Đang kiểm tra thanh toán...</h1>
+    </div>
+
+    <script>
+        async function checkPaymentStatus() {
+            try {
+                // Lấy toàn bộ URL gốc (bao gồm cả query string)
+                const currentUrl = window.location.href;
+                
+                // Thay thế localhost:3000 bằng localhost:8080 để gọi đến backend
+                const backendUrl = currentUrl.replace('localhost:3000/vnpay-view.html', 'localhost:8080/api/v1/bookings/vnpay-return');
+                
+                // Gọi fetch để gửi request GET tới backend URL
+                const response = await fetch(backendUrl);
+                const data = await response.json();
+                
+                const messageElement = document.getElementById('message');
+                
+                // Đọc paymentStatus từ response.data.paymentStatus
+                if (data.data.paymentStatus === "PAID") {
+                    messageElement.innerText = "✅ Thanh toán thành công!";
+                    messageElement.className = "success";
+                } else if (data.data.paymentStatus === "UNPAID") {
+                    messageElement.innerText = "❌ Thanh toán thất bại!";
+                    messageElement.className = "error";
+                } else {
+                    messageElement.innerText = "⚠️ Trạng thái không xác định!";
+                    messageElement.className = "warning";
+                }
+                
+            } catch (error) {
+                console.error('Lỗi:', error);
+                const messageElement = document.getElementById('message');
+                messageElement.innerText = "⚠️ Lỗi khi kiểm tra thanh toán.";
+                messageElement.className = "error";
+            }
+        }
+        
+        // Chạy khi trang load
+        checkPaymentStatus();
+    </script>
+</body>
+</html> 

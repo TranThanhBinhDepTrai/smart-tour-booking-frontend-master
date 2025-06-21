@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
+import { tourService } from '../../services/tourService';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import './AdminTour.css';
 
 const AdminTour = () => {
@@ -11,12 +12,17 @@ const AdminTour = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchCategory, setSearchCategory] = useState('all');
   const pageSize = 10;
+
+  // Modal state
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedTourDetails, setSelectedTourDetails] = useState(null);
 
   useEffect(() => {
     fetchTours();
@@ -31,93 +37,32 @@ const AdminTour = () => {
 
     if (!searchTerm.trim()) {
       setFilteredTours(tours);
-      setTotalElements(tours.length);
-      setTotalPages(Math.ceil(tours.length / pageSize));
       return;
     }
 
     const term = searchTerm.trim().toLowerCase();
-    let results = tours;
-
-    // Filter by specific category if selected
-    if (searchCategory === 'code') {
-      results = tours.filter(tour => 
-        tour.code && tour.code.toLowerCase().includes(term)
-      );
-    } else if (searchCategory === 'title') {
-      results = tours.filter(tour => 
-        tour.title && tour.title.toLowerCase().includes(term)
-      );
-    } else if (searchCategory === 'destination') {
-      results = tours.filter(tour => 
-        tour.destination && tour.destination.toLowerCase().includes(term)
-      );
-    } else if (searchCategory === 'price') {
-      // Try to parse search term as number
-      if (!isNaN(parseInt(term))) {
-        const searchPrice = parseInt(term);
-        results = tours.filter(tour => 
-          tour.priceAdults <= searchPrice * 1.2 && tour.priceAdults >= searchPrice * 0.8
-        );
-      }
-    } else if (searchCategory === 'status') {
-      if (term.includes('hoạt động') || term.includes('active')) {
-        results = tours.filter(tour => tour.available === true);
-      } else if (term.includes('ngừng') || term.includes('inactive')) {
-        results = tours.filter(tour => tour.available === false);
-      }
-    } else {
-      // Search in all fields
-      results = tours.filter(tour => 
+    const results = tours.filter(tour => 
         (tour.code && tour.code.toLowerCase().includes(term)) ||
         (tour.title && tour.title.toLowerCase().includes(term)) ||
-        (tour.destination && tour.destination.toLowerCase().includes(term)) ||
-        (tour.region === 'DOMESTIC' && 'trong nước'.includes(term)) ||
-        (tour.region === 'INTERNATIONAL' && 'quốc tế'.includes(term)) ||
-        (tour.airline && tour.airline.toLowerCase().includes(term))
+        (tour.destination && tour.destination.toLowerCase().includes(term))
       );
-    }
-
     setFilteredTours(results);
-    setTotalElements(results.length);
-    setTotalPages(Math.ceil(results.length / pageSize));
-    setCurrentPage(0); // Reset to first page when searching
-  }, [searchTerm, searchCategory, tours]);
+  }, [searchTerm, tours]);
 
   const fetchTours = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/tours?page=${currentPage}&size=${pageSize}`);
-      console.log('API Response:', response);
+      const response = await tourService.getTours({ page: currentPage, size: pageSize });
 
-      let toursData = [];
-      let total = 0;
-      let totalPages = 0;
-
-      if (response.data) {
-        if (Array.isArray(response.data)) {
-          toursData = response.data;
-          total = response.data.length;
-          totalPages = Math.ceil(total / pageSize);
-        } else if (response.data.content && Array.isArray(response.data.content)) {
-          toursData = response.data.content;
-          total = response.data.totalElements || toursData.length;
-          totalPages = response.data.totalPages || Math.ceil(total / pageSize);
-        }
+      if (response && response.data && response.data.content) {
+        setTours(response.data.content);
+        setFilteredTours(response.data.content);
+        setTotalPages(response.data.totalPages);
+        setTotalElements(response.data.totalElements);
       }
-
-      setTours(toursData);
-      setFilteredTours(toursData);
-      setTotalElements(total);
-      setTotalPages(totalPages);
       setError(null);
     } catch (err) {
       console.error('Error fetching tours:', err);
-      console.error('Error details:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status
-      });
       setError('Không thể tải danh sách tour');
       setTours([]);
       setFilteredTours([]);
@@ -127,70 +72,48 @@ const AdminTour = () => {
   };
 
   const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
     setCurrentPage(newPage);
+    }
   };
-
-  const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa tour này không? Hành động này không thể hoàn tác.')) {
-      try {
-        setLoading(true);
-        console.log('Deleting tour with ID:', id);
-        
-        const response = await api.delete(`/tours/${id}`);
-        console.log('Delete response:', response);
-        
-        setSuccess('Xóa tour thành công!');
-        
-        // Đợi 1 giây trước khi refresh để đảm bảo server đã xử lý xong
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Refresh danh sách tour
-        await fetchTours();
-      } catch (err) {
-        console.error('Error deleting tour:', err);
-        console.error('Error response:', {
-          status: err.response?.status,
-          statusText: err.response?.statusText,
-          data: err.response?.data,
-          message: err.message
-        });
-        
-        let errorMessage = 'Không thể xóa tour. Vui lòng thử lại sau.';
-        
-        if (err.response?.status === 403) {
-          errorMessage = 'Bạn không có quyền xóa tour này';
-        } else if (err.response?.status === 404) {
-          errorMessage = 'Không tìm thấy tour này';
-        } else if (err.response?.data?.message) {
-          errorMessage = err.response.data.message;
-        }
-        
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
+  
+  const handleShowDetails = async (tourId) => {
+    try {
+      const response = await tourService.getTourById(tourId);
+      if (response && response.data) {
+        setSelectedTourDetails(response.data);
+        setShowDetailModal(true);
       }
+    } catch (error) {
+      setError('Không thể tải chi tiết tour.');
     }
   };
 
-  // Reset search
+  const handleCloseDetails = () => {
+    setShowDetailModal(false);
+    setSelectedTourDetails(null);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa tour này không?')) {
+      try {
+        await tourService.deleteTour(id);
+        setSuccess('Xóa tour thành công!');
+        fetchTours(); // Refresh tour list
+      } catch (err) {
+        setError('Không thể xóa tour. Vui lòng thử lại.');
+      }
+    }
+  };
+  
   const handleResetSearch = () => {
     setSearchTerm('');
-    setSearchCategory('all');
   };
-
-  // Get current tours for current page
-  const getCurrentPageItems = () => {
-    const start = currentPage * pageSize;
-    const end = start + pageSize;
-    return filteredTours.slice(start, end);
-  };
-
-  // Current items to display
-  const currentTours = getCurrentPageItems();
 
   return (
     <div className="admin-tour-container p-6">
       <div className="admin-tour-card p-6">
+        {/* Header */}
         <div className="admin-tour-header">
           <div>
             <h1 className="admin-tour-title">Quản Lý Tour</h1>
@@ -200,27 +123,12 @@ const AdminTour = () => {
             onClick={() => navigate('/admin/tours/create')}
             className="add-tour-button"
           >
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-            </svg>
             Thêm Tour Mới
           </button>
         </div>
 
         {/* Search Bar */}
         <div className="search-filter-section">
-          <select
-            className="search-category"
-            value={searchCategory}
-            onChange={(e) => setSearchCategory(e.target.value)}
-          >
-            <option value="all">Tất cả</option>
-            <option value="code">Mã tour</option>
-            <option value="title">Tên tour</option>
-            <option value="destination">Điểm đến</option>
-            <option value="price">Giá</option>
-            <option value="status">Trạng thái</option>
-          </select>
           <input
             type="text"
             className="search-input"
@@ -229,180 +137,94 @@ const AdminTour = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button className="search-button" onClick={handleResetSearch}>
-            {searchTerm ? (
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            )}
+            X
           </button>
         </div>
 
         <div className="search-results-info">
-          {searchTerm ? (
-            <>Tìm thấy <strong>{totalElements}</strong> tour phù hợp</>
-          ) : (
-            <>Hiển thị <strong>{totalElements}</strong> tour</>
-          )}
+            Hiển thị <strong>{filteredTours.length}</strong> trên tổng số <strong>{totalElements}</strong> tour
         </div>
 
-        {error && (
-          <div className="error-alert mb-4">
-            <p className="error-alert-title">Lỗi</p>
-            <p>{error}</p>
-          </div>
-        )}
+        {loading && <div className="text-center my-4">Đang tải...</div>}
+        {error && <div className="alert alert-danger">{error}</div>}
+        {success && <div className="alert alert-success">{success}</div>}
 
-        {success && (
-          <div className="success-alert mb-4">
-            <p className="success-alert-title">Thành công</p>
-            <p>{success}</p>
-          </div>
-        )}
-
-        {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Đang tải dữ liệu...</p>
-          </div>
-        ) : (
+        {!loading && !error && (
           <>
-            <div className="overflow-x-auto">
+            <div className="tour-table-container">
               <table className="tour-table">
                 <thead>
                   <tr>
-                    <th>Mã Tour</th>
-                    <th>Tên Tour</th>
+                    <th>Ảnh</th>
+                    <th>Mã tour</th>
+                    <th>Tên tour</th>
                     <th>Điểm đến</th>
-                    <th>Thời gian</th>
-                    <th>Giá (VNĐ)</th>
+                    <th>Giá người lớn</th>
                     <th>Trạng thái</th>
-                    <th>Thao tác</th>
+                    <th>Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {currentTours.length > 0 ? (
-                    currentTours.map((tour) => (
+                  {filteredTours.map(tour => (
                       <tr key={tour.id}>
                         <td>
-                          <span className="tour-code">{tour.code}</span>
-                        </td>
-                        <td>
-                          <div className="tour-info-cell">
                             <img 
-                              src={Array.isArray(tour.images) && tour.images.length > 0 
-                                ? (typeof tour.images[0] === 'string' 
-                                  ? tour.images[0] 
-                                  : tour.images[0]?.url || 'https://via.placeholder.com/80x60?text=Tour')
-                                : 'https://via.placeholder.com/80x60?text=Tour'} 
+                          src={tour.images && tour.images[0] ? tour.images[0].url : 'https://via.placeholder.com/80x60?text=No+Image'} 
                               alt={tour.title}
                               className="tour-thumbnail"
-                              onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/80x60?text=Tour';
-                              }}
                             />
-                            <div>
-                              <div className="tour-info-primary">{tour.title}</div>
-                              <div className="tour-info-secondary">{tour.airline}</div>
-                            </div>
-                          </div>
                         </td>
+                      <td>{tour.code}</td>
+                      <td>{tour.title}</td>
+                      <td>{tour.destination}</td>
+                      <td>{new Intl.NumberFormat('vi-VN').format(tour.priceAdults)} VNĐ</td>
                         <td>
-                          <div className="tour-info-primary">{tour.destination}</div>
-                          <div className="tour-info-secondary">
-                            {tour.region === 'DOMESTIC' ? 'Trong nước' : 'Quốc tế'}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tour-info-primary">
-                            {format(new Date(tour.startDate), 'dd/MM/yyyy')}
-                          </div>
-                          <div className="tour-info-secondary">
-                            {format(new Date(tour.endDate), 'dd/MM/yyyy')}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="tour-info-primary">
-                            {tour.priceAdults.toLocaleString('vi-VN')} (Người lớn)
-                          </div>
-                          <div className="tour-info-secondary">
-                            {tour.priceChildren.toLocaleString('vi-VN')} (Trẻ em)
-                          </div>
-                        </td>
-                        <td>
-                          <span className={`tour-status ${tour.available ? 'tour-status-active' : 'tour-status-inactive'}`}>
-                            {tour.available ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+                        <span className={`status-badge ${tour.available ? 'status-active' : 'status-inactive'}`}>
+                          {tour.available ? 'Hoạt động' : 'Ngừng'}
                           </span>
                         </td>
                         <td>
-                          <div className="tour-actions">
+                        <div className="action-buttons">
+                          <button 
+                            className="action-button view-button"
+                            onClick={() => handleShowDetails(tour.id)}
+                          >
+                            Xem
+                          </button>
                             <button
+                            className="action-button edit-button"
                               onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
-                              className="action-button edit-button"
                             >
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
                               Sửa
                             </button>
                             <button
+                            className="action-button delete-button"
                               onClick={() => handleDelete(tour.id)}
-                              className="action-button delete-button"
                             >
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
                               Xóa
                             </button>
                           </div>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="7" className="empty-table">Không tìm thấy dữ liệu</td>
-                    </tr>
-                  )}
+                  ))}
                 </tbody>
               </table>
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
               <div className="pagination">
-                <button
-                  className="pagination-button"
-                  onClick={() => handlePageChange(0)}
-                  disabled={currentPage === 0}
-                >
+                <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>
                   Đầu
                 </button>
-                <button
-                  className="pagination-button"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 0}
-                >
+                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
                   Trước
                 </button>
-                
-                <span className="pagination-info">
-                  Trang {currentPage + 1} / {totalPages} (Tổng: {totalElements} tour)
-                </span>
-
-                <button
-                  className="pagination-button"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage >= totalPages - 1}
-                >
+                <span>Trang {currentPage + 1} / {totalPages}</span>
+                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>
                   Sau
                 </button>
-                <button
-                  className="pagination-button"
-                  onClick={() => handlePageChange(totalPages - 1)}
-                  disabled={currentPage >= totalPages - 1}
-                >
+                <button onClick={() => handlePageChange(totalPages - 1)} disabled={currentPage >= totalPages - 1}>
                   Cuối
                 </button>
               </div>
@@ -410,6 +232,43 @@ const AdminTour = () => {
           </>
         )}
       </div>
+
+      {/* Tour Detail Modal */}
+      <Modal show={showDetailModal} onHide={handleCloseDetails} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Chi tiết Tour</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedTourDetails ? (
+            <div>
+              <img 
+                src={selectedTourDetails.images && selectedTourDetails.images[0] ? selectedTourDetails.images[0].url : 'https://via.placeholder.com/400x250?text=No+Image'} 
+                alt={selectedTourDetails.title}
+                className="img-fluid mb-3"
+              />
+              <h4>{selectedTourDetails.title}</h4>
+              <p><strong>Mã tour:</strong> {selectedTourDetails.code}</p>
+              <p><strong>Điểm đến:</strong> {selectedTourDetails.destination}</p>
+              <p><strong>Mô tả:</strong> {selectedTourDetails.description}</p>
+              <p><strong>Ngày khởi hành:</strong> {format(new Date(selectedTourDetails.startDate), 'dd/MM/yyyy')}</p>
+              <p><strong>Ngày kết thúc:</strong> {format(new Date(selectedTourDetails.endDate), 'dd/MM/yyyy')}</p>
+              <p><strong>Giá người lớn:</strong> {new Intl.NumberFormat('vi-VN').format(selectedTourDetails.priceAdults)} VNĐ</p>
+              <p><strong>Giá trẻ em:</strong> {new Intl.NumberFormat('vi-VN').format(selectedTourDetails.priceChildren)} VNĐ</p>
+              <p><strong>Lịch trình:</strong></p>
+              <ul>
+                {selectedTourDetails.itinerary.map((item, index) => <li key={index}>{item}</li>)}
+              </ul>
+            </div>
+          ) : (
+            <p>Đang tải chi tiết tour...</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDetails}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

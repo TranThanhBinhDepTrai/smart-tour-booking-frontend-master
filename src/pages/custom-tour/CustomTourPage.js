@@ -52,7 +52,7 @@ const CustomTourPage = () => {
         startDate: new Date(formData.startDate).toISOString(),
         endDate: new Date(formData.endDate).toISOString(),
         description: formData.description,
-        region: 'DOMESTIC'
+        region: formData.region
       };
 
       const response = await tourService.createCustomTour(formattedData);
@@ -167,6 +167,22 @@ const CustomTourPage = () => {
                 </Col>
               </Row>
 
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Khu vực</Form.Label>
+                    <Form.Select
+                      name="region"
+                      value={formData.region}
+                      onChange={handleChange}
+                    >
+                      <option value="DOMESTIC">Trong nước</option>
+                      <option value="INTERNATIONAL">Quốc tế</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+
               <Row className="mb-4">
                 <Col md={6}>
                   <Form.Group>
@@ -249,6 +265,11 @@ const CustomTourPage = () => {
                       </div>
                     </div>
                   </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <p className="mt-3"><strong>Tổng cộng: {parseInt(formData.adultsCapacity, 10) + parseInt(formData.childrenCapacity, 10)} khách</strong></p>
+                    </Col>
                 </Row>
               </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form, Alert, Nav, InputGroup } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { promotionService } from '../../services/promotionService';
 import { userService } from '../../services/userService';
 import './AdminTour.css';
@@ -33,6 +34,7 @@ const Promotions = () => {
         usageLimit: 0
     });
     const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
     const loadUsers = async () => {
         try {
@@ -283,9 +285,17 @@ const Promotions = () => {
     return (
         <Container fluid className="admin-page-container mt-4">
             {error && <Alert variant="danger">{error}</Alert>}
-            <div className="admin-header mb-3">
-                <h2 className="admin-title">Quản lý khuyến mãi</h2>
-                <div className="admin-subtitle">Danh sách các chương trình khuyến mãi</div>
+            <div className="admin-tour-header mb-3">
+                <div>
+                    <h1 className="admin-tour-title">Quản lý khuyến mãi</h1>
+                    <p className="admin-tour-subtitle">Danh sách các chương trình khuyến mãi</p>
+                </div>
+                <button
+                    onClick={() => navigate('/admin/promotions/create')}
+                    className="add-tour-button"
+                >
+                    + Thêm khuyến mãi
+                </button>
             </div>
             <div className="search-filter-section mb-3">
                 <input
@@ -564,6 +574,17 @@ const Promotions = () => {
                     </Form>
                 </Modal.Body>
             </Modal>
+
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <Nav variant="tabs">
+                    <Nav.Item>
+                        <Nav.Link eventKey="active">Hoạt động</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link eventKey="inactive">Không hoạt động</Nav.Link>
+                    </Nav.Item>
+                </Nav>
+            </div>
         </Container>
     );
 };

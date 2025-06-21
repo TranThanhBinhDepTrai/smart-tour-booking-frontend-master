@@ -27,12 +27,11 @@ import AdminPromotions from './pages/admin/Promotions';
 import Promotions from './pages/Promotions';
 import CheckBooking from './components/CheckBooking/CheckBooking';
 import BookingManagement from './pages/admin/BookingManagement';
-import ExportPDF from './pages/admin/ExportPDF';
-import ExportExcel from './pages/admin/ExportExcel';
 import CustomTourManagement from './pages/admin/CustomTourManagement';
+import CreatePromotion from './pages/admin/CreatePromotion';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Users from './pages/admin/Users';
-import PaymentResult from './pages/payment/PaymentResult';
+import VnpayReturn from './pages/payment/VnpayReturn';
 import History from './pages/history/History';
 import Contact from './pages/contact/Contact';
 import Revenue from './pages/admin/Revenue';
@@ -112,14 +111,13 @@ const router = createBrowserRouter(
         <Route path="roles" element={<RoleManagement />} />
         <Route path="bookings" element={<BookingManagement />} />
         <Route path="promotions" element={<AdminPromotions />} />
+        <Route path="promotions/create" element={<CreatePromotion />} />
         <Route path="revenue" element={<Revenue />} />
-        <Route path="revenue/export-pdf" element={<ExportPDF />} />
-        <Route path="revenue/export-excel" element={<ExportExcel />} />
         <Route path="support" element={<CustomTourManagement />} />
       </Route>
 
       {/* Payment Result Route */}
-      <Route path="/payment-result" element={<PaymentResult />} />
+      <Route path="/vnpay-return" element={<VnpayReturn />} />
 
       {/* Catch all route */}
       <Route path="*" element={<Navigate to="/" replace />} />
