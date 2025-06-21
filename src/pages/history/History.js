@@ -32,11 +32,12 @@ const History = () => {
             console.log('User role:', currentUser.role);
             const response = await bookingService.getUserBookings(currentUser.id);
             console.log('Full bookings response:', response);
-            if (response?.statusCode === 200) {
-                setBookings(response.data);
-                console.log('Bookings set:', response.data);
+            if (Array.isArray(response)) {
+                setBookings(response);
+                console.log('Bookings set:', response);
             } else {
-                setError('Không thể tải lịch sử đặt tour: ' + (response?.message || 'Lỗi không xác định'));
+                // This case might happen if the API returns an unexpected object on error
+                setError('Không thể tải lịch sử đặt tour: Dữ liệu không hợp lệ.');
             }
         } catch (err) {
             console.error('Error loading bookings:', err);
