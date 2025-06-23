@@ -39,6 +39,20 @@ const Register = () => {
       return;
     }
 
+    // Kiểm tra tuổi >= 18
+    const today = new Date();
+    const birthDate = new Date(formData.birthDate);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 18) {
+      setError('Bạn phải đủ 18 tuổi để đăng ký tài khoản.');
+      setLoading(false);
+      return;
+    }
+
     try {
       // Loại bỏ confirmPassword trước khi gửi lên server
       const { confirmPassword, ...registerData } = formData;

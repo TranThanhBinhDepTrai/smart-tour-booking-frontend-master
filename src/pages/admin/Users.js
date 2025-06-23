@@ -302,11 +302,11 @@ const Users = () => {
                             {users.filter(user => {
                                 const s = searchTerm.toLowerCase();
                                 return (
-                                    user.fullName.toLowerCase().includes(s) ||
-                                    user.email.toLowerCase().includes(s) ||
-                                    user.phone.toLowerCase().includes(s) ||
-                                    user.address.toLowerCase().includes(s) ||
-                                    user.role.name.toLowerCase().includes(s)
+                                    (user.fullName && user.fullName.toLowerCase().includes(s)) ||
+                                    (user.email && user.email.toLowerCase().includes(s)) ||
+                                    (user.phone && user.phone.toLowerCase().includes(s)) ||
+                                    (user.address && user.address.toLowerCase().includes(s)) ||
+                                    (user.role && user.role.name && user.role.name.toLowerCase().includes(s))
                                 );
                             }).map(user => (
                                 <tr key={user.id}>

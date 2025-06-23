@@ -193,6 +193,7 @@ const CustomTourPage = () => {
                       value={formData.startDate}
                       onChange={handleChange}
                       required
+                      min={new Date().toISOString().split('T')[0]}
                     />
                     <Form.Text className="text-muted">
                       (dd/mm/yyyy)
@@ -208,6 +209,7 @@ const CustomTourPage = () => {
                       value={formData.endDate}
                       onChange={handleChange}
                       required
+                      min={formData.startDate || new Date().toISOString().split('T')[0]}
                     />
                     <Form.Text className="text-muted">
                       (dd/mm/yyyy)

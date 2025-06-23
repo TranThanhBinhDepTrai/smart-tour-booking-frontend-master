@@ -15,19 +15,20 @@ const FeaturedTours = () => {
         const fetchTours = async () => {
             try {
                 setLoading(true);
-                // Lấy 5 tour trong nước
-                const domesticResponse = await tourService.getTours({ page: 0, size: 5, region: 'DOMESTIC' });
-                if (domesticResponse && domesticResponse.data && domesticResponse.data.content) {
-                    setDomesticTours(domesticResponse.data.content);
-                }
-
-                // Lấy 5 tour nước ngoài
-                const internationalResponse = await tourService.getTours({ page: 0, size: 5, region: 'INTERNATIONAL' });
-                if (internationalResponse && internationalResponse.data && internationalResponse.data.content) {
-                    setInternationalTours(internationalResponse.data.content);
+                // Lấy 10 tour mới nhất
+                const response = await tourService.getTours({ page: 0, size: 10 });
+                if (response && response.data && response.data.content) {
+                    const allTours = response.data.content;
+                    setDomesticTours(allTours.filter(tour => tour.region === 'DOMESTIC'));
+                    setInternationalTours(allTours.filter(tour => tour.region === 'INTERNATIONAL'));
+                } else {
+                    setDomesticTours([]);
+                    setInternationalTours([]);
                 }
             } catch (error) {
                 console.error("Error fetching featured tours:", error);
+                setDomesticTours([]);
+                setInternationalTours([]);
             } finally {
                 setLoading(false);
             }

@@ -404,6 +404,11 @@ image.png.admin-tour-container {
     color: white;
 }
 
+.method-badge.patch {
+    background-color: #bb0ceb;
+    color: white;
+}
+
 /* Table styles */
 .table th {
     background-color: #f8f9fa;

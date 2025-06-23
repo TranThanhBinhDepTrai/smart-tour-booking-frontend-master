@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { tourService } from '../../services/tourService';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Dropdown, ButtonGroup } from 'react-bootstrap';
 import './AdminTour.css';
 
 const AdminTour = () => {
@@ -110,6 +110,31 @@ const AdminTour = () => {
     setSearchTerm('');
   };
 
+  // Thêm hàm cập nhật trạng thái
+  const handleUpdateStatus = async (tourId, value) => {
+    try {
+      // Lấy username/password từ localStorage hoặc mặc định
+      const username = localStorage.getItem('username') || 'admin';
+      const password = localStorage.getItem('password') || '123';
+      const response = await fetch(`http://localhost:8080/api/v1/tours/${tourId}/available?value=${value}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+      const text = await response.text();
+      if (!response.ok) {
+        setError(text || 'Không thể cập nhật trạng thái.');
+        return;
+      }
+      setSuccess(text || 'Cập nhật trạng thái thành công!');
+      fetchTours();
+    } catch (err) {
+      setError('Không thể cập nhật trạng thái.');
+    }
+  };
+
   return (
     <div className="admin-tour-container p-6">
       <div className="admin-tour-card p-6">
@@ -179,9 +204,21 @@ const AdminTour = () => {
                       <td>{tour.destination}</td>
                       <td>{new Intl.NumberFormat('vi-VN').format(tour.priceAdults)} VNĐ</td>
                         <td>
-                        <span className={`status-badge ${tour.available ? 'status-active' : 'status-inactive'}`}>
-                          {tour.available ? 'Hoạt động' : 'Ngừng'}
+                        <Dropdown as={ButtonGroup}>
+                          <span className={`status-badge ${tour.available ? 'status-active' : 'status-inactive'}`}
+                                style={{marginRight: 8}}>
+                            {tour.available ? 'Hoạt động' : 'Ngừng'}
                           </span>
+                          <Dropdown.Toggle split variant="light" id={`dropdown-status-${tour.id}`}/>
+                          <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => handleUpdateStatus(tour.id, true)} style={{color: 'green'}}>
+                              Hoạt động
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleUpdateStatus(tour.id, false)} style={{color: 'red'}}>
+                              Ngừng
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
                         </td>
                         <td>
                         <div className="action-buttons">
@@ -241,11 +278,21 @@ const AdminTour = () => {
         <Modal.Body>
           {selectedTourDetails ? (
             <div>
-              <img 
-                src={selectedTourDetails.images && selectedTourDetails.images[0] ? selectedTourDetails.images[0].url : 'https://via.placeholder.com/400x250?text=No+Image'} 
-                alt={selectedTourDetails.title}
-                className="img-fluid mb-3"
-              />
+              {/* Hiển thị tất cả ảnh */}
+              <div style={{display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16}}>
+                {selectedTourDetails.images && selectedTourDetails.images.length > 0 ? (
+                  selectedTourDetails.images.map((img, idx) => (
+                    <img
+                      key={img.id || idx}
+                      src={img.url}
+                      alt={selectedTourDetails.title}
+                      style={{width: 120, height: 80, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee'}}
+                    />
+                  ))
+                ) : (
+                  <img src="https://via.placeholder.com/120x80?text=No+Image" alt="No" />
+                )}
+              </div>
               <h4>{selectedTourDetails.title}</h4>
               <p><strong>Mã tour:</strong> {selectedTourDetails.code}</p>
               <p><strong>Điểm đến:</strong> {selectedTourDetails.destination}</p>
@@ -254,6 +301,12 @@ const AdminTour = () => {
               <p><strong>Ngày kết thúc:</strong> {format(new Date(selectedTourDetails.endDate), 'dd/MM/yyyy')}</p>
               <p><strong>Giá người lớn:</strong> {new Intl.NumberFormat('vi-VN').format(selectedTourDetails.priceAdults)} VNĐ</p>
               <p><strong>Giá trẻ em:</strong> {new Intl.NumberFormat('vi-VN').format(selectedTourDetails.priceChildren)} VNĐ</p>
+              <p><strong>Sức chứa:</strong> {selectedTourDetails.capacity}</p>
+              <p><strong>Khu vực:</strong> {selectedTourDetails.region}</p>
+              <p><strong>Loại hình:</strong> {selectedTourDetails.category}</p>
+              <p><strong>Hãng hàng không:</strong> {selectedTourDetails.airline}</p>
+              <p><strong>Trạng thái:</strong> {selectedTourDetails.available ? 'Hoạt động' : 'Ngừng'}</p>
+              <p><strong>Số ngày/đêm:</strong> {selectedTourDetails.durationDays} ngày {selectedTourDetails.durationNights} đêm</p>
               <p><strong>Lịch trình:</strong></p>
               <ul>
                 {selectedTourDetails.itinerary.map((item, index) => <li key={index}>{item}</li>)}
@@ -267,6 +320,20 @@ const AdminTour = () => {
           <Button variant="secondary" onClick={handleCloseDetails}>
             Đóng
           </Button>
+          {selectedTourDetails && (
+            <Button 
+              variant="primary" 
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = `http://localhost:8080/api/v1/tours/${selectedTourDetails.id}/export/pdf`;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.click();
+              }}
+            >
+              Tải PDF
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </div>

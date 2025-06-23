@@ -131,16 +131,12 @@ const CustomTourManagement = () => {
       // Lấy config headers chứa token
       const config = getAuthConfig();
       
-      // API call to send email would go here
-      // Example:
-      // await axios.post('http://localhost:8080/api/v1/email/send', {
-      //   to: selectedTour.email,
-      //   subject: `Phản hồi về yêu cầu tour ${selectedTour.destination}`,
-      //   content: emailResponse
-      // }, config);
-      
-      // For now, we'll just simulate it with a timeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Gửi phản hồi qua email thực tế
+      await axios.patch(
+        `http://localhost:8080/api/v1/tour/custom/${selectedTour.id}/reply`,
+        { message: emailResponse },
+        config
+      );
       
       alert(`Đã gửi phản hồi thành công tới ${selectedTour.email}!`);
       setEmailResponse('');
@@ -280,6 +276,7 @@ const CustomTourManagement = () => {
                       <th width="15%">Điểm đến</th>
                       <th width="10%">Số người</th>
                       <th width="15%">Thời gian</th>
+                      <th width="10%">Khu vực</th>
                       <th width="15%">Trạng thái</th>
                       <th width="10%">Thao tác</th>
                     </tr>
@@ -304,6 +301,7 @@ const CustomTourManagement = () => {
                           <div>Đến: {formatDate(tour.endDate)}</div>
                           <div>{tour.durationDays} ngày {tour.durationNights} đêm</div>
                         </td>
+                        <td>{tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</td>
                         <td>
                           <Badge bg="warning" text="dark">Chưa xử lý</Badge>
                         </td>
@@ -341,6 +339,7 @@ const CustomTourManagement = () => {
                     <th width="15%">Điểm đến</th>
                     <th width="10%">Số người</th>
                     <th width="15%">Thời gian</th>
+                    <th width="10%">Khu vực</th>
                     <th width="15%">Trạng thái</th>
                     <th width="10%">Thao tác</th>
                   </tr>
@@ -366,6 +365,7 @@ const CustomTourManagement = () => {
                           <div>Đến: {formatDate(tour.endDate)}</div>
                           <div>{tour.durationDays} ngày {tour.durationNights} đêm</div>
                         </td>
+                        <td>{tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</td>
                         <td>
                           <Badge bg="warning" text="dark">Chưa xử lý</Badge>
                         </td>
@@ -466,6 +466,7 @@ const CustomTourManagement = () => {
                   <p><strong>Thời gian:</strong> {formatDate(selectedTour.startDate)} - {formatDate(selectedTour.endDate)}</p>
                   <p><strong>Số ngày/đêm:</strong> {selectedTour.durationDays} ngày {selectedTour.durationNights} đêm</p>
                   <p><strong>Số người:</strong> {selectedTour.capacity} (Người lớn: {selectedTour.adultsCapacity}, Trẻ em: {selectedTour.childrenCapacity})</p>
+                  <p><strong>Khu vực:</strong> {selectedTour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</p>
                 </Col>
               </Row>
               

@@ -3,6 +3,7 @@ import { Container, Form, Button, Card, Row, Col, Alert, InputGroup } from 'reac
 import { useParams, useNavigate } from 'react-router-dom';
 import { tourService } from '../../services/tourService';
 import { promotionService } from '../../services/promotionService';
+import { emailService } from '../../services/emailService';
 import { useAuth } from '../../contexts/AuthContext';
 import './BookTour.css';
 
@@ -217,8 +218,18 @@ const BookTour = () => {
                     // Nếu có URL VNPay, chuyển hướng đến trang thanh toán
                     window.location.href = response.data.vnPayUrl;
                 } else {
-                    // Nếu thanh toán tiền mặt, chuyển đến trang lịch sử
-                    alert('Đặt tour thành công!');
+                    // Nếu thanh toán tiền mặt, gửi email xác nhận và chuyển đến trang lịch sử
+                    try {
+                        const bookingId = response.data.data?.id;
+                        if (bookingId) {
+                            await emailService.sendBookingConfirmation(bookingId);
+                        }
+                    } catch (emailError) {
+                        console.error("Lỗi khi gửi email xác nhận:", emailError);
+                        // Không hiển thị lỗi email cho user
+                    }
+                    
+                    alert('Đặt tour thành công! Email xác nhận đã được gửi đến địa chỉ email của bạn.');
                     navigate('/history');
                 }
             } else {

@@ -308,6 +308,7 @@ const Permissions = () => {
                                 <option value="POST">POST</option>
                                 <option value="PUT">PUT</option>
                                 <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
                             </Form.Select>
                         </Form.Group>
 

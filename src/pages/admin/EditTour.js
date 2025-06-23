@@ -371,10 +371,10 @@ const EditTour = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="ADVENTURE">Phiêu lưu</option>
+                  <option value="ADVENTURE">Phiêu lưu mạo hiểm</option>
                   <option value="CULTURAL">Văn hóa</option>
+                  <option value="RELAX">Nghỉ dưỡng</option>
                   <option value="HOLIDAY">Nghỉ hè</option>
-                  <option value="SEASONAL">Theo mùa</option>
                 </select>
               </div>
             </div>
