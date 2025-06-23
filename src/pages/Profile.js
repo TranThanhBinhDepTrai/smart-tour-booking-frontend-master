@@ -30,6 +30,18 @@ const Profile = () => {
         });
     };
 
+    const getAuthConfig = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return {}; // Không có token thì trả về config rỗng
+        }
+        return {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+    };
+
     if (!user) {
         return (
             <Container className="mt-4">
