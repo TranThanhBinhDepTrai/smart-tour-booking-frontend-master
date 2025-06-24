@@ -60,25 +60,11 @@ export const tourService = {
     // Lấy gợi ý tour cho người dùng
     getUserRecommendations: async (userId) => {
         try {
-            console.log(`Fetching recommendations for user ${userId}`);
-            
-            // Thử gọi API gợi ý tour
-            try {
-                const response = await axios.get(`http://localhost:5000/api/user-recommendations?user_id=${userId}`);
-                console.log('Recommendations API response:', response.data);
-                return response.data;
-            } catch (apiError) {
-                console.error("Error calling recommendations API:", apiError);
-                console.log("Using fallback recommendations");
-                
-                // Nếu API không hoạt động, sử dụng danh sách ID cố định
-                return {
-                    recommended_tours: [18, 23, 30, 31, 26, 32]
-                };
-            }
+            const response = await axios.get(`http://localhost:5000/api/user-recommendations?user_id=${userId}`);
+            return response.data;
         } catch (error) {
-            console.error("Error in getUserRecommendations:", error);
-            // Trả về mảng rỗng nếu có lỗi
+            console.error("Error calling recommendations API:", error);
+            // Không trả về mock data nữa, chỉ trả về mảng rỗng
             return { recommended_tours: [] };
         }
     },

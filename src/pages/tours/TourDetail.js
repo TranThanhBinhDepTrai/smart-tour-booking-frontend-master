@@ -14,8 +14,11 @@ const TourDetail = () => {
   const [loading, setLoading] = useState(true);
   const [relatedTours, setRelatedTours] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
+  const [relatedError, setRelatedError] = useState(null);
 
   useEffect(() => {
+    setRelatedTours([]);      // Reset danh sách tour liên quan
+    setRelatedError(null);    // Reset lỗi
     loadTourDetails();
   }, [id]);
 
@@ -23,13 +26,13 @@ const TourDetail = () => {
     try {
       setLoading(true);
       const response = await axios.get(`${API_URL}/tours/${id}`);
-      console.log("Tour detail:", response);
       if (response?.data?.data) {
         setTour(response.data.data);
         // Sau khi lấy thông tin tour, gọi API lấy tour gợi ý
         loadRelatedTours(response.data.data.id);
       }
     } catch (error) {
+      setTour(null);
       console.error("Error loading tour:", error);
       toast.error("Không thể tải thông tin tour");
     } finally {
@@ -38,28 +41,43 @@ const TourDetail = () => {
   };
 
   const loadRelatedTours = async (tourId) => {
+    setRelatedTours([]);      // Reset trước khi gọi API
+    setRelatedError(null);
     setLoadingRelated(true);
     try {
-      // Gọi API lấy danh sách ID tour gợi ý
-      const relatedResponse = await tourService.getRelatedTours(tourId);
-      if (relatedResponse && relatedResponse.related_tours && relatedResponse.related_tours.length > 0) {
+      const response = await axios.get(`http://localhost:5000/api/tour-recommendations?tour_id=${tourId}`);
+      if (
+        response &&
+        response.data &&
+        response.data.related_tours &&
+        response.data.related_tours.length > 0
+      ) {
         // Lấy chi tiết của từng tour gợi ý
         const tourDetails = await Promise.all(
-          relatedResponse.related_tours.map(async (relatedId) => {
+          response.data.related_tours.map(async (relatedId) => {
             try {
               const tourDetail = await axios.get(`${API_URL}/tours/${relatedId}`);
+              console.log('Tour detail for related:', relatedId, tourDetail.data.data);
               return tourDetail.data.data;
             } catch (error) {
-              console.error(`Error loading related tour ${relatedId}:`, error);
+              console.error('Error loading related tour', relatedId, error);
               return null;
             }
           })
         );
-        // Lọc bỏ các tour null (lỗi khi tải)
-        setRelatedTours(tourDetails.filter(tour => tour !== null));
+        const filtered = tourDetails.filter(tour => tour !== null);
+        if (filtered.length > 0) {
+          setRelatedTours(filtered);
+        } else {
+          setRelatedError("Không thể tải tour liên quan. Vui lòng thử lại sau.");
+        }
+      } else {
+        setRelatedError("Không có tour liên quan");
+        setRelatedTours([]);
       }
     } catch (error) {
-      console.error("Error loading related tours:", error);
+      setRelatedTours([]); // Khi lỗi, xóa danh sách tour liên quan
+      setRelatedError("Không thể tải tour liên quan. Vui lòng thử lại sau.");
     } finally {
       setLoadingRelated(false);
     }
@@ -255,6 +273,8 @@ const TourDetail = () => {
                     <span className="visually-hidden">Đang tải...</span>
                   </div>
                 </div>
+              ) : relatedError ? (
+                <p className="text-center text-danger">{relatedError}</p>
               ) : relatedTours.length > 0 ? (
                 <div className="related-tours-list">
                   {relatedTours.map((relatedTour) => (
@@ -284,9 +304,7 @@ const TourDetail = () => {
                     </Card>
                   ))}
                 </div>
-              ) : (
-                <p className="text-center">Không có tour liên quan</p>
-              )}
+              ) : null}
             </Card.Body>
           </Card>
         </Col>
