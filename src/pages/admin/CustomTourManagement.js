@@ -5,6 +5,8 @@ import {
 } from 'react-bootstrap';
 import { FaSearch, FaEye, FaEnvelope, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 
 const CustomTourManagement = () => {
   const [customTours, setCustomTours] = useState([]);
@@ -306,21 +308,22 @@ const CustomTourManagement = () => {
                           <Badge bg="warning" text="dark">Chưa xử lý</Badge>
                         </td>
                         <td>
-                          <Button 
-                            variant="info" 
-                            size="sm" 
-                            className="me-1"
-                            onClick={() => handleDemoViewDetail(tour.id)}
-                          >
-                            <FaEye /> Xem
-                          </Button>
-                          <Button 
-                            variant="danger" 
-                            size="sm"
-                            onClick={() => alert('Đây chỉ là dữ liệu mẫu! Vui lòng đăng nhập để thao tác.')}
-                          >
-                            <FaTrash />
-                          </Button>
+                          <div className="d-flex gap-1">
+                            <Button 
+                              variant="info" 
+                              size="sm" 
+                              onClick={() => handleDemoViewDetail(tour.id)}
+                            >
+                              <FaEye /> Xem
+                            </Button>
+                            <Button 
+                              variant="danger" 
+                              size="sm"
+                              onClick={() => alert('Đây chỉ là dữ liệu mẫu! Vui lòng đăng nhập để thao tác.')}
+                            >
+                              <FaTrash />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -367,24 +370,57 @@ const CustomTourManagement = () => {
                         </td>
                         <td>{tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</td>
                         <td>
-                          <Badge bg="warning" text="dark">Chưa xử lý</Badge>
+                          <DropdownButton
+                            id={`dropdown-status-${tour.id}`}
+                            title={
+                              tour.status
+                                ? <span style={{ color: 'white' }}>Đã xử lý</span>
+                                : <span style={{ color: 'black' }}>Chưa xử lý</span>
+                            }
+                            variant={tour.status ? "success" : "warning"}
+                            size="sm"
+                            onSelect={async (selectedStatus) => {
+                              try {
+                                await axios.patch(
+                                  `http://localhost:8080/api/v1/tour/custom/${tour.id}/status?status=${selectedStatus}`,
+                                  {},
+                                  getAuthConfig()
+                                );
+                                setCustomTours(prev =>
+                                  prev.map(t =>
+                                    t.id === tour.id ? { ...t, status: selectedStatus === "true" } : t
+                                  )
+                                );
+                              } catch (err) {
+                                alert("Cập nhật trạng thái thất bại!");
+                              }
+                            }}
+                          >
+                            <Dropdown.Item eventKey="true" style={{ color: 'green' }}>
+                              Đã xử lý
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="false" style={{ color: 'black' }}>
+                              Chưa xử lý
+                            </Dropdown.Item>
+                          </DropdownButton>
                         </td>
                         <td>
-                          <Button 
-                            variant="info" 
-                            size="sm" 
-                            className="me-1"
-                            onClick={() => viewDetail(tour.id)}
-                          >
-                            <FaEye /> Xem
-                          </Button>
-                          <Button 
-                            variant="danger" 
-                            size="sm"
-                            onClick={() => deleteCustomTour(tour.id)}
-                          >
-                            <FaTrash />
-                          </Button>
+                          <div className="d-flex gap-1">
+                            <Button 
+                              variant="info" 
+                              size="sm" 
+                              onClick={() => viewDetail(tour.id)}
+                            >
+                              <FaEye /> Xem
+                            </Button>
+                            <Button 
+                              variant="danger" 
+                              size="sm"
+                              onClick={() => deleteCustomTour(tour.id)}
+                            >
+                              <FaTrash />
+                            </Button>
+                          </div>
                         </td>
                       </tr>
                     ))
