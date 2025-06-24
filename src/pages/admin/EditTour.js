@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import './CreateTour.css';
+import { tourService } from '../../services/tourService';
 
 const EditTour = () => {
   const navigate = useNavigate();
@@ -252,6 +253,30 @@ const EditTour = () => {
       setError(errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Thêm hàm cập nhật trạng thái tour
+  const handleUpdateStatus = async (value) => {
+    setError('');
+    setSuccess('');
+    try {
+      const response = await tourService.updateTourAvailable(id, value);
+      if (
+        (response && response.statusCode === 200) ||
+        (typeof response === 'string' && response.toLowerCase().includes('thành công')) ||
+        (response && response.message && response.message.toLowerCase().includes('thành công'))
+      ) {
+        setFormData(prev => ({ ...prev, available: value }));
+        setSuccess((response && response.message) || (typeof response === 'string' ? response : 'Cập nhật trạng thái thành công!'));
+        setTimeout(() => setSuccess(''), 2000);
+      } else {
+        setError((response && response.message) || 'Không thể cập nhật trạng thái.');
+        setTimeout(() => setError(''), 2000);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Không thể cập nhật trạng thái.');
+      setTimeout(() => setError(''), 2000);
     }
   };
 
@@ -546,6 +571,29 @@ const EditTour = () => {
                 })}
               </div>
             )}
+          </div>
+
+          <div className="form-section">
+            <h2 className="section-title">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2 2l2 2" />
+              </svg>
+              Trạng thái tour
+            </h2>
+            <div className="form-group">
+              <label className="form-label">Trạng thái tour</label>
+              <select
+                className="form-input"
+                value={formData.available ? 'true' : 'false'}
+                onChange={e => handleUpdateStatus(e.target.value === 'true')}
+              >
+                <option value="true">Hoạt động</option>
+                <option value="false">Ngừng</option>
+              </select>
+              <span style={{marginLeft: 12, fontWeight: 'bold', color: formData.available ? 'green' : 'red'}}>
+                {formData.available ? 'Đang hoạt động' : 'Đã ngừng'}
+              </span>
+            </div>
           </div>
 
           {error && <p className="error-message">{error}</p>}

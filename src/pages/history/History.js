@@ -189,7 +189,7 @@ const History = () => {
                                         )}
                                     </td>
                                     <td>
-                                        {booking.status === 'PENDING' && (
+                                        {['PENDING', 'CONFIRMED'].includes((booking.status || '').toUpperCase()) && (
                                             <Button 
                                                 variant="danger" 
                                                 size="sm"

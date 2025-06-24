@@ -1,5 +1,6 @@
 import api from './api';
 import { API_URL } from '../config';
+import axios from 'axios';
 
 const getAuthConfig = () => {
     const token = localStorage.getItem('token');
@@ -26,12 +27,16 @@ export const bookingService = {
 
     cancelBooking: async (bookingId) => {
         try {
-            const response = await api.delete(`/bookings/${bookingId}/cancel`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(
+                `${API_URL}/bookings/${bookingId}/cancel`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
                 }
-            });
+            );
             return response.data;
         } catch (error) {
             console.error('Error in cancelBooking:', error);

@@ -16,7 +16,6 @@ const Promotions = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
-    const [activeTab, setActiveTab] = useState('active'); // 'active' or 'inactive'
     const [selectedPromotion, setSelectedPromotion] = useState(null);
     const [users, setUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -57,12 +56,10 @@ const Promotions = () => {
             console.log('API Response:', response);
 
             if (response?.data) {
-                // Chỉ lấy các khuyến mãi đang active
-                const activePromotions = response.data.filter(p => p.active === true);
-                console.log('Active promotions:', activePromotions);
-                setPromotions(activePromotions);
-                setTotalItems(activePromotions.length);
-                setTotalPages(Math.ceil(activePromotions.length / pageSize));
+                // Hiển thị tất cả khuyến mãi, không filter active nữa
+                setPromotions(response.data);
+                setTotalItems(response.data.length);
+                setTotalPages(Math.ceil(response.data.length / pageSize));
                 setCurrentPage(page);
                 setError('');
             } else {
@@ -237,27 +234,6 @@ const Promotions = () => {
         }
     };
 
-    const handleActivate = async (promotion) => {
-        if (window.confirm('Bạn có chắc chắn muốn kích hoạt lại khuyến mãi này?')) {
-            try {
-                setError('');
-                const response = await promotionService.togglePromotionStatus(promotion.id, true);
-                console.log('Activate response:', response);
-                
-                if (response.statusCode === 200) {
-                    setActiveTab('active');
-                    await loadPromotions(0);
-                } else {
-                    throw new Error(response.message || 'Không thể kích hoạt khuyến mãi');
-                }
-            } catch (err) {
-                console.error('Error activating promotion:', err);
-                setError(err.response?.data?.message || err.message || 'Không thể kích hoạt khuyến mãi');
-                await loadPromotions(currentPage);
-            }
-        }
-    };
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -330,6 +306,7 @@ const Promotions = () => {
                                 <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
                                 <th>Giới hạn sử dụng</th>
+                                <th>Trạng thái</th>
                                 <th style={{width: "200px"}}>Thao tác</th>
                             </tr>
                         </thead>
@@ -352,6 +329,13 @@ const Promotions = () => {
                                     <td>{formatDate(promotion.startAt)}</td>
                                     <td>{formatDate(promotion.endAt)}</td>
                                     <td>{promotion.usageLimit}</td>
+                                    <td>
+                                        {promotion.active ? (
+                                            <span style={{ color: 'green', fontWeight: 'bold' }}>Còn hiệu lực</span>
+                                        ) : (
+                                            <span style={{ color: 'red', fontWeight: 'bold' }}>Hết hiệu lực</span>
+                                        )}
+                                    </td>
                                     <td>
                                         <div className="d-flex gap-2 justify-content-center">
                                             <Button 
@@ -574,17 +558,6 @@ const Promotions = () => {
                     </Form>
                 </Modal.Body>
             </Modal>
-
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <Nav variant="tabs">
-                    <Nav.Item>
-                        <Nav.Link eventKey="active">Hoạt động</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link eventKey="inactive">Không hoạt động</Nav.Link>
-                    </Nav.Item>
-                </Nav>
-            </div>
         </Container>
     );
 };

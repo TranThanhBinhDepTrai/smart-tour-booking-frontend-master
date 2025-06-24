@@ -169,5 +169,21 @@ export const promotionService = {
             console.error('Error fetching promotions:', error);
             throw error;
         }
+    },
+
+    // Lấy danh sách mã khuyến mãi của user (yêu cầu đăng nhập)
+    getUserPromotions: async (page = 0, size = 100) => {
+        try {
+            const response = await axios.get(
+                `${API_URL}/promotions/custom?page=${page}&size=${size}`,
+                getAuthConfig()
+            );
+            return response.data;
+        } catch (error) {
+            if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                return { data: [] };
+            }
+            throw error.response?.data || { message: error.message };
+        }
     }
 }; 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React, { useMemo } from 'react';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/v1';
 
@@ -220,6 +221,18 @@ export const tourService = {
             const response = await axios.get(`${API_URL}/tours`, { params: { page: 0, size: 1000 } });
             return response.data;
         } catch (error) {
+            throw error;
+        }
+    },
+
+    // Cập nhật trạng thái tour (available)
+    updateTourAvailable: async (id, value) => {
+        try {
+            const config = getAuthConfig();
+            const response = await axios.patch(`${API_URL}/tours/${id}/available?value=${value}`, {}, config);
+            return response.data;
+        } catch (error) {
+            console.error('Error updating tour available:', error.response?.data || error);
             throw error;
         }
     }

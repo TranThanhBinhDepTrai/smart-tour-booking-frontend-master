@@ -17,25 +17,27 @@ const Promotions = () => {
     const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     useEffect(() => {
-        loadPromotions();
-    }, []);
+        if (currentUser) {
+            loadUserPromotions();
+        } else {
+            setPromotions([]);
+            setLoading(false);
+        }
+    }, [currentUser]);
 
-    const loadPromotions = async () => {
+    const loadUserPromotions = async () => {
         try {
             setLoading(true);
             setError('');
-            const response = await promotionService.getAllPromotions(currentPage, pageSize);
-            console.log('API Response:', response);
-
+            const response = await promotionService.getUserPromotions(0, 100);
             if (response?.data) {
-                // Chỉ hiển thị các khuyến mãi đang active
                 const activePromotions = response.data.filter(p => p.active === true);
                 setPromotions(activePromotions);
             } else {
-                setPromotions([]); // Đặt mảng rỗng thay vì hiển thị lỗi
+                setPromotions([]);
             }
         } catch (err) {
-            console.error('Error loading promotions:', err);
+            console.error('Error loading user promotions:', err);
             setError('Không thể tải danh sách khuyến mãi. Vui lòng thử lại sau.');
             setPromotions([]);
         } finally {
@@ -45,24 +47,20 @@ const Promotions = () => {
 
     const handleSearch = async () => {
         if (!searchTerm.trim()) {
-            loadPromotions();
+            loadUserPromotions();
             return;
         }
-
         try {
             setLoading(true);
             setError('');
-            const response = await promotionService.searchPromotions(searchTerm);
-            if (response?.data) {
-                const activePromotions = response.data.filter(p => p.active === true);
-                setPromotions(activePromotions);
-            } else {
-                setPromotions([]);
-            }
+            // Có thể dùng search API nếu backend hỗ trợ, còn không thì filter trên client
+            const filtered = promotions.filter(p =>
+                p.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+            setPromotions(filtered);
         } catch (err) {
-            console.error('Error searching promotions:', err);
             setError('Không thể tìm kiếm khuyến mãi. Vui lòng thử lại sau.');
-            setPromotions([]);
         } finally {
             setLoading(false);
         }
@@ -135,7 +133,7 @@ const Promotions = () => {
                             {searchTerm && (
                                 <Button variant="secondary" onClick={() => {
                                     setSearchTerm('');
-                                    loadPromotions();
+                                    loadUserPromotions();
                                 }}>
                                     Xóa
                                 </Button>

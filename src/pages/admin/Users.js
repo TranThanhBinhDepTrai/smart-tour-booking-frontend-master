@@ -130,9 +130,12 @@ const Users = () => {
         if (window.confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
             try {
                 await userService.deleteUser(userId);
-                await loadUsers(currentPage);
+                setUsers(prevUsers =>
+                    prevUsers.map(u =>
+                        u.id === userId ? { ...u, deleted: true } : u
+                    )
+                );
             } catch (err) {
-                console.error('Error deleting user:', err);
                 setError('Không thể xóa người dùng');
             }
         }
@@ -142,11 +145,14 @@ const Users = () => {
         try {
             const response = await userService.blockUser(userId);
             if (response?.message?.includes('thành công')) {
-                await loadUsers(currentPage);
+                setUsers(prevUsers =>
+                    prevUsers.map(u =>
+                        u.id === userId ? { ...u, blocked: true } : u
+                    )
+                );
                 setError('');
             }
         } catch (err) {
-            console.error('Error blocking user:', err);
             setError('Không thể khóa người dùng: ' + (err.message || 'Đã có lỗi xảy ra'));
         }
     };
@@ -155,11 +161,14 @@ const Users = () => {
         try {
             const response = await userService.unblockUser(userId);
             if (response?.message?.includes('thành công')) {
-                await loadUsers(currentPage);
+                setUsers(prevUsers =>
+                    prevUsers.map(u =>
+                        u.id === userId ? { ...u, blocked: false } : u
+                    )
+                );
                 setError('');
             }
         } catch (err) {
-            console.error('Error unblocking user:', err);
             setError('Không thể mở khóa người dùng: ' + (err.message || 'Đã có lỗi xảy ra'));
         }
     };
@@ -324,7 +333,7 @@ const Users = () => {
                                         <Badge bg={user.blocked ? "danger" : "success"} className="d-block mb-1">
                                             {user.blocked ? "Đã khóa" : "Hoạt động"}
                                         </Badge>
-                                        <Badge bg={user.deleted ? "danger" : "success"} className="d-block">
+                                        <Badge bg={user.deleted ? "secondary" : "success"} className="d-block">
                                             {user.deleted ? "Đã xóa" : "Chưa xóa"}
                                         </Badge>
                                     </td>

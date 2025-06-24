@@ -112,26 +112,29 @@ const AdminTour = () => {
 
   // Thêm hàm cập nhật trạng thái
   const handleUpdateStatus = async (tourId, value) => {
+    setError(null);
+    setSuccess(null);
     try {
-      // Lấy username/password từ localStorage hoặc mặc định
-      const username = localStorage.getItem('username') || 'admin';
-      const password = localStorage.getItem('password') || '123';
-      const response = await fetch(`http://localhost:8080/api/v1/tours/${tourId}/available?value=${value}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-      });
-      const text = await response.text();
-      if (!response.ok) {
-        setError(text || 'Không thể cập nhật trạng thái.');
-        return;
+      const response = await tourService.updateTourAvailable(tourId, value);
+      console.log('Update status response:', response); // Log response để debug
+      // Kiểm tra nhiều trường hợp thành công
+      if (
+        (response && response.statusCode === 200) ||
+        (typeof response === 'string' && response.toLowerCase().includes('thành công')) ||
+        (response && response.message && response.message.toLowerCase().includes('thành công'))
+      ) {
+        setSuccess((response && response.message) || (typeof response === 'string' ? response : 'Cập nhật trạng thái thành công!'));
+        // Cập nhật lại trạng thái tour trên UI ngay lập tức
+        setTours(prevTours => prevTours.map(t => t.id === tourId ? { ...t, available: value } : t));
+        setFilteredTours(prevTours => prevTours.map(t => t.id === tourId ? { ...t, available: value } : t));
+        setTimeout(() => setSuccess(null), 2000);
+      } else {
+        setError((response && response.message) || 'Không thể cập nhật trạng thái.');
+        setTimeout(() => setError(null), 2000);
       }
-      setSuccess(text || 'Cập nhật trạng thái thành công!');
-      fetchTours();
     } catch (err) {
-      setError('Không thể cập nhật trạng thái.');
+      setError(err.response?.data?.message || err.message || 'Không thể cập nhật trạng thái.');
+      setTimeout(() => setError(null), 2000);
     }
   };
 
