@@ -533,4 +533,30 @@ image.png.admin-tour-container {
 .admin-search-bar .btn:hover {
   background-color: #f8f9fa;
   color: #2d3436;
+}
+
+/* Responsive cho laptop 13-14 inch (1366-1440px) */
+@media (max-width: 1440px) and (min-width: 1200px) {
+  .admin-tour-title, .admin-tour-subtitle, .search-results-info, .pagination-info, .tour-info-primary, .tour-info-secondary, .tour-code, .tour-status, .empty-table, .sidebar-header, .sidebar-link, .sidebar-nav li, .admin-title, .admin-brand, .admin-user {
+    font-size: 13px !important;
+  }
+  .tour-table th, .tour-table td {
+    font-size: 12px !important;
+    padding: 0.4rem 0.5rem !important;
+  }
+  .search-input, .search-category, .search-box input, .search-box, .search-wrapper, .search-container {
+    font-size: 12px !important;
+    padding: 0.3rem 0.5rem !important;
+    height: 28px !important;
+  }
+  .pagination-button, .action-button, .edit-button, .delete-button, .btn, .page-link {
+    font-size: 12px !important;
+    padding: 0.3rem 0.7rem !important;
+  }
+  .admin-tour-card, .dashboard-card, .main-area, .form-section, .form-group {
+    padding: 10px !important;
+  }
+  .admin-tour-header {
+    margin-bottom: 0.7rem !important;
+  }
 } 

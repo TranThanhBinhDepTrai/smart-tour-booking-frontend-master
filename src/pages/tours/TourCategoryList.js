@@ -8,7 +8,7 @@ const CATEGORY_LABELS = {
   ADVENTURE: 'Phiêu Lưu Mạo Hiểm',
   CULTURAL: 'Văn Hóa',
   HOLIDAY: 'Nghỉ Dưỡng',
-  SEASONAL: 'Theo Mùa',
+  SEASONAL: 'Theo mùa',
 };
 
 const TourCategoryList = () => {

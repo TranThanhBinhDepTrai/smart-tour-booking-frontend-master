@@ -104,4 +104,21 @@
     .promotion-code {
         font-size: 1.2rem;
     }
+}
+
+/* Responsive cho laptop 13-14 inch (1366-1440px) */
+@media (max-width: 1440px) and (min-width: 1200px) {
+  .promotion-card {
+    font-size: 1.05rem;
+    padding: 1.1rem;
+  }
+  .promotion-code {
+    font-size: 1.25rem;
+  }
+  .promotion-details-modal {
+    padding: 1.1rem;
+  }
+  .search-bar {
+    padding: 1.1rem;
+  }
 } 

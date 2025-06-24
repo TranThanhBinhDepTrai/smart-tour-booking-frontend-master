@@ -304,4 +304,23 @@
   .top-nav {
     padding: 1rem;
   }
+}
+
+/* Responsive cho laptop 13-14 inch (1366-1440px) */
+@media (max-width: 1440px) and (min-width: 1200px) {
+  .dashboard-title {
+    font-size: 1.45rem;
+  }
+  .dashboard-header, .dashboard-card, .main-area {
+    padding: 1.2rem;
+  }
+  .stat-number {
+    font-size: 2.1rem;
+  }
+  .stat-label {
+    font-size: 1.05rem;
+  }
+  .sidebar {
+    width: 210px;
+  }
 } 

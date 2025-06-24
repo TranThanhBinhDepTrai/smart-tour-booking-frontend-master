@@ -1,0 +1,76 @@
+/* Responsive cho laptop 13-14 inch (1366x768, 1440x900) */
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table th, .table td {
+  padding: 0.5rem 0.5rem;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+@media (max-width: 1440px) {
+  .table th, .table td {
+    font-size: 14px;
+    padding: 0.4rem 0.3rem;
+  }
+  .card-body, .modal-body {
+    padding: 1rem;
+  }
+  .form-control, .form-select {
+    font-size: 15px;
+    min-height: 38px;
+  }
+  .btn, .page-link {
+    font-size: 15px;
+    padding: 0.35rem 0.75rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .table th, .table td {
+    font-size: 13px;
+    padding: 0.3rem 0.2rem;
+  }
+  .form-control, .form-select {
+    font-size: 14px;
+    min-height: 36px;
+  }
+  .btn, .page-link {
+    font-size: 14px;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+/* Modal tối ưu cho laptop nhỏ */
+.modal-lg {
+  max-width: 90vw;
+}
+
+@media (max-width: 992px) {
+  .modal-lg {
+    max-width: 98vw;
+  }
+  .table th, .table td {
+    font-size: 12px;
+  }
+}
+
+/* Đảm bảo không cuộn ngang toàn trang */
+body, html, #root, .container-fluid {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Đảm bảo nút và input không quá nhỏ */
+.btn, .form-control {
+  min-width: 36px;
+  min-height: 36px;
+}
+
+/* Responsive cho pagination */
+.pagination .page-link {
+  min-width: 32px;
+  text-align: center;
+} 

@@ -205,4 +205,23 @@
     border-right: none;
     border-bottom: 1px solid #dee2e6;
   }
+}
+
+/* Responsive cho laptop 13-14 inch (1366-1440px) */
+@media (max-width: 1440px) and (min-width: 1200px) {
+  .navbar, .footer {
+    padding: 1.2rem 2rem;
+  }
+  .nav-link {
+    font-size: 1.1rem;
+  }
+  .main-content, .admin-content {
+    padding: 28px;
+  }
+  .footer-content {
+    gap: 32px;
+  }
+  .footer-section h3 {
+    font-size: 1.1rem;
+  }
 } 

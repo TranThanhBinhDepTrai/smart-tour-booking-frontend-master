@@ -115,4 +115,35 @@
         background-color: rgba(255, 255, 255, 0.1);
         color: white !important;
     }
+}
+
+/* Responsive cho laptop 13-14 inch (1366-1440px) */
+@media (max-width: 1440px) and (min-width: 1200px) {
+  .navbar {
+    padding: 0.1rem 0.1rem !important;
+  }
+  .navbar-nav, .nav {
+    gap: 0 !important;
+  }
+  .nav-link {
+    font-size: 10px !important;
+    padding: 0.18rem 0.25rem !important;
+    margin: 0 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+  }
+  .brand-name {
+    font-size: 13px !important;
+  }
+  .company-text {
+    font-size: 8px !important;
+  }
+  #user-nav-dropdown {
+    padding: 0.18rem 0.25rem !important;
+    font-size: 10px !important;
+  }
+  .navbar-brand img {
+    height: 20px !important;
+    width: auto !important;
+  }
 } 

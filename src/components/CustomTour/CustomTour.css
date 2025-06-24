@@ -40,4 +40,26 @@
 .custom-tour-form .alert {
   border-radius: 5px;
   padding: 1rem;
+}
+
+@media (max-width: 1440px) and (min-width: 1200px) {
+  .custom-tour-form, .custom-tour-form label, .custom-tour-form input, .custom-tour-form select, .custom-tour-form textarea {
+    font-size: 11px !important;
+    line-height: 1.1 !important;
+  }
+  .custom-tour-form input, .custom-tour-form select, .custom-tour-form textarea {
+    padding: 4px 7px !important;
+    min-height: 24px !important;
+    height: 24px !important;
+  }
+  .custom-tour-form .form-group, .custom-tour-form .form-section {
+    padding: 6px 8px !important;
+    margin-bottom: 6px !important;
+  }
+  .custom-tour-form .card {
+    padding: 8px !important;
+  }
+  .custom-tour-form .form-title, .custom-tour-form h2, .custom-tour-form h3 {
+    font-size: 0.95rem !important;
+  }
 } 

@@ -7,6 +7,14 @@ import { API_URL } from "../../config";
 import { tourService } from "../../services/tourService";
 import "./TourDetail.css";
 
+const CATEGORY_LABELS = {
+  ADVENTURE: 'Phiêu lưu mạo hiểm',
+  CULTURAL: 'Văn hóa',
+  HOLIDAY: 'Nghỉ hè',
+  SEASONAL: 'Theo mùa',
+  RELAX: 'Nghỉ dưỡng',
+};
+
 const TourDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -192,7 +200,7 @@ const TourDetail = () => {
                 </div>
                 {tour.category && (
                   <Badge bg="success" className="p-2">
-                    {tour.category}
+                    {CATEGORY_LABELS[tour.category] || tour.category}
                   </Badge>
                 )}
               </div>
@@ -207,7 +215,7 @@ const TourDetail = () => {
                 </Col>
                 <Col md={6}>
                   <p><strong>Hãng bay:</strong> {tour.airline || 'Chưa cập nhật'}</p>
-                  <p><strong>Loại tour:</strong> {tour.category || 'Chưa cập nhật'}</p>
+                  <p><strong>Loại tour:</strong> {CATEGORY_LABELS[tour.category] || 'Chưa cập nhật'}</p>
                   <p><strong>Khu vực:</strong> {tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</p>
                   <p><strong>Số chỗ:</strong> {tour.capacity} người</p>
                 </Col>

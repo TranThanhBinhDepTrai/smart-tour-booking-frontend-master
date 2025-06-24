@@ -3,6 +3,7 @@ import { Container, Table, Badge, Button, Pagination, Dropdown, Row, Col, Form, 
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import './BookingManagement.css';
+import { emailService } from '../../services/emailService';
 
 const BookingManagement = () => {
     const [bookings, setBookings] = useState([]);
@@ -99,6 +100,14 @@ const BookingManagement = () => {
                         ? { ...booking, status: newStatus }
                         : booking
                 ));
+                // Gửi email khi hủy
+                if (newStatus === 'CANCELLED') {
+                    try {
+                        await emailService.sendBookingCancellation(bookingId);
+                    } catch (e) {
+                        alert('Cập nhật trạng thái thành công, nhưng gửi email thất bại!');
+                    }
+                }
                 alert('Cập nhật trạng thái thành công!');
             }
         } catch (err) {
@@ -151,6 +160,23 @@ const BookingManagement = () => {
         }
     };
 
+    const handleCancelBooking = async (bookingId) => {
+        try {
+            setUpdateLoading(true);
+            await axios.delete(
+                `http://localhost:8080/api/v1/bookings/${bookingId}/cancel`,
+                { headers: getAuthHeader() }
+            );
+            // Sau khi hủy thành công, reload lại danh sách
+            fetchBookings();
+            alert('Hủy booking thành công!');
+        } catch (err) {
+            alert('Không thể hủy booking: ' + (err.response?.data?.message || 'Đã có lỗi xảy ra'));
+        } finally {
+            setUpdateLoading(false);
+        }
+    };
+
     const getStatusBadge = (status) => {
         const statusInfo = STATUS_OPTIONS[status] || { text: status, variant: 'secondary' };
         return <Badge bg={statusInfo.variant}>{statusInfo.text}</Badge>;
@@ -187,14 +213,14 @@ const BookingManagement = () => {
         const getAvailableStatuses = (currentStatus) => {
             switch (currentStatus) {
                 case 'PENDING':
-                    return ['CONFIRMED', 'CANCELLED'];
+                    return ['CONFIRMED'];
                 case 'CONFIRMED':
-                    return ['COMPLETED', 'CANCELLED'];
+                    return ['COMPLETED'];
                 case 'COMPLETED':
                 case 'CANCELLED':
                     return []; // No further status changes allowed
                 default:
-                    return Object.keys(STATUS_OPTIONS);
+                    return Object.keys(STATUS_OPTIONS).filter(s => s !== 'CANCELLED');
             }
         };
 
@@ -225,6 +251,13 @@ const BookingManagement = () => {
                                 {STATUS_OPTIONS[status].text}
                             </Dropdown.Item>
                         ))}
+                        <Dropdown.Item
+                            key="CANCELLED"
+                            onClick={() => handleCancelBooking(booking.id)}
+                            className="text-danger"
+                        >
+                            Đã hủy
+                        </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>

@@ -436,3 +436,35 @@
     flex-grow: 0; /* Prevent button from growing */
     padding: 10px 24px;
   }
+
+  /* Responsive cho laptop 13-14 inch (1366-1440px) */
+  @media (max-width: 1440px) and (min-width: 1200px) {
+    .tour-list {
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 18px !important;
+    }
+    .tour-card {
+      width: 100% !important;
+      max-width: 1fr !important;
+      min-width: 0 !important;
+      height: 480px !important;
+    }
+    .tour-images {
+      height: 150px !important;
+    }
+    .tour-info, .tour-info h2, .tour-info p, .tour-info strong, .tour-info li {
+      font-size: 13px !important;
+      line-height: 1.2 !important;
+    }
+    .view-details-button {
+      font-size: 13px !important;
+      padding: 8px 0 !important;
+    }
+    .search-form, .search-form-redesigned {
+      padding: 18px;
+    }
+    .main-search-input {
+      font-size: 1.05rem;
+      padding: 13px 16px;
+    }
+  }

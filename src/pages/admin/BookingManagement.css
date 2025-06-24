@@ -96,4 +96,14 @@
     margin-right: 0.5rem;
 }
 
-/* Đảm bảo không ghi đè .admin-search-bar */ 
+/* Đảm bảo không ghi đè .admin-search-bar */
+
+@media (max-width: 1440px) and (min-width: 1200px) {
+  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header {
+    font-size: 12px !important;
+    padding: 0.3rem 0.5rem !important;
+  }
+  .btn, .page-link {
+    padding: 0.3rem 0.7rem !important;
+  }
+} 
