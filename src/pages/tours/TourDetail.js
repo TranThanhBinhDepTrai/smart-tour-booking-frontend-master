@@ -6,6 +6,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { API_URL } from "../../config";
 import { tourService } from "../../services/tourService";
 import "./TourDetail.css";
+import { FaStar } from 'react-icons/fa';
 
 const CATEGORY_LABELS = {
   ADVENTURE: 'Phiêu lưu mạo hiểm',
@@ -23,11 +24,15 @@ const TourDetail = () => {
   const [relatedTours, setRelatedTours] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
   const [relatedError, setRelatedError] = useState(null);
+  const [reviewStats, setReviewStats] = useState(null);
+  const [reviewLoading, setReviewLoading] = useState(true);
+  const [reviewError, setReviewError] = useState('');
 
   useEffect(() => {
     setRelatedTours([]);      // Reset danh sách tour liên quan
     setRelatedError(null);    // Reset lỗi
     loadTourDetails();
+    loadTourReviews();
   }, [id]);
 
   const loadTourDetails = async () => {
@@ -88,6 +93,19 @@ const TourDetail = () => {
       setRelatedError("Không thể tải tour liên quan. Vui lòng thử lại sau.");
     } finally {
       setLoadingRelated(false);
+    }
+  };
+
+  const loadTourReviews = async () => {
+    setReviewLoading(true);
+    setReviewError('');
+    try {
+      const res = await axios.get(`http://localhost:8080/api/v1/reviews/tour/${id}`);
+      setReviewStats(res.data.data);
+    } catch (err) {
+      setReviewError('Không thể tải đánh giá tour');
+    } finally {
+      setReviewLoading(false);
     }
   };
 
@@ -236,6 +254,50 @@ const TourDetail = () => {
               ) : (
                 <p>Chưa có thông tin lịch trình chi tiết.</p>
               )}
+
+              {/* Đánh giá tour */}
+              <div className="tour-reviews mt-5">
+                <h4>Đánh giá tour</h4>
+                {reviewLoading ? (
+                  <div>Đang tải đánh giá...</div>
+                ) : reviewError ? (
+                  <div className="text-danger">{reviewError}</div>
+                ) : reviewStats ? (
+                  <>
+                    <div className="d-flex align-items-center mb-2">
+                      <span className="fs-3 fw-bold me-2">{reviewStats.averageRating?.toFixed(1) || 0}</span>
+                      <span className="text-warning me-2">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <FaStar key={i} color={i < Math.round(reviewStats.averageRating) ? '#ffc107' : '#e4e5e9'} />
+                        ))}
+                      </span>
+                      <span className="ms-2">({reviewStats.totalReviews} đánh giá)</span>
+                    </div>
+                    <div>
+                      {reviewStats.reviews && reviewStats.reviews.length > 0 ? (
+                        reviewStats.reviews.map(r => (
+                          <div key={r.id} className="border rounded p-2 mb-2">
+                            <div className="d-flex align-items-center mb-1">
+                              <span className="text-warning me-1">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <FaStar key={i} size={14} color={i < r.rating ? '#ffc107' : '#e4e5e9'} />
+                                ))}
+                              </span>
+                              <span className="fw-bold">{r.rating} sao</span>
+                              <span className="ms-3 text-secondary" style={{ fontSize: '0.95em' }}>
+                                {r.fullName || r.username || 'Ẩn danh'}
+                              </span>
+                            </div>
+                            <div>{r.comment}</div>
+                          </div>
+                        ))
+                      ) : (
+                        <div>Chưa có đánh giá nào cho tour này.</div>
+                      )}
+                    </div>
+                  </>
+                ) : null}
+              </div>
             </Card.Body>
           </Card>
         </Col>

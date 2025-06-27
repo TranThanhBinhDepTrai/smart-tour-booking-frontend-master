@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Form, InputGroup, Button, Table, Modal, Alert } from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../../components/admin/StatCard';
 import './Dashboard.css';
+import axios from 'axios';
+
+const USER_ID = 5; // Có thể sửa thành lấy động nếu cần
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -104,6 +107,8 @@ function Dashboard() {
           </Col>
         ))}
       </Row>
+
+      {/* Đã xóa AdminReviewManager (quản lý đánh giá) */}
     </Container>
   );
 }

@@ -17,6 +17,9 @@ const CreatePromotion = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+    const today = new Date();
+    const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+    const minDateISOString = minDate.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,7 +29,11 @@ const CreatePromotion = () => {
         if (name === 'startAt' || name === 'endAt') {
             const start = new Date(name === 'startAt' ? newValue : formData.startAt);
             const end = new Date(name === 'endAt' ? newValue : formData.endAt);
-            if (formData.startAt && formData.endAt && start >= end) {
+            const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+            if ((name === 'startAt' && startDay < minDate) || (name === 'endAt' && endDay < minDate)) {
+                setError('Không được chọn ngày trong quá khứ.');
+            } else if (formData.startAt && formData.endAt && start >= end) {
                 setError('Ngày kết thúc phải sau ngày bắt đầu.');
             } else {
                 setError('');
@@ -93,13 +100,13 @@ const CreatePromotion = () => {
                             <Col md={6}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Ngày bắt đầu</Form.Label>
-                                    <Form.Control type="datetime-local" name="startAt" value={formData.startAt} onChange={handleChange} required />
+                                    <Form.Control type="datetime-local" name="startAt" value={formData.startAt} onChange={handleChange} required min={minDateISOString} />
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Ngày kết thúc</Form.Label>
-                                    <Form.Control type="datetime-local" name="endAt" value={formData.endAt} onChange={handleChange} required />
+                                    <Form.Control type="datetime-local" name="endAt" value={formData.endAt} onChange={handleChange} required min={minDateISOString} />
                                 </Form.Group>
                             </Col>
                         </Row>

@@ -1,126 +1,220 @@
-import React, { useState } from 'react';
-import { Card, Row, Col, Table, Form, Button } from 'react-bootstrap';
-import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Card, Table, Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-// Dữ liệu mẫu
-const ordersMock = [
-  { id: 1, customer: 'Nguyễn Văn A', date: '2024-06-01', amount: 2000000 },
-  { id: 2, customer: 'Trần Thị B', date: '2024-06-02', amount: 3500000 },
-  { id: 3, customer: 'Lê Văn C', date: '2024-06-02', amount: 1500000 },
-  { id: 4, customer: 'Phạm Thị D', date: '2024-06-03', amount: 4000000 },
-  { id: 5, customer: 'Vũ Văn E', date: '2024-06-03', amount: 2500000 },
-];
+const Revenue = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-function getRevenueByDate(orders) {
-  const result = {};
-  orders.forEach(order => {
-    if (!result[order.date]) result[order.date] = 0;
-    result[order.date] += order.amount;
-  });
-  return result;
-}
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
-function Revenue() {
-  const [filter, setFilter] = useState({ year: '', month: '', day: '' });
+  const fetchDashboard = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:8080/api/v1/admin/dashboard', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      setData(res.data.data);
+    } catch (err) {
+      setError('Không thể tải dữ liệu dashboard');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Lọc đơn hàng theo ngày/tháng/năm
-  const filteredOrders = ordersMock.filter(order => {
-    const d = new Date(order.date);
-    const year = d.getFullYear().toString();
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const day = d.getDate().toString().padStart(2, '0');
-    return (
-      (!filter.year || filter.year === year) &&
-      (!filter.month || filter.month === month) &&
-      (!filter.day || filter.day === day)
-    );
-  });
-
-  const totalRevenue = filteredOrders.reduce((sum, o) => sum + o.amount, 0);
-  const revenueByDate = getRevenueByDate(filteredOrders);
-
-  const chartData = {
-    labels: Object.keys(revenueByDate),
+  // Dữ liệu mẫu cho Pie chart nếu chưa có dữ liệu thực tế
+  const paymentPieData = {
+    labels: ['Thanh toán bằng Momo', 'Thanh toán tại văn phòng', 'Thanh toán bằng Paypal'],
     datasets: [
       {
-        label: 'Doanh thu',
-        data: Object.values(revenueByDate),
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+        data: [5, 3, 7], // Số lượng từng phương thức (giả lập)
+        backgroundColor: [
+          '#ff6384',
+          '#ffcd56',
+          '#36a2eb',
+        ],
+        hoverOffset: 4,
       },
     ],
   };
 
-  // Lấy danh sách năm, tháng, ngày từ dữ liệu mẫu
-  const years = [...new Set(ordersMock.map(o => new Date(o.date).getFullYear().toString()))];
-  const months = [...new Set(ordersMock.map(o => (new Date(o.date).getMonth() + 1).toString().padStart(2, '0')))]
-  const days = [...new Set(ordersMock.map(o => new Date(o.date).getDate().toString().padStart(2, '0')))]
-
   return (
     <div>
-      <h2 className="mb-4">Thống kê doanh thu</h2>
+      <h2 className="mb-4">Tổng quan doanh thu</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
+      {loading ? (
+        <div>Đang tải...</div>
+      ) : data ? (
+        <>
+          <Row className="mb-4">
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-success">{data.activeTours}</div>
+                  <div>Tổng số tours đang hoạt động</div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-primary">{data.totalBookings}</div>
+                  <div>Tổng số lượt booking</div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-info">{data.totalUsers}</div>
+                  <div>Số người dùng đăng ký</div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-danger">{data.totalRevenue?.toLocaleString('vi-VN')} VNĐ</div>
+                  <div>Tổng doanh thu</div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Biểu đồ hình tròn phương thức thanh toán */}
       <Row className="mb-4">
-        <Col md={3}>
+            <Col md={6}>
           <Card>
             <Card.Body>
-              <Card.Title>Tổng doanh thu</Card.Title>
-              <Card.Text className="fs-3 text-success fw-bold">
-                {totalRevenue.toLocaleString('vi-VN')} đ
-              </Card.Text>
+                  <h5>Phân tích phương thức thanh toán</h5>
+                  <div style={{ maxWidth: 350, margin: '0 auto' }}>
+                    <Pie data={paymentPieData} />
+                  </div>
+                  <div className="mt-3">
+                    <span style={{ color: '#ff6384' }}>■</span> Thanh toán bằng Momo &nbsp;
+                    <span style={{ color: '#ffcd56' }}>■</span> Thanh toán tại văn phòng &nbsp;
+                    <span style={{ color: '#36a2eb' }}>■</span> Thanh toán bằng Paypal
+                  </div>
             </Card.Body>
           </Card>
         </Col>
-        <Col md={9}>
-          <Bar data={chartData} height={80} />
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Doanh thu theo ngày</h5>
+                  <Table size="sm" bordered>
+                    <thead>
+                      <tr>
+                        <th>Ngày</th>
+                        <th>Doanh thu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.revenueByDate?.map((r, idx) => (
+                        <tr key={idx}>
+                          <td>{r.date}</td>
+                          <td>{r.revenue?.toLocaleString('vi-VN')} VNĐ</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
         </Col>
       </Row>
-      <Form className="mb-3">
-        <Row>
-          <Col md={3}>
-            <Form.Select value={filter.year} onChange={e => setFilter(f => ({ ...f, year: e.target.value }))}>
-              <option value="">Năm</option>
-              {years.map(y => <option key={y} value={y}>{y}</option>)}
-            </Form.Select>
+
+          <Row className="mb-4">
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Doanh thu theo tháng</h5>
+                  <Table size="sm" bordered>
+                    <thead>
+                      <tr>
+                        <th>Tháng</th>
+                        <th>Năm</th>
+                        <th>Doanh thu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.revenueByMonth?.map((r, idx) => (
+                        <tr key={idx}>
+                          <td>{r.month}</td>
+                          <td>{r.year}</td>
+                          <td>{r.revenue?.toLocaleString('vi-VN')} VNĐ</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
           </Col>
-          <Col md={3}>
-            <Form.Select value={filter.month} onChange={e => setFilter(f => ({ ...f, month: e.target.value }))}>
-              <option value="">Tháng</option>
-              {months.map(m => <option key={m} value={m}>{m}</option>)}
-            </Form.Select>
-          </Col>
-          <Col md={3}>
-            <Form.Select value={filter.day} onChange={e => setFilter(f => ({ ...f, day: e.target.value }))}>
-              <option value="">Ngày</option>
-              {days.map(d => <option key={d} value={d}>{d}</option>)}
-            </Form.Select>
-          </Col>
-          <Col md={3}>
-            <Button variant="secondary" onClick={() => setFilter({ year: '', month: '', day: '' })}>Xóa lọc</Button>
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Top tour đặt nhiều nhất</h5>
+                  <Table size="sm" bordered>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Tên tour</th>
+                        <th>Số lượt đặt</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.topBookedTours?.map((t, idx) => (
+                        <tr key={idx}>
+                          <td>{t.tourId}</td>
+                          <td>{t.tourTitle}</td>
+                          <td>{t.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
           </Col>
         </Row>
-      </Form>
-      <Table striped bordered hover>
+
+          <Row className="mb-4">
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Top tour bị hủy nhiều nhất</h5>
+                  <Table size="sm" bordered>
         <thead>
           <tr>
-            <th>Mã đơn</th>
-            <th>Khách hàng</th>
-            <th>Ngày đặt</th>
-            <th>Số tiền</th>
+                        <th>ID</th>
+                        <th>Tên tour</th>
+                        <th>Số lượt hủy</th>
           </tr>
         </thead>
         <tbody>
-          {filteredOrders.map(order => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.customer}</td>
-              <td>{order.date}</td>
-              <td>{order.amount.toLocaleString('vi-VN')} đ</td>
+                      {data.topCancelledTours?.map((t, idx) => (
+                        <tr key={idx}>
+                          <td>{t.tourId}</td>
+                          <td>{t.tourTitle}</td>
+                          <td>{t.count}</td>
             </tr>
           ))}
         </tbody>
       </Table>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </>
+      ) : null}
     </div>
   );
-}
+};
 
 export default Revenue; 

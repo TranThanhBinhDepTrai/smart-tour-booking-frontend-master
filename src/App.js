@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   createBrowserRouter,
   RouterProvider,
@@ -126,6 +126,8 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  const [selectedReviewBooking, setSelectedReviewBooking] = useState(null);
+
   return (
     <AuthProvider>
       <RouterProvider router={router} />

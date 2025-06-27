@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Row, Col, Button, Form, Modal } from 'react-bootstrap';
+import { Container, Card, Row, Col, Button, Form, Modal, Alert, Table, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import './Profile.css';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,19 @@ const Profile = () => {
 
     // State cho modal xóa tài khoản
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    // State cho modal lịch sử đánh giá
+    const [showReviewHistoryModal, setShowReviewHistoryModal] = useState(false);
+    const [userReviews, setUserReviews] = useState([]);
+    const [reviewLoading, setReviewLoading] = useState(false);
+    const [reviewError, setReviewError] = useState('');
+    const [editReview, setEditReview] = useState(null);
+    const [editData, setEditData] = useState({ rating: 5, comment: '' });
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [successMsg, setSuccessMsg] = useState('');
 
     useEffect(() => {
         fetchUserProfile();
@@ -202,6 +215,73 @@ const Profile = () => {
         }
     };
 
+    const fetchUserReviews = async () => {
+        setReviewLoading(true);
+        setReviewError('');
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`http://localhost:8080/api/v1/reviews/user/${userProfile.id}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            });
+            setUserReviews(res.data.data || []);
+        } catch (err) {
+            setReviewError('Không thể tải lịch sử đánh giá');
+        } finally {
+            setReviewLoading(false);
+        }
+    };
+
+    const handleEditClick = (review) => {
+        setEditReview(review);
+        setEditData({ rating: review.rating, comment: review.comment });
+        setShowEditModal(true);
+        setSuccessMsg('');
+    };
+
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        setEditLoading(true);
+        setSuccessMsg('');
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put(`http://localhost:8080/api/v1/reviews/${editReview.id}`, {
+                rating: editData.rating,
+                comment: editData.comment,
+                tourId: editReview.tourId,
+                userId: editReview.userId
+            }, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            });
+            setSuccessMsg('Cập nhật thành công!');
+            setShowEditModal(false);
+            fetchUserReviews();
+        } catch (err) {
+            setReviewError('Lỗi khi cập nhật đánh giá');
+        } finally {
+            setEditLoading(false);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Bạn có chắc chắn muốn xóa đánh giá này?')) return;
+        setDeleteLoading(true);
+        setDeleteId(id);
+        setSuccessMsg('');
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:8080/api/v1/reviews/${id}`, {
+                headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            });
+            setSuccessMsg('Xóa thành công!');
+            fetchUserReviews();
+        } catch (err) {
+            setReviewError('Lỗi khi xóa đánh giá');
+        } finally {
+            setDeleteLoading(false);
+            setDeleteId(null);
+        }
+    };
+
     if (!userProfile) {
         return (
             <Container className="mt-4">
@@ -357,6 +437,9 @@ const Profile = () => {
                                 <Button variant="warning" onClick={() => setShowPasswordModal(true)}>
                                     Đổi mật khẩu
                                 </Button>
+                                <Button variant="info" onClick={() => { setShowReviewHistoryModal(true); fetchUserReviews(); }}>
+                                    Lịch sử đánh giá
+                                </Button>
                                 <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
                                     Xóa tài khoản
                                 </Button>
@@ -419,6 +502,95 @@ const Profile = () => {
                         Xác nhận xóa
                     </Button>
                 </Modal.Footer>
+            </Modal>
+
+            {/* Modal lịch sử đánh giá */}
+            <Modal show={showReviewHistoryModal} onHide={() => setShowReviewHistoryModal(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Lịch sử đánh giá của bạn</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {successMsg && <Alert variant="success">{successMsg}</Alert>}
+                    {reviewLoading ? (
+                        <div>Đang tải...</div>
+                    ) : reviewError ? (
+                        <div className="text-danger">{reviewError}</div>
+                    ) : (
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Số sao</th>
+                                    <th>Bình luận</th>
+                                    <th>TourId</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {userReviews.length === 0 ? (
+                                    <tr><td colSpan={5} className="text-center">Bạn chưa có đánh giá nào</td></tr>
+                                ) : userReviews.map(r => (
+                                    <tr key={r.id}>
+                                        <td>{r.id}</td>
+                                        <td>{r.rating}</td>
+                                        <td>{r.comment}</td>
+                                        <td>{r.tourId}</td>
+                                        <td>
+                                            <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditClick(r)}>
+                                                Sửa
+                                            </Button>
+                                            <Button variant="danger" size="sm" onClick={() => handleDelete(r.id)} disabled={deleteLoading && deleteId === r.id}>
+                                                {deleteLoading && deleteId === r.id ? 'Đang xóa...' : 'Xóa'}
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    )}
+                    {/* Modal sửa đánh giá */}
+                    <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Sửa đánh giá</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form onSubmit={handleEditSubmit}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Số sao</Form.Label>
+                                    <Form.Select
+                                        value={editData.rating}
+                                        onChange={e => setEditData({ ...editData, rating: Number(e.target.value) })}
+                                        required
+                                    >
+                                        <option value={5}>5 - Tuyệt vời</option>
+                                        <option value={4}>4 - Tốt</option>
+                                        <option value={3}>3 - Bình thường</option>
+                                        <option value={2}>2 - Kém</option>
+                                        <option value={1}>1 - Rất tệ</option>
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Bình luận</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        value={editData.comment}
+                                        onChange={e => setEditData({ ...editData, comment: e.target.value })}
+                                        required
+                                    />
+                                </Form.Group>
+                                <div className="d-flex justify-content-end gap-2">
+                                    <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+                                        Đóng
+                                    </Button>
+                                    <Button variant="primary" type="submit" disabled={editLoading}>
+                                        {editLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
+                                    </Button>
+                                </div>
+                            </Form>
+                        </Modal.Body>
+                    </Modal>
+                </Modal.Body>
             </Modal>
         </Container>
     );

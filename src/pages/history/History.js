@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Badge, Button, Spinner, Alert, Modal } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Spinner, Alert, Modal, Form } from 'react-bootstrap';
 import { useAuth } from '../../contexts/AuthContext';
 import { bookingService } from '../../services/bookingService';
 import './History.css';
+import axios from 'axios';
 
 const History = () => {
     const [bookings, setBookings] = useState([]);
@@ -12,6 +13,19 @@ const History = () => {
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [cancelLoading, setCancelLoading] = useState(false);
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [reviewData, setReviewData] = useState({ rating: 5, comment: '' });
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [detailLoading, setDetailLoading] = useState(false);
+    const [detailError, setDetailError] = useState('');
+    const [detailData, setDetailData] = useState(null);
+    const [userReviews, setUserReviews] = useState([]);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [successMsg, setSuccessMsg] = useState('');
+    const [selectedReviewBooking, setSelectedReviewBooking] = useState(null);
 
     useEffect(() => {
         console.log('Current user in History:', currentUser);
@@ -70,6 +84,57 @@ const History = () => {
             setShowCancelModal(false);
             // Always reload bookings to reflect the latest state from the DB
             await loadBookings();
+        }
+    };
+
+    const handleReviewClick = (booking) => {
+        setSelectedReviewBooking(booking);
+        setReviewData({ rating: 5, comment: '' });
+        setShowReviewModal(true);
+    };
+
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post(
+                'http://localhost:8080/api/v1/reviews',
+                {
+                    tourId: selectedReviewBooking.tour.id,
+                    userId: currentUser.id,
+                    rating: reviewData.rating,
+                    comment: reviewData.comment
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            setShowReviewModal(false);
+        } catch (err) {
+            console.error('Error sending review:', err);
+        }
+    };
+
+    const handleDetailClick = async (booking) => {
+        setDetailLoading(true);
+        setDetailError('');
+        setShowDetailModal(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`http://localhost:8080/api/v1/bookings/${booking.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            setDetailData(res.data.data);
+        } catch (err) {
+            setDetailError('Lỗi khi tải chi tiết đơn: ' + (err.response?.data?.message || err.message));
+        } finally {
+            setDetailLoading(false);
         }
     };
 
@@ -198,6 +263,16 @@ const History = () => {
                                                 Hủy đơn
                                             </Button>
                                         )}
+                                        {booking.status === 'COMPLETED' && (
+                                            <Button 
+                                                variant="info" 
+                                                size="sm"
+                                                className="mt-2"
+                                                onClick={() => handleDetailClick(booking)}
+                                            >
+                                                Xem chi tiết
+                                            </Button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
@@ -232,6 +307,103 @@ const History = () => {
                     >
                         {cancelLoading ? 'Đang hủy...' : 'Xác nhận hủy'}
                     </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modal đánh giá tour */}
+            <Modal show={showReviewModal} onHide={() => setShowReviewModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Đánh giá tour</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleReviewSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Chấm điểm</Form.Label>
+                            <Form.Select
+                                value={reviewData.rating}
+                                onChange={e => setReviewData({ ...reviewData, rating: Number(e.target.value) })}
+                                required
+                            >
+                                <option value={5}>5 - Tuyệt vời</option>
+                                <option value={4}>4 - Tốt</option>
+                                <option value={3}>3 - Bình thường</option>
+                                <option value={2}>2 - Kém</option>
+                                <option value={1}>1 - Rất tệ</option>
+                            </Form.Select>
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nội dung đánh giá</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                value={reviewData.comment}
+                                onChange={e => setReviewData({ ...reviewData, comment: e.target.value })}
+                                required
+                            />
+                        </Form.Group>
+                        <div className="d-flex justify-content-end gap-2">
+                            <Button variant="secondary" onClick={() => setShowReviewModal(false)}>
+                                Đóng
+                            </Button>
+                            <Button variant="primary" type="submit">
+                                Gửi đánh giá
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+
+            {/* Modal xem chi tiết booking */}
+            <Modal show={showDetailModal} onHide={() => setShowDetailModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Chi tiết đơn đặt tour</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {detailLoading && <Spinner animation="border" role="status"><span className="visually-hidden">Đang tải...</span></Spinner>}
+                    {detailError && <Alert variant="danger">{detailError}</Alert>}
+                    {detailData && (
+                        <>
+                            <div><strong>Mã đơn:</strong> {detailData.id}</div>
+                            <div><strong>Khách hàng:</strong> {detailData.customerName}</div>
+                            <div><strong>Email:</strong> {detailData.customerEmail}</div>
+                            <div><strong>SĐT:</strong> {detailData.customerPhone}</div>
+                            <div><strong>Tour:</strong> {detailData.tour?.title}</div>
+                            <div><strong>Ngày bắt đầu:</strong> {formatDate(detailData.tour?.startDate)}</div>
+                            <div><strong>Ngày kết thúc:</strong> {formatDate(detailData.tour?.endDate)}</div>
+                            <div><strong>Tổng tiền:</strong> {formatPrice(detailData.totalPrice)}</div>
+                            <div><strong>Trạng thái:</strong> {getStatusBadge(detailData.status)}</div>
+                            <div><strong>Ngày đặt:</strong> {formatDate(detailData.bookingAt)}</div>
+                            {detailData.cancelAt && <div><strong>Ngày hủy:</strong> {formatDate(detailData.cancelAt)}</div>}
+                            <div><strong>Người tham gia:</strong>
+                                {detailData.participants?.map((p, idx) => (
+                                    <div key={idx}>{p.name} - {p.phone} ({p.gender})</div>
+                                ))}
+                            </div>
+                            {detailData.refund && (
+                                <div className="mt-2">
+                                    <strong>Hoàn tiền:</strong>
+                                    <div>Số tiền: {formatPrice(detailData.refund.refundAmount)}</div>
+                                    <div>Trạng thái: {detailData.refund.status}</div>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
+                        Đóng
+                    </Button>
+                    {detailData && detailData.status === 'COMPLETED' && (
+                        <Button variant="success" onClick={() => {
+                            setShowDetailModal(false);
+                            handleReviewClick({
+                                ...detailData,
+                                tour: { id: detailData.tour?.tourId, title: detailData.tour?.title, startDate: detailData.tour?.startDate, endDate: detailData.tour?.endDate }
+                            });
+                        }}>
+                            Đánh giá tour
+                        </Button>
+                    )}
                 </Modal.Footer>
             </Modal>
         </Container>
