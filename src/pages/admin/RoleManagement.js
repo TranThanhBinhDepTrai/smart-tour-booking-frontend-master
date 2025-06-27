@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form, Alert } from 'react-bootstrap';
-import { roleService } from '../services/roleService';
+import { roleService } from '../../services/roleService';
 import './RoleManagement.css';
 
 const RoleManagement = () => {
@@ -202,27 +202,24 @@ const RoleManagement = () => {
                                 <td>{role.permissions?.length || 0}</td>
                                 <td>
                                     <div className="d-flex gap-2">
-                                        <Button 
-                                            variant="info" 
-                                            size="sm"
+                                        <button 
+                                            className="edit-btn"
                                             onClick={() => handleShowPermissionModal(role)}
                                         >
                                             Cập nhật quyền
-                                        </Button>
-                                        <Button 
-                                            variant="primary" 
-                                            size="sm"
+                                        </button>
+                                        <button 
+                                            className="add-btn"
                                             onClick={() => handleShow(role)}
                                         >
                                             Sửa
-                                        </Button>
-                                        <Button 
-                                            variant="danger" 
-                                            size="sm"
+                                        </button>
+                                        <button 
+                                            className="delete-btn"
                                             onClick={() => handleDelete(role.id)}
                                         >
                                             Xóa
-                                        </Button>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -232,25 +229,7 @@ const RoleManagement = () => {
             )}
 
             {roles.length > 0 && (
-                <div className="d-flex justify-content-center mt-3">
-                    <Button 
-                        variant="outline-primary" 
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
-                    >
-                        Trước
-                    </Button>
-                    <span className="mx-3">
-                        Trang {currentPage} / {Math.ceil(totalItems / pageSize)}
-                    </span>
-                    <Button 
-                        variant="outline-primary"
-                        onClick={() => setCurrentPage(prev => prev + 1)}
-                        disabled={currentPage >= Math.ceil(totalItems / pageSize)}
-                    >
-                        Sau
-                    </Button>
-                </div>
+                <></>
             )}
 
             <Modal show={showModal} onHide={handleClose}>

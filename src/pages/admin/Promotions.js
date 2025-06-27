@@ -338,20 +338,8 @@ const Promotions = () => {
                                     </td>
                                     <td>
                                         <div className="d-flex gap-2 justify-content-center">
-                                            <Button 
-                                                variant="primary" 
-                                                size="sm"
-                                                onClick={() => handleShow(promotion)}
-                                            >
-                                                Sửa
-                                            </Button>
-                                            <Button 
-                                                variant="danger" 
-                                                size="sm"
-                                                onClick={() => handleDelete(promotion)}
-                                            >
-                                                Xóa
-                                            </Button>
+                                            <button className="action-button edit-button" onClick={() => handleShow(promotion)} title="Sửa">Sửa</button>
+                                            <button className="action-button delete-btn" onClick={() => handleDelete(promotion)} title="Xóa">Xóa</button>
                                             <Button
                                                 variant="success"
                                                 size="sm"
@@ -367,40 +355,12 @@ const Promotions = () => {
                     </Table>
 
                     {promotions && promotions.length > 0 && (
-                        <div className="d-flex justify-content-center mt-3">
-                            <Button 
-                                variant="outline-primary" 
-                                onClick={() => handlePageChange(0)}
-                                disabled={currentPage === 0}
-                            >
-                                Đầu
-                            </Button>
-                            <Button 
-                                variant="outline-primary" 
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 0}
-                                className="mx-2"
-                            >
-                                Trước
-                            </Button>
-                            <span className="mx-3 mt-2">
-                                Trang {currentPage + 1} / {totalPages} (Tổng: {totalItems} khuyến mãi)
-                            </span>
-                            <Button 
-                                variant="outline-primary"
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage >= totalPages - 1}
-                                className="mx-2"
-                            >
-                                Sau
-                            </Button>
-                            <Button 
-                                variant="outline-primary"
-                                onClick={() => handlePageChange(totalPages - 1)}
-                                disabled={currentPage >= totalPages - 1}
-                            >
-                                Cuối
-                            </Button>
+                        <div className="pagination">
+                            <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>Đầu</button>
+                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trước</button>
+                            <span>Trang {currentPage + 1} / {totalPages} (Tổng: {totalItems} khuyến mãi)</span>
+                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>Sau</button>
+                            <button onClick={() => handlePageChange(totalPages - 1)} disabled={currentPage >= totalPages - 1}>Cuối</button>
                         </div>
                     )}
                 </>

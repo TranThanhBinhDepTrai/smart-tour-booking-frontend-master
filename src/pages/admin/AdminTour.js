@@ -226,19 +226,19 @@ const AdminTour = () => {
                         <td>
                         <div className="action-buttons">
                           <button 
-                            className="action-button view-button"
+                            className="action-button block-btn"
                             onClick={() => handleShowDetails(tour.id)}
                           >
                             Xem
                           </button>
                             <button
-                            className="action-button edit-button"
+                            className="action-button add-btn"
                               onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
                             >
                               Sửa
                             </button>
                             <button
-                            className="action-button delete-button"
+                            className="action-button delete-btn"
                               onClick={() => handleDelete(tour.id)}
                             >
                               Xóa

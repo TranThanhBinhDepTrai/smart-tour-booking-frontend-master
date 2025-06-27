@@ -365,4 +365,309 @@
     height: 20px !important;
     width: auto !important;
   }
+}
+
+/* HERO SECTION HOME */
+.hero-section-home {
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+.hero-bg-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
+}
+.hero-bg-img {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+}
+.hero-bg-dark {
+  position: absolute;
+  width: 100%; height: 100%;
+  background: linear-gradient(120deg, rgba(0,116,188,0.7) 0%, rgba(0,186,148,0.5) 100%);
+  z-index: 2;
+}
+.hero-content-home {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  color: #fff;
+  padding: 3rem 1rem 2rem 1rem;
+}
+.hero-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.hero-title span {
+  color: #ffd600;
+}
+.hero-sub {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 2.2rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.hero-search-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* SECTION TITLE HOME */
+.section-title-home {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #0074bc;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  margin-top: 0;
+  letter-spacing: 0.5px;
+  position: relative;
+  text-transform: uppercase;
+}
+.section-title-home::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #0074bc 0%, #ffd600 100%);
+  margin: 1rem auto 0 auto;
+  border-radius: 2px;
+}
+
+/* TOUR CATEGORIES SECTION HOME */
+.tour-categories-section-home {
+  background: #f7fafc;
+  padding: 3.5rem 0 2.5rem 0;
+  margin-top: 2.5rem;
+  max-width: 1700px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* RECOMMENDED TOURS SECTION HOME */
+.recommended-tours-section-home {
+  background: #fff;
+  padding: 2.5rem 0 2.5rem 0;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  max-width: 1700px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* FEATURED TOURS SECTION HOME */
+.featured-tours-section-home {
+  background: #f7fafc;
+  padding: 2.5rem 0 2.5rem 0;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  max-width: 1700px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@media (max-width: 992px) {
+  .hero-title {
+    font-size: 2.2rem;
+  }
+  .hero-content-home {
+    padding: 2rem 0.5rem 1.5rem 0.5rem;
+  }
+  .section-title-home {
+    font-size: 1.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .hero-section-home {
+    min-height: 320px;
+  }
+  .hero-title {
+    font-size: 1.3rem;
+  }
+  .hero-sub {
+    font-size: 1rem;
+  }
+  .section-title-home {
+    font-size: 1.1rem;
+  }
+}
+
+/* HERO SECTION HOME COMPACT */
+.hero-section-home.compact {
+  min-height: 340px;
+  height: 380px;
+  margin-bottom: 1.5rem;
+  padding: 0;
+}
+.hero-content-home.compact {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.2rem 1rem 1.2rem 1rem;
+  background: rgba(0,0,0,0.10);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+.hero-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  margin-bottom: 0.7rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.hero-sub {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+.hero-content-home.compact .hero-search-wrapper,
+.hero-content-home.compact form {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* Điều chỉnh overlay cho nhẹ hơn */
+.hero-bg-dark {
+  background: linear-gradient(120deg, rgba(0,116,188,0.45) 0%, rgba(0,186,148,0.25) 100%);
+}
+
+@media (max-width: 992px) {
+  .hero-section-home.compact {
+    min-height: 220px;
+    height: 260px;
+  }
+  .hero-content-home.compact {
+    padding: 1.2rem 0.5rem 0.7rem 0.5rem;
+    max-width: 98vw;
+  }
+  .hero-title {
+    font-size: 1.2rem;
+  }
+  .hero-sub {
+    font-size: 0.95rem;
+  }
+}
+
+/* HERO SECTION HOME SEARCH ONLY */
+.hero-section-home.search-only {
+  min-height: 450px;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  padding: 0;
+}
+.hero-bg-img {
+  width: 100vw;
+  height: 100%;
+  min-height: 500px;
+  object-fit: cover;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+}
+.hero-content-home.search-only {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+.hero-content-home.search-only form,
+.hero-content-home.search-only .hero-search-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* Không cho form phóng to khi nhấn vào */
+.hero-section.expanded .search-form-container,
+.hero-section-home.search-only .search-form-container {
+  border-radius: 50px;
+  background: rgba(255,255,255,0.1);
+  color: #333;
+  padding: 10px;
+  transition: none;
+}
+
+.hero-section-home.search-only .main-search-input {
+  background: transparent;
+  color: #fff;
+}
+
+.hero-section-home.search-only .main-search-input::placeholder {
+  color: #eee;
+}
+
+@media (max-width: 992px) {
+  .hero-section-home.search-only {
+    min-height: 260px;
+    height: 300px;
+  }
+  .hero-bg-img {
+    min-height: 300px;
+  }
+  .hero-content-home.search-only {
+    max-width: 98vw;
+  }
+}
+
+.tour-section-title-home, .featured-section-title-home {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #0074bc;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  margin-top: 0;
+  letter-spacing: 0.5px;
+  position: relative;
+  text-transform: uppercase;
+}
+.tour-section-title-home::after, .featured-section-title-home::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #0074bc 0%, #ffd600 100%);
+  margin: 1rem auto 0 auto;
+  border-radius: 2px;
 } 

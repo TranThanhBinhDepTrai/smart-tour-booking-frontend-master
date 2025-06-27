@@ -394,40 +394,12 @@ const Users = () => {
                         </tbody>
                     </Table>
 
-                    <div className="d-flex justify-content-center mt-3">
-                        <Button 
-                            variant="outline-primary" 
-                            onClick={() => handlePageChange(1)}
-                            disabled={currentPage === 1}
-                        >
-                            Đầu
-                        </Button>
-                        <Button 
-                            variant="outline-primary" 
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="mx-2"
-                        >
-                            Trước
-                        </Button>
-                        <span className="mx-3 mt-2">
-                            Trang {currentPage} / {totalPages} (Tổng: {totalItems} người dùng)
-                        </span>
-                        <Button 
-                            variant="outline-primary"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage >= totalPages}
-                            className="mx-2"
-                        >
-                            Sau
-                        </Button>
-                        <Button 
-                            variant="outline-primary"
-                            onClick={() => handlePageChange(totalPages)}
-                            disabled={currentPage >= totalPages}
-                        >
-                            Cuối
-                        </Button>
+                    <div className="pagination">
+                        <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>Đầu</button>
+                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
+                        <span>Trang {currentPage} / {totalPages} (Tổng: {totalItems} người dùng)</span>
+                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Sau</button>
+                        <button onClick={() => handlePageChange(totalPages)} disabled={currentPage >= totalPages}>Cuối</button>
                     </div>
                 </>
             )}

@@ -1,43 +1,99 @@
 .contact-container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 2.5rem 1rem;
 }
 
-.contact-container h2 {
-    color: #333;
-    margin-bottom: 2rem;
+.contact-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #0074bc;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.contact-title span {
+    color: #ffd600;
+}
+
+.contact-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #0074bc 0%, #ffd600 100%);
+    margin: 1rem auto 0 auto;
+    border-radius: 2px;
+}
+
+.contact-card {
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(0,116,188,0.08);
+    border: 2px solid #fff;
+    transition: box-shadow 0.2s, border 0.2s, transform 0.2s;
+    background: #fff;
+    min-height: 320px;
+}
+
+.contact-card:hover {
+    transform: translateY(-7px) scale(1.01);
+    box-shadow: 0 8px 32px rgba(0,116,188,0.13);
+    border: 2px solid #ffd600;
 }
 
 .contact-info p {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    color: #555;
+    font-size: 1.15rem;
+    margin-bottom: 1.2rem;
+    color: #0074bc;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
 }
 
 .contact-info i {
-    color: #007bff;
-    width: 20px;
+    color: #ffd600;
+    font-size: 1.4rem;
+    width: 28px;
 }
 
 .map-container {
     height: 400px;
     width: 100%;
     overflow: hidden;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(0,116,188,0.08);
 }
 
 .map-container iframe {
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 18px;
 }
 
-@media (max-width: 768px) {
-    .contact-container {
-        padding: 1rem;
+@media (max-width: 900px) {
+    .contact-card, .map-container {
+        border-radius: 12px;
     }
-    
+    .contact-title {
+        font-size: 1.5rem;
+    }
     .map-container {
         height: 300px;
+    }
+}
+
+@media (max-width: 600px) {
+    .contact-card, .map-container {
+        border-radius: 8px;
+    }
+    .contact-title {
+        font-size: 1.1rem;
+    }
+    .map-container {
+        height: 220px;
     }
 } 

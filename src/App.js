@@ -17,7 +17,7 @@ import AdminTour from './pages/admin/AdminTour';
 import CreateTour from './pages/admin/CreateTour';
 import EditTour from './pages/admin/EditTour';
 import Permissions from './pages/admin/Permissions';
-import RoleManagement from './pages/RoleManagement';
+import RoleManagement from './pages/admin/RoleManagement';
 import Tour from './pages/tours/Tour';
 import TourDetail from './pages/tours/TourDetail';
 import BookTour from './pages/tours/BookTour';
@@ -33,7 +33,6 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Users from './pages/admin/Users';
 import VnpayReturn from './pages/payment/VnpayReturn';
 import History from './pages/history/History';
-import Contact from './pages/contact/Contact';
 import Revenue from './pages/admin/Revenue';
 import TourCategoryList from './pages/tours/TourCategoryList';
 import './App.css';
@@ -78,7 +77,6 @@ const router = createBrowserRouter(
         <Route path="custom-tour" element={<CustomTourPage />} />
         <Route path="promotions" element={<Promotions />} />
         <Route path="check-booking" element={<CheckBooking />} />
-        <Route path="contact" element={<Contact />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="profile" element={

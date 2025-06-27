@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Badge, Button, Spinner, Alert, Modal, Form } from 'react-bootstrap';
+import { Container, Table, Badge, Button, Spinner, Alert, Modal } from 'react-bootstrap';
 import { useAuth } from '../../contexts/AuthContext';
 import { bookingService } from '../../services/bookingService';
 import './History.css';
@@ -14,18 +14,15 @@ const History = () => {
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [cancelLoading, setCancelLoading] = useState(false);
     const [showReviewModal, setShowReviewModal] = useState(false);
-    const [reviewData, setReviewData] = useState({ rating: 5, comment: '' });
-    const [showDetailModal, setShowDetailModal] = useState(false);
-    const [detailLoading, setDetailLoading] = useState(false);
-    const [detailError, setDetailError] = useState('');
-    const [detailData, setDetailData] = useState(null);
-    const [userReviews, setUserReviews] = useState([]);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [editLoading, setEditLoading] = useState(false);
-    const [deleteLoading, setDeleteLoading] = useState(false);
-    const [deleteId, setDeleteId] = useState(null);
-    const [successMsg, setSuccessMsg] = useState('');
-    const [selectedReviewBooking, setSelectedReviewBooking] = useState(null);
+    const [reviewBooking, setReviewBooking] = useState(null);
+    const [reviewRating, setReviewRating] = useState(5);
+    const [reviewComment, setReviewComment] = useState('');
+    const [reviewLoading, setReviewLoading] = useState(false);
+    const [reviewSuccess, setReviewSuccess] = useState('');
+    const [reviewError, setReviewError] = useState('');
+    const [showTourDetailModal, setShowTourDetailModal] = useState(false);
+    const [detailBooking, setDetailBooking] = useState(null);
+    const [reviewTourId, setReviewTourId] = useState(null);
 
     useEffect(() => {
         console.log('Current user in History:', currentUser);
@@ -84,57 +81,6 @@ const History = () => {
             setShowCancelModal(false);
             // Always reload bookings to reflect the latest state from the DB
             await loadBookings();
-        }
-    };
-
-    const handleReviewClick = (booking) => {
-        setSelectedReviewBooking(booking);
-        setReviewData({ rating: 5, comment: '' });
-        setShowReviewModal(true);
-    };
-
-    const handleReviewSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post(
-                'http://localhost:8080/api/v1/reviews',
-                {
-                    tourId: selectedReviewBooking.tour.id,
-                    userId: currentUser.id,
-                    rating: reviewData.rating,
-                    comment: reviewData.comment
-                },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-            setShowReviewModal(false);
-        } catch (err) {
-            console.error('Error sending review:', err);
-        }
-    };
-
-    const handleDetailClick = async (booking) => {
-        setDetailLoading(true);
-        setDetailError('');
-        setShowDetailModal(true);
-        try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`http://localhost:8080/api/v1/bookings/${booking.id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            setDetailData(res.data.data);
-        } catch (err) {
-            setDetailError('Lỗi khi tải chi tiết đơn: ' + (err.response?.data?.message || err.message));
-        } finally {
-            setDetailLoading(false);
         }
     };
 
@@ -263,14 +209,17 @@ const History = () => {
                                                 Hủy đơn
                                             </Button>
                                         )}
-                                        {booking.status === 'COMPLETED' && (
+                                        {['COMPLETED'].includes((booking.status || '').toUpperCase()) && (
                                             <Button 
                                                 variant="info" 
                                                 size="sm"
                                                 className="mt-2"
-                                                onClick={() => handleDetailClick(booking)}
+                                                onClick={() => {
+                                                    setDetailBooking(booking);
+                                                    setShowTourDetailModal(true);
+                                                }}
                                             >
-                                                Xem chi tiết
+                                                Xem chi tiết tour
                                             </Button>
                                         )}
                                     </td>
@@ -316,94 +265,133 @@ const History = () => {
                     <Modal.Title>Đánh giá tour</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handleReviewSubmit}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Chấm điểm</Form.Label>
-                            <Form.Select
-                                value={reviewData.rating}
-                                onChange={e => setReviewData({ ...reviewData, rating: Number(e.target.value) })}
-                                required
-                            >
-                                <option value={5}>5 - Tuyệt vời</option>
-                                <option value={4}>4 - Tốt</option>
-                                <option value={3}>3 - Bình thường</option>
-                                <option value={2}>2 - Kém</option>
-                                <option value={1}>1 - Rất tệ</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nội dung đánh giá</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={reviewData.comment}
-                                onChange={e => setReviewData({ ...reviewData, comment: e.target.value })}
-                                required
-                            />
-                        </Form.Group>
-                        <div className="d-flex justify-content-end gap-2">
-                            <Button variant="secondary" onClick={() => setShowReviewModal(false)}>
-                                Đóng
-                            </Button>
-                            <Button variant="primary" type="submit">
-                                Gửi đánh giá
-                            </Button>
-                        </div>
-                    </Form>
+                    {reviewSuccess && <Alert variant="success">{reviewSuccess}</Alert>}
+                    {reviewError && <Alert variant="danger">{reviewError}</Alert>}
+                    <div className="mb-3">
+                        <label className="form-label">Chọn số sao:</label><br/>
+                        {[1,2,3,4,5].map(star => (
+                            <span
+                                key={star}
+                                style={{
+                                    fontSize: '1.7rem',
+                                    color: star <= reviewRating ? '#ffd600' : '#ccc',
+                                    cursor: 'pointer',
+                                    marginRight: 4
+                                }}
+                                onClick={() => setReviewRating(star)}
+                            >★</span>
+                        ))}
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Nhận xét:</label>
+                        <textarea
+                            className="form-control"
+                            rows={3}
+                            value={reviewComment}
+                            onChange={e => setReviewComment(e.target.value)}
+                            placeholder="Hãy chia sẻ cảm nhận của bạn về tour này..."
+                        />
+                    </div>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowReviewModal(false)} disabled={reviewLoading}>
+                        Đóng
+                    </Button>
+                    <Button
+                        variant="success"
+                        onClick={async () => {
+                            setReviewLoading(true);
+                            setReviewSuccess('');
+                            setReviewError('');
+                            try {
+                                const token = localStorage.getItem('token');
+                                const tourId = reviewTourId;
+                                const res = await axios.post('http://localhost:8080/api/v1/reviews', {
+                                    rating: reviewRating,
+                                    comment: reviewComment,
+                                    tourId: tourId,
+                                    userId: currentUser?.id
+                                }, {
+                                    headers: {
+                                        Authorization: `Bearer ${token}`
+                                    }
+                                });
+                                if (res.data && res.data.statusCode === 200) {
+                                    setReviewSuccess('Đánh giá thành công!');
+                                    setTimeout(() => {
+                                        setShowReviewModal(false);
+                                    }, 1200);
+                                } else {
+                                    setReviewError('Đánh giá thất bại!');
+                                }
+                            } catch (err) {
+                                setReviewError('Đánh giá thất bại!');
+                            } finally {
+                                setReviewLoading(false);
+                            }
+                        }}
+                        disabled={reviewLoading || !reviewComment.trim()}
+                    >
+                        {reviewLoading ? 'Đang gửi...' : 'Gửi đánh giá'}
+                    </Button>
+                </Modal.Footer>
             </Modal>
 
-            {/* Modal xem chi tiết booking */}
-            <Modal show={showDetailModal} onHide={() => setShowDetailModal(false)}>
+            {/* Modal chi tiết tour */}
+            <Modal show={showTourDetailModal} onHide={() => setShowTourDetailModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Chi tiết đơn đặt tour</Modal.Title>
+                    <Modal.Title>Chi tiết tour</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {detailLoading && <Spinner animation="border" role="status"><span className="visually-hidden">Đang tải...</span></Spinner>}
-                    {detailError && <Alert variant="danger">{detailError}</Alert>}
-                    {detailData && (
+                    {detailBooking && (
                         <>
-                            <div><strong>Mã đơn:</strong> {detailData.id}</div>
-                            <div><strong>Khách hàng:</strong> {detailData.customerName}</div>
-                            <div><strong>Email:</strong> {detailData.customerEmail}</div>
-                            <div><strong>SĐT:</strong> {detailData.customerPhone}</div>
-                            <div><strong>Tour:</strong> {detailData.tour?.title}</div>
-                            <div><strong>Ngày bắt đầu:</strong> {formatDate(detailData.tour?.startDate)}</div>
-                            <div><strong>Ngày kết thúc:</strong> {formatDate(detailData.tour?.endDate)}</div>
-                            <div><strong>Tổng tiền:</strong> {formatPrice(detailData.totalPrice)}</div>
-                            <div><strong>Trạng thái:</strong> {getStatusBadge(detailData.status)}</div>
-                            <div><strong>Ngày đặt:</strong> {formatDate(detailData.bookingAt)}</div>
-                            {detailData.cancelAt && <div><strong>Ngày hủy:</strong> {formatDate(detailData.cancelAt)}</div>}
+                            <div><strong>Mã đơn:</strong> {detailBooking.id}</div>
+                            <div><strong>Tên khách:</strong> {detailBooking.customerName}</div>
+                            <div><strong>Email:</strong> {detailBooking.customerEmail}</div>
+                            <div><strong>SĐT:</strong> {detailBooking.customerPhone}</div>
+                            <div><strong>Ngày đặt:</strong> {formatDate(detailBooking.bookingAt)}</div>
+                            <div><strong>Tên tour:</strong> {detailBooking.tour?.title}</div>
+                            <div><strong>Mã tour:</strong> {detailBooking.tour?.tourId}</div>
+                            <div><strong>Ngày bắt đầu:</strong> {formatDate(detailBooking.tour?.startDate)}</div>
+                            <div><strong>Ngày kết thúc:</strong> {formatDate(detailBooking.tour?.endDate)}</div>
+                            <div><strong>Giá tour:</strong> {formatPrice(detailBooking.tour?.price)}</div>
+                            <div><strong>Tổng tiền:</strong> {formatPrice(detailBooking.totalPrice)}</div>
+                            <div><strong>Trạng thái:</strong> {getStatusBadge(detailBooking.status)}</div>
+                            <div><strong>Hãng bay:</strong> {detailBooking.tour?.airline || 'N/A'}</div>
+                            <div><strong>Khách sạn:</strong> {detailBooking.tour?.hotelName || 'N/A'}</div>
                             <div><strong>Người tham gia:</strong>
-                                {detailData.participants?.map((p, idx) => (
-                                    <div key={idx}>{p.name} - {p.phone} ({p.gender})</div>
-                                ))}
+                                <ul style={{paddingLeft: 18}}>
+                                    {detailBooking.participants && detailBooking.participants.length > 0 ? (
+                                        detailBooking.participants.map((p, idx) => (
+                                            <li key={idx}>{p.name} - {p.phone} ({p.gender === 'MALE' ? 'Nam' : 'Nữ'})</li>
+                                        ))
+                                    ) : (
+                                        <li>Không có</li>
+                                    )}
+                                </ul>
                             </div>
-                            {detailData.refund && (
-                                <div className="mt-2">
-                                    <strong>Hoàn tiền:</strong>
-                                    <div>Số tiền: {formatPrice(detailData.refund.refundAmount)}</div>
-                                    <div>Trạng thái: {detailData.refund.status}</div>
-                                </div>
-                            )}
+                            <div className="mt-2"><strong>Mô tả tour:</strong> {detailBooking.tour?.description || 'Không có'}</div>
                         </>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
+                    <Button variant="secondary" onClick={() => setShowTourDetailModal(false)}>
                         Đóng
                     </Button>
-                    {detailData && detailData.status === 'COMPLETED' && (
-                        <Button variant="success" onClick={() => {
-                            setShowDetailModal(false);
-                            handleReviewClick({
-                                ...detailData,
-                                tour: { id: detailData.tour?.tourId, title: detailData.tour?.title, startDate: detailData.tour?.startDate, endDate: detailData.tour?.endDate }
-                            });
-                        }}>
-                            Đánh giá tour
-                        </Button>
-                    )}
+                    <Button
+                        variant="success"
+                        onClick={() => {
+                            setReviewBooking(detailBooking);
+                            setReviewTourId(detailBooking?.tour?.tourId);
+                            setReviewRating(5);
+                            setReviewComment('');
+                            setShowReviewModal(true);
+                            setReviewSuccess('');
+                            setReviewError('');
+                        }}
+                    >
+                        Đánh giá tour
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </Container>

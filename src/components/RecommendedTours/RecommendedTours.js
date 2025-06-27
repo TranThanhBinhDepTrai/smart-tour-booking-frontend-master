@@ -110,7 +110,7 @@ const RecommendedTours = () => {
     return (
         <section className="recommended-tours-section">
             <Container>
-                <h2 className="section-title">Tour gợi ý cho bạn</h2>
+                <h2 className="tour-section-title-home">Tour gợi ý cho bạn</h2>
                 {loading ? (
                     <div className="text-center py-5">
                         <div className="spinner-border text-primary" role="status">

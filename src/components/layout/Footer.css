@@ -1,43 +1,122 @@
-.footer {
-  background-color: #333;
+/* Footer travel.com.vn style */
+.travelvn-footer {
+  background: #003366;
   color: #fff;
-  padding: 3rem 2rem 1rem;
-  margin-top: auto;
+  padding-top: 2.5rem;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
-
-.footer-content {
+.footer-main {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 2rem 2.2rem 2rem;
 }
-
-.footer-section h3 {
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.1rem;
+}
+.footer-logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid #ffd600;
+  background: #fff;
+}
+.footer-logo-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffd600;
+  letter-spacing: 1px;
+}
+.footer-desc {
+  color: #e0e0e0;
+  font-size: 1rem;
+  margin-bottom: 1.1rem;
+}
+.footer-col h3, .footer-col h4 {
+  color: #ffd600;
   margin-bottom: 1rem;
   font-size: 1.2rem;
+  font-weight: bold;
 }
-
-.footer-section p {
-  margin: 0.5rem 0;
-  color: #ccc;
+.footer-col p, .footer-col ul, .footer-col li {
+  color: #e0e0e0;
+  font-size: 1rem;
+  margin: 0.4rem 0;
+  list-style: none;
+  padding: 0;
 }
-
+.footer-col ul {
+  padding-left: 0;
+}
+.footer-col ul li a {
+  color: #e0e0e0;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-col ul li a:hover {
+  color: #ffd600;
+}
+.footer-social {
+  margin-top: 1rem;
+  display: flex;
+  gap: 16px;
+}
+.footer-social a {
+  color: #fff;
+  font-size: 1.6rem;
+  margin-right: 0;
+  transition: color 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.footer-social a:hover {
+  color: #ffd600;
+  transform: scale(1.15);
+}
 .footer-bottom {
-  margin-top: 2rem;
-  padding-top: 1rem;
+  border-top: 1px solid #224477;
   text-align: center;
-  border-top: 1px solid #555;
+  padding: 1.2rem 0 0.7rem 0;
+  color: #b0b0b0;
+  font-size: 0.98rem;
+  margin-top: 1rem;
 }
-
-.footer-bottom p {
-  color: #888;
-  font-size: 0.9rem;
+.footer-col a {
+  color: #ffd600;
+  text-decoration: none;
 }
-
-@media (max-width: 768px) {
-  .footer-content {
+.footer-col a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+.footer-col p i, .footer-col ul li i {
+  color: #ffd600;
+  margin-right: 7px;
+  font-size: 1.1rem;
+}
+@media (max-width: 992px) {
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .footer-main {
     grid-template-columns: 1fr;
     text-align: center;
+    padding: 0 1rem 2rem 1rem;
+  }
+  .footer-social {
+    justify-content: center;
+  }
+  .footer-logo {
+    justify-content: center;
   }
 } 

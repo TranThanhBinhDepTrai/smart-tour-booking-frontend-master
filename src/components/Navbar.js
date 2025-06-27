@@ -28,7 +28,6 @@ const Navbar = () => {
                         <Nav.Link as={Link} to="/custom-tour" className="px-3">Tour theo yêu cầu</Nav.Link>
                         <Nav.Link as={Link} to="/promotions" className="px-3">Khuyến mãi</Nav.Link>
                         <Nav.Link as={Link} to="/check-booking" className="px-3">Kiểm tra đơn hàng</Nav.Link>
-                        <Nav.Link as={Link} to="/contact" className="px-3">Liên hệ</Nav.Link>
                         <Nav.Link as={Link} to="/history" className="px-3">Lịch sử</Nav.Link>
                     </Nav>
                     <Nav>

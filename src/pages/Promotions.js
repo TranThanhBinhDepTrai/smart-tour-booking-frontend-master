@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Alert, Spinner, Button, Form, Modal } from '
 import { Link } from 'react-router-dom';
 import { promotionService } from '../services/promotionService';
 import { useAuth } from '../contexts/AuthContext';
+import { FaPercent, FaCalendarAlt, FaRedo, FaGift } from 'react-icons/fa';
 import './Promotions.css';
 
 const Promotions = () => {
@@ -101,7 +102,7 @@ const Promotions = () => {
 
     return (
         <Container className="my-5">
-            <h2 className="text-center mb-4">Khuyến Mãi Đang Diễn Ra</h2>
+            <h2 className="promotions-title mb-4">Khuyến Mãi <span>Đang Diễn Ra</span></h2>
             
             {!currentUser ? (
                 <Alert variant="info" className="text-center">
@@ -154,31 +155,31 @@ const Promotions = () => {
                                     <Card className="h-100 promotion-card">
                                         <Card.Body>
                                             <Card.Title className="promotion-code">
+                                                <FaGift style={{ color: '#ffd600', marginRight: 8 }} />
                                                 {promotion.code}
                                             </Card.Title>
+                                            <div className="promotion-discount">
+                                                <FaPercent /> Giảm giá: <span>{promotion.discountPercent}%</span>
+                                            </div>
                                             <Card.Text className="promotion-description">
                                                 {promotion.description}
                                             </Card.Text>
                                             <div className="promotion-details">
-                                                <p className="discount">
-                                                    <strong>Giảm giá:</strong> {promotion.discountPercent}%
+                                                <p><FaCalendarAlt className="icon" />
+                                                    <span className="dates">
+                                                        <strong>Thời gian:</strong> {formatDate(promotion.startAt)} - {formatDate(promotion.endAt)}
+                                                    </span>
                                                 </p>
-                                                <p className="dates">
-                                                    <strong>Thời gian:</strong><br />
-                                                    Từ: {formatDate(promotion.startAt)}<br />
-                                                    Đến: {formatDate(promotion.endAt)}
+                                                <p className="usage-limit"><FaRedo className="icon" />
+                                                    <span>Số lượt sử dụng còn lại: {promotion.usageLimit}</span>
                                                 </p>
-                                                <p className="usage-limit">
-                                                    <strong>Số lượt sử dụng còn lại:</strong> {promotion.usageLimit}
-                                                </p>
-                                                <Button 
-                                                    variant="outline-primary" 
-                                                    className="w-100 mt-2"
-                                                    onClick={() => handleViewDetails(promotion.id)}
-                                                >
-                                                    Xem chi tiết
-                                                </Button>
                                             </div>
+                                            <Button 
+                                                className="w-100 mt-2"
+                                                onClick={() => handleViewDetails(promotion.id)}
+                                            >
+                                                Xem chi tiết
+                                            </Button>
                                         </Card.Body>
                                     </Card>
                                 </Col>

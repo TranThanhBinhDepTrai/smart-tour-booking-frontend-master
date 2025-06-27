@@ -435,37 +435,12 @@ const CustomTourManagement = () => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="d-flex justify-content-center mt-4">
-                  <ul className="pagination">
-                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                      <Button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      >
-                        &laquo;
-                      </Button>
-                    </li>
-                    {pageNumbers.map(number => (
-                      <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
-                        <Button
-                          className="page-link"
-                          onClick={() => setCurrentPage(number)}
-                        >
-                          {number}
-                        </Button>
-                      </li>
-                    ))}
-                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                      <Button
-                        className="page-link"
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      >
-                        &raquo;
-                      </Button>
-                    </li>
-                  </ul>
+                <div className="pagination">
+                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>Đầu</button>
+                  <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
+                  <span>Trang {currentPage} / {totalPages}</span>
+                  <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>Sau</button>
+                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>Cuối</button>
                 </div>
               )}
             </>

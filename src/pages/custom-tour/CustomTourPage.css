@@ -195,4 +195,90 @@ button[type="submit"]:focus {
 .custom-tour-page .alert {
     border-radius: 5px;
     padding: 1rem;
+}
+
+.contact-info-card {
+  border-radius: 20px;
+  border: 2.5px solid #ffd600;
+  box-shadow: 0 6px 32px 0 rgba(0,0,0,0.10);
+  background: #fff;
+  padding: 36px 28px 28px 28px;
+  min-height: 520px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.contact-info-card h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0074bc;
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+}
+.contact-info p {
+  font-size: 1.18rem;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #0074bc;
+  font-weight: 600;
+}
+.contact-info svg {
+  font-size: 1.7rem;
+  color: #ffd600;
+}
+.map-container {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.09);
+  margin-top: 18px;
+}
+.map-container iframe {
+  min-height: 240px;
+}
+@media (max-width: 991px) {
+  .contact-info-card {
+    margin-top: 0;
+    min-height: 400px;
+    max-width: 100%;
+    padding: 24px 10px 18px 10px;
+  }
+}
+@media (max-width: 767px) {
+  .contact-info-card {
+    margin-top: 18px;
+    min-height: 320px;
+    padding: 18px 4px 12px 4px;
+  }
+  .contact-info-card h3 {
+    font-size: 1.25rem;
+  }
+  .contact-info p {
+    font-size: 1.05rem;
+    gap: 10px;
+  }
+  .contact-info svg {
+    font-size: 1.2rem;
+  }
+  .map-container iframe {
+    min-height: 160px;
+  }
+}
+
+.contact-info-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0074bc;
+  line-height: 1.1;
+  margin-bottom: 28px;
+  font-family: Arial, 'Segoe UI', Roboto, sans-serif;
+}
+.contact-info-title-highlight {
+  color: #ffd600;
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  font-family: Arial, 'Segoe UI', Roboto, sans-serif;
 } 

@@ -200,22 +200,10 @@ const Permissions = () => {
                                         <td>{permission.module}</td>
                                         <td>
                                             <div className="d-flex gap-2 justify-content-center">
-                                                <Button 
-                                                    variant="primary" 
-                                                    size="sm"
-                                                    onClick={() => handleShow(permission)}
-                                                >
-                            Sửa
-                                                </Button>
-                                                <Button 
-                                                    variant="danger" 
-                                                    size="sm"
-                                                    onClick={() => handleDelete(permission.id)}
-                                                >
-                            Xóa
-                                                </Button>
-                        </div>
-                      </td>
+                                                <button className="action-button edit-button" onClick={() => handleShow(permission)} title="Sửa">Sửa</button>
+                                                <button className="action-button delete-btn" onClick={() => handleDelete(permission.id)} title="Xóa">Xóa</button>
+                                            </div>
+                                          </td>
                     </tr>
                                 ))
                             ) : (
@@ -229,41 +217,13 @@ const Permissions = () => {
                     </Table>
 
                     {permissions && permissions.length > 0 && (
-                        <div className="d-flex justify-content-center mt-3">
-                            <Button 
-                                variant="outline-primary" 
-                                onClick={() => handlePageChange(1)}
-                                disabled={currentPage === 1}
-              >
-                Đầu
-                            </Button>
-                            <Button 
-                                variant="outline-primary" 
-                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="mx-2"
-              >
-                Trước
-                            </Button>
-                            <span className="mx-3 mt-2">
-                                Trang {currentPage} / {totalPages} (Tổng: {totalItems} quyền)
-              </span>
-                            <Button 
-                                variant="outline-primary"
-                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage >= totalPages}
-                                className="mx-2"
-              >
-                Sau
-                            </Button>
-                            <Button 
-                                variant="outline-primary"
-                                onClick={() => handlePageChange(totalPages)}
-                                disabled={currentPage >= totalPages}
-              >
-                Cuối
-                            </Button>
-            </div>
+                        <div className="pagination">
+                            <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>Đầu</button>
+                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
+                            <span>Trang {currentPage} / {totalPages} (Tổng: {totalItems} quyền)</span>
+                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Sau</button>
+                            <button onClick={() => handlePageChange(totalPages)} disabled={currentPage >= totalPages}>Cuối</button>
+                        </div>
                     )}
           </>
         )}

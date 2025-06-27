@@ -409,36 +409,12 @@ const BookingManagement = () => {
                 </Table>
             </div>
 
-            <div className="d-flex justify-content-center mt-4">
-                <Pagination>
-                    <Pagination.First 
-                        onClick={() => handlePageChange(0)}
-                        disabled={currentPage === 0}
-                    />
-                    <Pagination.Prev 
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 0}
-                    />
-                    
-                    {[...Array(totalPages)].map((_, index) => (
-                        <Pagination.Item
-                            key={index}
-                            active={index === currentPage}
-                            onClick={() => handlePageChange(index)}
-                        >
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
-                    
-                    <Pagination.Next 
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages - 1}
-                    />
-                    <Pagination.Last 
-                        onClick={() => handlePageChange(totalPages - 1)}
-                        disabled={currentPage === totalPages - 1}
-                    />
-                </Pagination>
+            <div className="pagination">
+              <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>Đầu</button>
+              <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trước</button>
+              <span>Trang {currentPage + 1} / {totalPages}</span>
+              <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>Sau</button>
+              <button onClick={() => handlePageChange(totalPages - 1)} disabled={currentPage === totalPages - 1}>Cuối</button>
             </div>
 
             {/* Booking Details Modal */}

@@ -40,10 +40,12 @@
 /* Carousel styles */
 .detail-carousel {
   width: 100%;
-  height: 500px;
+  height: 420px;
   position: relative;
-  border-radius: 8px 8px 0 0;
+  border-radius: 18px;
   overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,116,188,0.10);
+  margin-bottom: 1.2rem;
 }
 
 .carousel-container {
@@ -57,10 +59,11 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 420px;
   object-fit: cover;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
+  border-radius: 18px;
 }
 
 .carousel-image.active {
@@ -71,15 +74,19 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  background: rgba(0,116,188,0.7) !important;
+  color: #fff !important;
   border: none;
   padding: 16px;
   cursor: pointer;
   font-size: 24px;
   z-index: 10;
   transition: all 0.3s;
-  opacity: 0;
+  opacity: 1 !important;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 2px 8px rgba(0,116,188,0.13);
 }
 
 .carousel-container:hover .carousel-button {
@@ -87,8 +94,8 @@
 }
 
 .carousel-button:hover {
-  background: rgba(0, 0, 0, 0.7);
-  transform: translateY(-50%) scale(1.1);
+  background: #ffd600 !important;
+  color: #0074bc !important;
 }
 
 .carousel-button.prev {
@@ -101,30 +108,35 @@
 
 .carousel-dots {
   position: absolute;
-  bottom: 20px;
+  bottom: 18px !important;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  gap: 12px;
   z-index: 2;
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: #fff;
+  border: 2px solid #0074bc;
+  opacity: 0.7;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.2s;
 }
 
 .dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: #ffd600;
+  border: 2px solid #ffd600;
+  opacity: 1;
 }
 
 .dot.active {
-  background: white;
-  transform: scale(1.2);
+  background: #ffd600;
+  border: 2px solid #ffd600;
+  opacity: 1;
 }
 
 .tour-section {
@@ -240,45 +252,31 @@
   font-weight: bold;
 }
 
-.booking-button {
-  width: 100%;
-  padding: 12px;
-  background: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: all 0.3s;
-  cursor: pointer;
+.tour-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 1.2rem;
+}
+.booking-button, .export-pdf-button {
+  flex: 1 1 180px;
+  min-width: 160px;
+  max-width: 260px;
+  padding: 0.7rem 0.5rem;
   font-size: 1rem;
+  border-radius: 12px;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-.booking-button:hover {
-  background: #1557b0;
-  transform: translateY(-1px);
+.booking-button:hover, .export-pdf-button:hover {
+  background: linear-gradient(90deg, #005b96 0%, #ffd600 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,116,188,0.13);
 }
 
-.booking-button:active {
-  transform: translateY(0);
-}
-
-.export-pdf-button {
-  width: 100%;
-  padding: 12px;
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.export-pdf-button:hover {
-  background: #e9ecef;
-}
-
-.export-pdf-button:disabled {
-  background: #e9ecef;
-  cursor: not-allowed;
+.booking-button:active, .export-pdf-button:active {
+  opacity: 0.92;
 }
 
 /* Loading and error states */
@@ -326,49 +324,85 @@
 }
 
 .related-tours-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 24px;
 }
 
 .related-tour-card {
     border: none;
-    border-radius: 8px;
+  border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0,116,188,0.10);
+  background: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  cursor: pointer;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .related-tour-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.related-tour-image {
-    height: 120px;
-    overflow: hidden;
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 36px rgba(0,116,188,0.16);
 }
 
 .related-tour-img {
     width: 100%;
-    height: 100%;
+  height: 260px;
     object-fit: cover;
-    transition: transform 0.5s ease;
+  border-radius: 24px 24px 0 0;
+  display: block;
 }
 
-.related-tour-card:hover .related-tour-img {
-    transform: scale(1.05);
+.related-tour-info {
+  background: rgba(255,255,255,0.97);
+  border-radius: 0 0 24px 24px;
+  padding: 18px 18px 12px 18px;
+  position: relative;
+  top: -24px;
+  box-shadow: 0 2px 8px rgba(0,116,188,0.06);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .related-tour-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    height: 2.4rem;
+  color: #0074bc;
+  font-weight: 700;
+  font-size: 1.08rem;
+  margin-bottom: 0.5rem;
+  min-height: 2.2em;
+  line-height: 1.2;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+
+.related-tour-card .price {
+  color: #e74c3c !important;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.related-tour-card .related-tour-detail-link {
+  color: #0074bc;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  margin-top: 0.5rem;
+  display: inline-block;
+  transition: color 0.2s;
+}
+
+.related-tour-card .related-tour-detail-link:hover {
+  color: #ffd600;
 }
 
 /* Responsive styles */
@@ -394,4 +428,297 @@
     height: 10px;
     border-radius: 50%;
     margin: 0 5px;
+}
+
+/* --- HEADLINE & SECTION --- */
+.tour-detail-header h1, .tour-section h2, .related-tours h4 {
+  color: #0074bc;
+  font-weight: 800;
+  font-size: 2.1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  letter-spacing: 0.5px;
+}
+.tour-detail-header h1 span, .tour-section h2 span, .related-tours h4 span {
+  color: #ffd600;
+}
+.tour-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1.2rem;
+}
+
+/* --- GIÁ TOUR --- */
+.price-info .price, .price-item .price, .booking-price .price, .related-tour-card .price {
+  color: #e74c3c !important;
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* --- NÚT ĐẶT TOUR & PDF --- */
+.booking-button, .export-pdf-button {
+  background: linear-gradient(90deg, #0074bc 0%, #ffd600 100%);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(0,116,188,0.10);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.booking-button:hover, .export-pdf-button:hover {
+  background: linear-gradient(90deg, #005b96 0%, #ffd600 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,116,188,0.13);
+}
+.booking-button:active, .export-pdf-button:active {
+  opacity: 0.92;
+}
+
+/* --- CARD, SECTION, LIÊN QUAN --- */
+.tour-detail-main, .tour-section, .booking-card, .related-tour-card {
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,116,188,0.08);
+  background: #fff;
+}
+.related-tour-card {
+  border: 1.5px solid #e3eaf3;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.related-tour-card:hover {
+  box-shadow: 0 8px 24px rgba(0,116,188,0.13);
+  border: 1.5px solid #ffd600;
+}
+.related-tour-title {
+  color: #0074bc;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-top: 0.7rem;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+  .tour-detail {
+    padding: 8px;
+  }
+  .tour-detail-content {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .tour-detail-main, .tour-section, .booking-card, .related-tour-card {
+    border-radius: 12px;
+  }
+}
+@media (max-width: 600px) {
+  .tour-detail {
+    padding: 2px;
+  }
+  .tour-detail-content {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .tour-detail-main, .tour-section, .booking-card, .related-tour-card {
+    border-radius: 8px;
+  }
+  .tour-detail-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .booking-button, .export-pdf-button {
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+    font-size: 0.98rem;
+    padding: 0.7rem 0;
+  }
+}
+
+/* --- SLIDER ẢNH LỚN, DOT, MŨI TÊN RÕ --- */
+.detail-carousel, .carousel, .carousel-container {
+  width: 100%;
+  height: 420px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,116,188,0.10);
+  margin-bottom: 1.2rem;
+}
+.carousel-image, .carousel-item img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 18px;
+}
+.carousel-button, .carousel-control-prev, .carousel-control-next {
+  background: rgba(0,116,188,0.7) !important;
+  color: #fff !important;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 1 !important;
+  box-shadow: 0 2px 8px rgba(0,116,188,0.13);
+  z-index: 10;
+  transition: background 0.2s;
+}
+.carousel-button:hover, .carousel-control-prev:hover, .carousel-control-next:hover {
+  background: #ffd600 !important;
+  color: #0074bc !important;
+}
+.carousel-dots, .carousel-indicators {
+  bottom: 18px !important;
+  gap: 12px;
+}
+.carousel-dots .dot, .carousel-indicators button {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #0074bc;
+  opacity: 0.7;
+  transition: all 0.2s;
+}
+.carousel-dots .dot.active, .carousel-indicators .active {
+  background: #ffd600;
+  border: 2px solid #ffd600;
+  opacity: 1;
+}
+
+/* --- HEADER, INFO GRID, GIÁ, NÚT --- */
+.tour-detail-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  gap: 1.2rem;
+}
+.tour-detail-header h1 {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #0074bc;
+  margin-bottom: 0.2rem;
+}
+.tour-detail-header .tour-price-main {
+  color: #e74c3c !important;
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-left: 2rem;
+}
+.tour-info-quick {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.tour-info-quick .info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f7fafc;
+  border-radius: 10px;
+  padding: 0.7rem 1.2rem;
+  font-size: 1.08rem;
+  color: #0074bc;
+  font-weight: 600;
+}
+.tour-info-quick .info-item i {
+  font-size: 1.3rem;
+  color: #ffd600;
+}
+
+/* --- NÚT ĐẶT TOUR LỚN, STICKY MOBILE --- */
+.booking-button {
+  background: linear-gradient(90deg, #0074bc 0%, #ffd600 100%);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 16px;
+  padding: 1.1rem 2.8rem;
+  font-size: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,116,188,0.10);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  margin-top: 1.2rem;
+  margin-bottom: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.booking-button:hover {
+  background: linear-gradient(90deg, #005b96 0%, #ffd600 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0,116,188,0.13);
+}
+@media (max-width: 900px) {
+  .tour-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+  .tour-detail-header .tour-price-main {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+  .tour-info-quick {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+  }
+}
+@media (max-width: 600px) {
+  .detail-carousel, .carousel, .carousel-container, .carousel-image, .carousel-item img {
+    height: 220px;
+    border-radius: 10px;
+  }
+  .tour-detail-header h1 {
+    font-size: 1.2rem;
+  }
+  .tour-detail-header .tour-price-main {
+    font-size: 1.1rem;
+  }
+  .tour-info-quick {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .booking-button {
+    width: 100%;
+    padding: 1rem 0;
+    font-size: 1.08rem;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+}
+
+@media (max-width: 1100px) {
+  .related-tours-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .related-tours-list {
+    grid-template-columns: 1fr;
+  }
+  .related-tour-card {
+    border-radius: 14px;
+    min-height: 320px;
+  }
+  .related-tour-img {
+    border-radius: 14px 14px 0 0;
+    height: 180px;
+  }
+  .related-tour-info {
+    border-radius: 0 0 14px 14px;
+    top: -14px;
+    padding: 12px 8px 8px 8px;
+  }
 } 

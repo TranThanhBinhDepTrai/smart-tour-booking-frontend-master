@@ -6,7 +6,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { API_URL } from "../../config";
 import { tourService } from "../../services/tourService";
 import "./TourDetail.css";
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaCalendarAlt, FaMapMarkerAlt, FaTag, FaUsers, FaMoneyBillWave, FaFilePdf, FaArrowLeft } from 'react-icons/fa';
 
 const CATEGORY_LABELS = {
   ADVENTURE: 'Phiêu lưu mạo hiểm',
@@ -171,20 +171,24 @@ const TourDetail = () => {
   }
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 tour-detail">
       <Toaster position="top-right" />
       <div className="mb-3">
-        <Button variant="link" onClick={() => navigate('/tours')}>
-          ← Quay lại danh sách tour
+        <Button variant="link" onClick={() => navigate('/tours')} className="back-button">
+          <FaArrowLeft style={{ marginRight: 6 }} /> Quay lại danh sách tour
         </Button>
       </div>
-
-      <Row>
-        <Col md={8}>
+      <div className="tour-detail-header">
+        <h1>{tour.title}</h1>
+        <div className="tour-price-main">
+          <FaMoneyBillWave style={{ color: '#ffd600', marginRight: 6 }} />
+          {new Intl.NumberFormat('vi-VN').format(tour.priceAdults)} đ
+        </div>
+      </div>
+      <div className="detail-carousel">
+        <Carousel>
           {tour.images && tour.images.length > 0 ? (
-            <Card className="mb-4">
-              <Carousel>
-                {tour.images.map((image, index) => (
+            tour.images.map((image, index) => (
                   <Carousel.Item key={image.id || index}>
                     <img
                       className="d-block w-100"
@@ -193,192 +197,82 @@ const TourDetail = () => {
                       style={{ height: '400px', objectFit: 'cover' }}
                     />
                   </Carousel.Item>
-                ))}
-              </Carousel>
-            </Card>
+            ))
           ) : (
-            <Card className="mb-4">
+            <Carousel.Item>
               <img
                 className="d-block w-100"
                 src="https://via.placeholder.com/800x400?text=Không+có+hình+ảnh"
                 alt={tour.title}
                 style={{ height: '400px', objectFit: 'cover' }}
               />
-            </Card>
+            </Carousel.Item>
           )}
-
-          <Card className="mb-4">
-            <Card.Body>
-              <div className="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                  <Card.Title as="h2">{tour.title}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
-                    Mã tour: {tour.code}
-                  </Card.Subtitle>
+        </Carousel>
+      </div>
+      <div className="tour-info-quick">
+        <div className="info-item"><FaCalendarAlt /> Khởi hành: <span>{tour.startDate ? formatDate(tour.startDate) : 'N/A'}</span></div>
+        <div className="info-item"><FaMapMarkerAlt /> Điểm đến: <span>{tour.destination || 'N/A'}</span></div>
+        <div className="info-item"><FaTag /> Mã tour: <span>{tour.code || tour.id}</span></div>
+        <div className="info-item"><FaUsers /> Số chỗ còn: <span>{tour.availableSlots || 'N/A'}</span></div>
+        <div className="info-item"><FaStar style={{ color: '#ffd600' }} /> Đánh giá: <span>{reviewStats?.averageRating ? reviewStats.averageRating.toFixed(1) : 'Chưa có'} / 5</span></div>
+      </div>
+      <div className="tour-detail-actions">
+        <Button className="booking-button" onClick={handleBookTour}>
+          Đặt tour ngay
+        </Button>
+        <Button className="export-pdf-button" onClick={handleDownloadPDF}>
+          <FaFilePdf style={{ marginRight: 6 }} /> Tải PDF
+        </Button>
+      </div>
+      <div className="tour-section">
+        <h2>Thông tin chi tiết</h2>
+        <div className="tour-description">{tour.description}</div>
                 </div>
-                {tour.category && (
-                  <Badge bg="success" className="p-2">
-                    {CATEGORY_LABELS[tour.category] || tour.category}
-                  </Badge>
-                )}
+      <div className="tour-section">
+        <h2>Lịch trình</h2>
+        <div className="itinerary">{tour.itinerary}</div>
               </div>
-
-              <h4 className="mt-4">Thông tin chung</h4>
-              <Row>
-                <Col md={6}>
-                  <p><strong>Điểm đến:</strong> {tour.destination}</p>
-                  <p><strong>Thời gian:</strong> {tour.durationDays} ngày {tour.durationNights} đêm</p>
-                  <p><strong>Ngày khởi hành:</strong> {formatDate(tour.startDate)}</p>
-                  <p><strong>Ngày kết thúc:</strong> {formatDate(tour.endDate)}</p>
-                </Col>
-                <Col md={6}>
-                  <p><strong>Hãng bay:</strong> {tour.airline || 'Chưa cập nhật'}</p>
-                  <p><strong>Loại tour:</strong> {CATEGORY_LABELS[tour.category] || 'Chưa cập nhật'}</p>
-                  <p><strong>Khu vực:</strong> {tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</p>
-                  <p><strong>Số chỗ:</strong> {tour.capacity} người</p>
-                </Col>
-              </Row>
-
-              <h4 className="mt-4">Mô tả</h4>
-              <p>{tour.description || "Chưa có mô tả chi tiết cho tour này."}</p>
-
-              <h4 className="mt-4">Lịch trình</h4>
-              {tour.itinerary && tour.itinerary.length > 0 ? (
-                <ul className="list-unstyled">
-                  {tour.itinerary.map((item, index) => (
-                    <li key={index} className="mb-2">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Chưa có thông tin lịch trình chi tiết.</p>
-              )}
-
-              {/* Đánh giá tour */}
-              <div className="tour-reviews mt-5">
-                <h4>Đánh giá tour</h4>
+      {/* Review section */}
+      <div className="tour-section">
+        <h2>Đánh giá tour</h2>
                 {reviewLoading ? (
                   <div>Đang tải đánh giá...</div>
-                ) : reviewError ? (
-                  <div className="text-danger">{reviewError}</div>
-                ) : reviewStats ? (
-                  <>
-                    <div className="d-flex align-items-center mb-2">
-                      <span className="fs-3 fw-bold me-2">{reviewStats.averageRating?.toFixed(1) || 0}</span>
-                      <span className="text-warning me-2">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <FaStar key={i} color={i < Math.round(reviewStats.averageRating) ? '#ffc107' : '#e4e5e9'} />
-                        ))}
-                      </span>
-                      <span className="ms-2">({reviewStats.totalReviews} đánh giá)</span>
+        ) : reviewStats && reviewStats.reviews && reviewStats.reviews.length > 0 ? (
+          <div>
+            {reviewStats.reviews.map((review, idx) => (
+              <div key={idx} style={{ marginBottom: 12, borderBottom: '1px solid #eee', paddingBottom: 8 }}>
+                <div style={{ fontWeight: 600 }}>{review.userName || 'Ẩn danh'} <span style={{ color: '#ffd600', marginLeft: 8 }}><FaStar /> {review.rating}/5</span></div>
+                <div style={{ color: '#555', fontSize: 15 }}>{review.comment}</div>
                     </div>
-                    <div>
-                      {reviewStats.reviews && reviewStats.reviews.length > 0 ? (
-                        reviewStats.reviews.map(r => (
-                          <div key={r.id} className="border rounded p-2 mb-2">
-                            <div className="d-flex align-items-center mb-1">
-                              <span className="text-warning me-1">
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                  <FaStar key={i} size={14} color={i < r.rating ? '#ffc107' : '#e4e5e9'} />
-                                ))}
-                              </span>
-                              <span className="fw-bold">{r.rating} sao</span>
-                              <span className="ms-3 text-secondary" style={{ fontSize: '0.95em' }}>
-                                {r.fullName || r.username || 'Ẩn danh'}
-                              </span>
-                            </div>
-                            <div>{r.comment}</div>
+            ))}
                           </div>
-                        ))
                       ) : (
                         <div>Chưa có đánh giá nào cho tour này.</div>
                       )}
                     </div>
-                  </>
-                ) : null}
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={4}>
-          <Card className="booking-card">
-            <Card.Body>
-              <h3 className="mb-4">Đặt tour này</h3>
-              <div className="mb-3">
-                <p className="mb-1">Giá người lớn:</p>
-                <h4 className="text-danger">
-                  {tour.priceAdults?.toLocaleString('vi-VN')} VNĐ
-                </h4>
-                <p className="mb-1 mt-3">Giá trẻ em:</p>
-                <h5 className="text-danger">
-                  {tour.priceChildren?.toLocaleString('vi-VN')} VNĐ
-                </h5>
-              </div>
-              <Button 
-                variant="primary" 
-                className="w-100 mb-3"
-                onClick={handleBookTour}
-              >
-                Đặt ngay
-              </Button>
-              <Button 
-                variant="outline-primary" 
-                className="w-100 mb-4"
-                onClick={handleDownloadPDF}
-              >
-                Tải thông tin tour (PDF)
-              </Button>
-            </Card.Body>
-          </Card>
-
-          {/* Phần hiển thị tour gợi ý */}
-          <Card className="mt-4">
-            <Card.Body>
-              <h4 className="mb-3">Tour liên quan</h4>
+      {/* Related tours */}
+      <div className="tour-section related-tours">
+        <h4>Các tour liên quan</h4>
+        <div className="related-tours-list">
               {loadingRelated ? (
-                <div className="text-center">
-                  <div className="spinner-border spinner-border-sm text-primary" role="status">
-                    <span className="visually-hidden">Đang tải...</span>
-                  </div>
+            <div>Đang tải...</div>
+          ) : relatedTours && relatedTours.length > 0 ? (
+            relatedTours.map((rtour, idx) => (
+              <div className="related-tour-card" key={rtour.id} onClick={() => navigateToTourDetail(rtour.id)}>
+                <img className="related-tour-img" src={rtour.images && rtour.images[0] ? rtour.images[0].url : 'https://via.placeholder.com/200x120?text=No+Image'} alt={rtour.title} />
+                <div className="related-tour-info">
+                  <div className="related-tour-title">{rtour.title}</div>
+                  <div className="price"><FaMoneyBillWave /> {new Intl.NumberFormat('vi-VN').format(rtour.priceAdults)} đ</div>
+                  <span className="related-tour-detail-link">Xem chi tiết &rarr;</span>
                 </div>
-              ) : relatedError ? (
-                <p className="text-center text-danger">{relatedError}</p>
-              ) : relatedTours.length > 0 ? (
-                <div className="related-tours-list">
-                  {relatedTours.map((relatedTour) => (
-                    <Card key={relatedTour.id} className="mb-3 related-tour-card">
-                      <div className="related-tour-image">
-                        <img 
-                          src={relatedTour.images && relatedTour.images.length > 0 ? relatedTour.images[0].url : "https://via.placeholder.com/300x150?text=Không+có+hình+ảnh"} 
-                          alt={relatedTour.title}
-                          className="related-tour-img"
-                        />
                       </div>
-                      <Card.Body className="p-3">
-                        <Card.Title className="fs-6 related-tour-title">{relatedTour.title}</Card.Title>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div className="text-danger fw-bold">
-                            {relatedTour.priceAdults?.toLocaleString('vi-VN')} VNĐ
-                          </div>
-                          <Button 
-                            variant="outline-primary" 
-                            size="sm"
-                            onClick={() => navigateToTourDetail(relatedTour.id)}
-                          >
-                            Chi tiết
-                          </Button>
+            ))
+          ) : (
+            <div>Không có tour liên quan.</div>
+          )}
                         </div>
-                      </Card.Body>
-                    </Card>
-                  ))}
                 </div>
-              ) : null}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
     </Container>
   );
 };

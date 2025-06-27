@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './HomeSearch.css';
 
-const HomeSearch = () => {
+const HomeSearch = ({ alwaysCompact }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [destination, setDestination] = useState('');
@@ -10,7 +10,7 @@ const HomeSearch = () => {
   const navigate = useNavigate();
 
   const handleSearchClick = () => {
-    if (!isExpanded) {
+    if (!alwaysCompact && !isExpanded) {
       setIsExpanded(true);
     }
   };
@@ -25,6 +25,26 @@ const HomeSearch = () => {
 
     navigate(`/tours?${params.toString()}`);
   };
+
+  // Nếu alwaysCompact, luôn hiển thị form nhỏ gọn
+  if (alwaysCompact) {
+    return (
+      <form onSubmit={handleFormSubmit} className="search-form-container" style={{margin: 0}}>
+        <div className="main-search-input-wrapper">
+          <input
+            type="text"
+            placeholder="Bạn muốn đi đâu?"
+            className="main-search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button type="submit" className="search-btn-simple">
+            Tìm kiếm <i className="fas fa-search"></i>
+          </button>
+        </div>
+      </form>
+    );
+  }
 
   return (
     <div className={`hero-section ${isExpanded ? 'expanded' : ''}`} onClick={handleSearchClick}>

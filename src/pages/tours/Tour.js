@@ -122,7 +122,7 @@ const SearchForm = ({ onSearch, initialValues }) => {
         </div>
 
         <button type="submit" className="search-button">
-          Lọc kết quả
+          Tìm kiếm <i className="fas fa-search"></i>
         </button>
       </div>
     </form>
@@ -315,62 +315,70 @@ const Tour = () => {
           </button>
         )}
       </div>
-      <SearchForm onSearch={handleSearch} initialValues={initialValues} />
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
-      <div className="tour-list">
-        {Array.isArray(tours) && tours.length > 0 ? (
-          tours.map(tour => (
-            <div className="tour-card" key={tour.id}>
-              <div className="tour-images">
-                {tour.images && tour.images.length > 0 && (
-                  <ImageCarousel images={tour.images} />
-                )}
-              </div>
-              <div className="tour-info">
-                <h2>{tour.title}</h2>
-                <p className="description">{tour.description}</p>
-                <p><strong>Điểm đến:</strong> {tour.destination}</p>
-                <p><strong>Giá người lớn:</strong> {tour.priceAdults ? tour.priceAdults.toLocaleString() : 'N/A'} VNĐ</p>
-                <p><strong>Giá trẻ em:</strong> {tour.priceChildren ? tour.priceChildren.toLocaleString() : 'N/A'} VNĐ</p>
-                <p><strong>Ngày đi:</strong> {tour.startDate ? new Date(tour.startDate).toLocaleDateString("vi-VN") : 'N/A'}</p>
-                <p><strong>Ngày về:</strong> {tour.endDate ? new Date(tour.endDate).toLocaleDateString("vi-VN") : 'N/A'}</p>
-                <p><strong>Hãng bay:</strong> {tour.airline || 'N/A'}</p>
-                <p><strong>Mã tour:</strong> {tour.code}</p>
-                <div className="tour-actions">
-                  <Link to={`/tours/${tour.id}`} className="view-details-button">
-                    Xem chi tiết
-                  </Link>
-                </div>
-              </div>
+      <div className="tour-main-layout">
+        <aside className="tour-sidebar">
+          <SearchForm onSearch={handleSearch} initialValues={initialValues} />
+        </aside>
+        <section className="tour-list-section">
+          {error && (
+            <div className="error-message">
+              {error}
             </div>
-          ))
-        ) : (
-          <div className="no-tours-message">
-            {isSearching ? "Không tìm thấy tour nào phù hợp" : "Không có tour nào"}
+          )}
+          <div className="tour-list">
+            {Array.isArray(tours) && tours.length > 0 ? (
+              tours.map(tour => (
+                <div className="tour-card" key={tour.id}>
+                  <div className="tour-images">
+                    {tour.images && tour.images.length > 0 && (
+                      <ImageCarousel images={tour.images} />
+                    )}
+                  </div>
+                  <div className="tour-info">
+                    <div className="tour-info-content">
+                      <h2>{tour.title}</h2>
+                      <p className="description">{tour.description}</p>
+                      <p><strong>Điểm đến:</strong> {tour.destination}</p>
+                      <p><strong>Giá người lớn:</strong> <span className="price">{tour.priceAdults ? tour.priceAdults.toLocaleString() : 'N/A'} VNĐ</span></p>
+                      <p><strong>Giá trẻ em:</strong> {tour.priceChildren ? tour.priceChildren.toLocaleString() : 'N/A'} VNĐ</p>
+                      <p><strong>Ngày đi:</strong> {tour.startDate ? new Date(tour.startDate).toLocaleDateString("vi-VN") : 'N/A'}</p>
+                      <p><strong>Ngày về:</strong> {tour.endDate ? new Date(tour.endDate).toLocaleDateString("vi-VN") : 'N/A'}</p>
+                      <p><strong>Hãng bay:</strong> {tour.airline || 'N/A'}</p>
+                      <p><strong>Mã tour:</strong> {tour.code}</p>
+                    </div>
+                    <div className="tour-actions">
+                      <Link to={`/tours/${tour.id}`} className="view-details-button">
+                        Xem chi tiết
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-tours-message">
+                {isSearching ? "Không tìm thấy tour nào phù hợp" : "Không có tour nào"}
+              </div>
+            )}
           </div>
-        )}
+          {!isSearching && totalElements > size && (
+            <div className="pagination">
+              <button 
+                onClick={() => setPage(prev => Math.max(0, prev - 1))}
+                disabled={page === 0}
+              >
+                Trang trước
+              </button>
+              <span>Trang {page + 1}</span>
+              <button 
+                onClick={() => setPage(prev => prev + 1)}
+                disabled={page >= Math.ceil(totalElements / size) - 1}
+              >
+                Trang sau
+              </button>
+            </div>
+          )}
+        </section>
       </div>
-      {!isSearching && totalElements > size && (
-        <div className="pagination">
-          <button 
-            onClick={() => setPage(prev => Math.max(0, prev - 1))}
-            disabled={page === 0}
-          >
-            Trang trước
-          </button>
-          <span>Trang {page + 1}</span>
-          <button 
-            onClick={() => setPage(prev => prev + 1)}
-            disabled={page >= Math.ceil(totalElements / size) - 1}
-          >
-            Trang sau
-          </button>
-        </div>
-      )}
     </div>
   );
 };

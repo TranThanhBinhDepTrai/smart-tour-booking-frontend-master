@@ -20,18 +20,136 @@
 }
 
 .featured-tour-card {
-    display: flex;
-    flex-direction: row;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    position: relative;
     overflow: hidden;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.07);
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    transition: box-shadow 0.3s, transform 0.3s;
     cursor: pointer;
+    min-height: 210px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
 }
 
-.featured-tour-card:hover {
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    transform: translateY(-5px);
+.tour-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.tour-info {
+    padding: 28px 22px 18px 22px;
+    transition: opacity 0.35s;
+    z-index: 2;
+    position: relative;
+}
+
+.tour-info-header {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #222;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.tour-locations strong {
+    color: #0056b3;
+    font-size: 1.1rem;
+}
+
+.tour-info-body {
+    font-size: 1rem;
+}
+
+.tour-info-row {
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.tour-info-price {
+    font-weight: 700;
+    color: #d9534f;
+    margin-top: 8px;
+}
+
+.tour-image-hover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.35s, transform 0.5s cubic-bezier(0.4,0.2,0.2,1);
+    transform: translateX(-60px) scale(0.98);
+}
+
+.tour-hover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    filter: brightness(0.7);
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.tour-hover-btn {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    color: #0074bc;
+    font-weight: 700;
+    border: none;
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.13);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    cursor: pointer;
+    margin-top: 0;
+}
+
+.tour-hover-btn::after {
+    content: '→';
+    font-size: 1.7rem;
+    margin-left: 2px;
+}
+
+.featured-tour-card:hover .tour-info {
+    opacity: 0;
+}
+
+.featured-tour-card:hover .tour-image-hover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0) scale(1);
+}
+
+@media (max-width: 767px) {
+    .tour-info {
+        padding: 18px 8px 12px 8px;
+    }
+    .featured-tour-card {
+        min-height: 200px;
+    }
 }
 
 .featured-tour-card .card-img-top {
@@ -73,4 +191,81 @@
 .text-center .btn-outline-primary {
     margin-top: 1rem;
     font-weight: bold;
+}
+
+.tour-hover-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 4;
+}
+
+.tour-hover-arrow {
+    width: 56px;
+    height: 56px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,0.13);
+}
+
+.tour-hover-arrow-icon {
+    color: #0074bc;
+    font-size: 2rem;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tour-hover-text {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    margin-top: 2px;
+    user-select: none;
+}
+
+.tour-image-hover {
+    cursor: pointer;
+}
+
+.tour-image-hover .tour-hover-overlay {
+    width: 100%;
+    height: 100%;
+}
+
+.tour-image-hover .tour-hover-overlay:hover {
+    opacity: 0.95;
+}
+
+.featured-tours-section .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.featured-tours-section .col-md-6 {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.featured-tour-card .tour-card-inner {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 } 
