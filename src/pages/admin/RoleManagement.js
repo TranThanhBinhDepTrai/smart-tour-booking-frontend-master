@@ -202,34 +202,30 @@ const RoleManagement = () => {
                                 <td>{role.permissions?.length || 0}</td>
                                 <td>
                                     <div className="d-flex gap-2">
-                                        <button 
-                                            className="edit-btn"
+                                        <Button className="tour-action-btn view-button" 
+                                            size="sm"
                                             onClick={() => handleShowPermissionModal(role)}
                                         >
-                                            Cập nhật quyền
-                                        </button>
-                                        <button 
-                                            className="add-btn"
+                                            Xem
+                                        </Button>
+                                        <Button className="tour-action-btn edit-button" 
+                                            size="sm"
                                             onClick={() => handleShow(role)}
                                         >
                                             Sửa
-                                        </button>
-                                        <button 
-                                            className="delete-btn"
+                                        </Button>
+                                        <Button className="tour-action-btn delete-button" 
+                                            size="sm"
                                             onClick={() => handleDelete(role.id)}
                                         >
                                             Xóa
-                                        </button>
+                                        </Button>
                                     </div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </Table>
-            )}
-
-            {roles.length > 0 && (
-                <></>
             )}
 
             <Modal show={showModal} onHide={handleClose}>

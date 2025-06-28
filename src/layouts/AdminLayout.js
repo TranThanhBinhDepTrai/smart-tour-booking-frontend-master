@@ -55,11 +55,7 @@ function AdminLayout() {
     { icon: <FaUserShield className="me-2" />, label: 'Vai trò', path: '/admin/roles' },
     { icon: <FaCheckCircle className="me-2" />, label: 'Quản lý đơn đặt tour', path: '/admin/bookings' },
     { icon: <FaBullhorn className="me-2" />, label: 'Quản lý khuyến mãi', path: '/admin/promotions' },
-    {
-      icon: <FaChartLine className="me-2" />,
-      label: 'Tổng doanh thu',
-      path: '/admin/revenue',
-    },
+
     { icon: <FaHeadset className="me-2" />, label: 'Quản lý tour theo yêu cầu', path: '/admin/support' },
   ];
 

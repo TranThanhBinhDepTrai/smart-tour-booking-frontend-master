@@ -33,7 +33,6 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Users from './pages/admin/Users';
 import VnpayReturn from './pages/payment/VnpayReturn';
 import History from './pages/history/History';
-import Revenue from './pages/admin/Revenue';
 import TourCategoryList from './pages/tours/TourCategoryList';
 import './App.css';
 
@@ -110,7 +109,6 @@ const router = createBrowserRouter(
         <Route path="bookings" element={<BookingManagement />} />
         <Route path="promotions" element={<AdminPromotions />} />
         <Route path="promotions/create" element={<CreatePromotion />} />
-        <Route path="revenue" element={<Revenue />} />
         <Route path="support" element={<CustomTourManagement />} />
       </Route>
 

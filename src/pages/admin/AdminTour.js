@@ -226,13 +226,13 @@ const AdminTour = () => {
                         <td>
                         <div className="action-buttons">
                           <button 
-                            className="action-button block-btn"
+                            className="action-button view-btn"
                             onClick={() => handleShowDetails(tour.id)}
                           >
                             Xem
                           </button>
                             <button
-                            className="action-button add-btn"
+                            className="action-button update-btn"
                               onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
                             >
                               Sửa

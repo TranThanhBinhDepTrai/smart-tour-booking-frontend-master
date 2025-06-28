@@ -69,8 +69,10 @@
 }
 
 .main-search-input {
+    margin-top: 10px;
+    height: 100%;
     flex: 1;
-    padding: 18px 24px;
+    padding: 20px 24px 16px 24px;
     border: none;
     font-size: 1.15rem;
     border-radius: 32px 0 0 32px;
@@ -117,24 +119,18 @@
 
 @media (max-width: 600px) {
     .main-search-input-wrapper {
+        
         flex-direction: column;
         padding: 4px 4px;
         min-height: 44px;
     }
     .main-search-input {
         border-radius: 32px 32px 0 0;
-        padding: 14px 16px;
+        padding: 16px 16px;
         font-size: 1rem;
-        min-height: 36px;
+        min-height: 44px;
     }
-    .search-btn-simple {
-        border-radius: 0 0 32px 32px;
-        width: 100%;
-        min-width: unset;
-        height: 38px;
-        font-size: 1rem;
-        padding: 0 16px;
-    }
+
 }
 
 /* Expanded Options */

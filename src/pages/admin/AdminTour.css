@@ -3,6 +3,7 @@ image.png.admin-tour-container {
   min-height: 100vh;
 }
 
+
 .admin-tour-card {
   background: white;
   border-radius: 1rem;
@@ -561,3 +562,56 @@ image.png.admin-tour-container {
     margin-bottom: 0.7rem !important;
   }
 } 
+
+/* Căn chỉnh 3 nút Xem - Sửa - Xóa cho đều nhau */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-button {
+  flex: 1;
+  min-width: 70px;
+  text-align: center;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Tuỳ chỉnh riêng từng màu cho nút */
+
+
+.add-btn {
+  background-color: #3b82f6; /* xanh dương */
+  color: white;
+}
+.add-btn:hover {
+  background-color: #2563eb;
+}
+
+.delete-btn {
+  background-color: #ef4444; /* đỏ */
+  color: white;
+}
+.delete-btn:hover {
+  background-color: #dc2626;
+}
+
+.update-btn {
+  background-color: #f59e42 !important;
+  color: #fff !important;
+  border: none !important;
+}
+.update-btn:hover {
+  background-color: #d97706 !important;
+}
+.view-btn {
+  background-color: #f59e42 !important;
+  color: #fff !important;
+  border: none !important;
+}
+.view-btn:hover {
+  background-color: #d97706 !important;
+}

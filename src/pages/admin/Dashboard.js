@@ -1,116 +1,220 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, InputGroup, Button, Table, Modal, Alert } from 'react-bootstrap';
-import { BsSearch } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
-import StatCard from '../../components/admin/StatCard';
-import './Dashboard.css';
+import React, { useEffect, useState } from 'react';
+import { Row, Col, Card, Table, Alert } from 'react-bootstrap';
 import axios from 'axios';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-const USER_ID = 5; // Có thể sửa thành lấy động nếu cần
+const Revenue = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-function Dashboard() {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  const stats = [
-    {
-      count: 45,
-      label: 'Tour',
-      color: '#3498db',
-      icon: '🏖️',
-      onViewDetails: () => navigate('/admin/tours')
-    },
-    {
-      count: 120,
-      label: 'Người dùng',
-      color: '#2ecc71',
-      icon: '👥',
-      onViewDetails: () => navigate('/admin/users')
-    },
-    {
-      count: 20,
-      label: 'Tour đã đặt',
-      color: '#f1c40f',
-      icon: '✅',
-      onViewDetails: () => navigate('/admin/bookings')
-    },
-    {
-      count: 15,
-      label: 'Khuyến mãi',
-      color: '#e74c3c',
-      icon: '🎫',
-      onViewDetails: () => navigate('/admin/promotions')
-    }
-  ];
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      // Thực hiện tìm kiếm dựa vào searchTerm
-      console.log('Searching for:', searchTerm);
-      
-      // Ví dụ: Nếu tìm kiếm chứa từ "tour", chuyển đến trang quản lý tour
-      if (searchTerm.toLowerCase().includes('tour')) {
-        navigate('/admin/tours');
-      }
-      // Nếu tìm kiếm chứa từ "user" hoặc "người dùng", chuyển đến trang quản lý user
-      else if (searchTerm.toLowerCase().includes('user') || searchTerm.toLowerCase().includes('người dùng')) {
-        navigate('/admin/users');
-      }
-      // Tương tự cho các trường hợp khác...
+  const fetchDashboard = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:8080/api/v1/admin/dashboard', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      setData(res.data.data);
+    } catch (err) {
+      setError('Không thể tải dữ liệu dashboard');
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <Container fluid className="dashboard-container py-4">
-      <div className="dashboard-header mb-4">
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <h1 className="dashboard-title">Dashboard</h1>
-            <p className="dashboard-subtitle">Xem tổng quan về hệ thống</p>
-          </div>
-          <Form onSubmit={handleSearch} className="dashboard-search">
-            <InputGroup>
-              <Form.Control
-                placeholder="Tìm kiếm..."
-                aria-label="Search"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <Button variant="primary" type="submit">
-                <BsSearch />
-              </Button>
-            </InputGroup>
-          </Form>
-        </div>
-      </div>
+  // Dữ liệu mẫu cho Pie chart nếu chưa có dữ liệu thực tế
+  const paymentPieData = {
+    labels: ['Thanh toán bằng Momo', 'Thanh toán tại văn phòng', 'Thanh toán bằng Paypal'],
+    datasets: [
+      {
+        data: [5, 3, 7], // Số lượng từng phương thức (giả lập)
+        backgroundColor: [
+          '#ff6384',
+          '#ffcd56',
+          '#36a2eb',
+        ],
+        hoverOffset: 4,
+      },
+    ],
+  };
 
-      <Row className="g-4">
-        {stats.map((stat, index) => (
-          <Col key={index} xs={12} sm={6} xl={3}>
-            <div className="dashboard-card" style={{ borderColor: stat.color }}>
-              <div className="card-icon" style={{ backgroundColor: stat.color }}>
-                {stat.icon}
-              </div>
-              <div className="card-content">
-                <h3 className="card-count">{stat.count}</h3>
-                <p className="card-label">{stat.label}</p>
-              </div>
-              <Button 
-                variant="link" 
-                className="card-action"
-                onClick={stat.onViewDetails}
-              >
-                Xem chi tiết
-              </Button>
-            </div>
-          </Col>
-        ))}
+  return (
+    <div>
+      <h2 className="mb-4">Tổng quan doanh thu</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
+      {loading ? (
+        <div>Đang tải...</div>
+      ) : data ? (
+        <>
+          <Row className="mb-4">
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-success">{data.activeTours}</div>
+                  <div>Tổng số tours đang hoạt động</div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-primary">{data.totalBookings}</div>
+                  <div>Tổng số lượt booking</div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-info">{data.totalUsers}</div>
+                  <div>Số người dùng đăng ký</div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md={3} sm={6} className="mb-3">
+              <Card className="text-center">
+                <Card.Body>
+                  <div className="fs-3 fw-bold text-danger">{data.totalRevenue?.toLocaleString('vi-VN')} VNĐ</div>
+                  <div>Tổng doanh thu</div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Biểu đồ hình tròn phương thức thanh toán */}
+      <Row className="mb-4">
+            <Col md={6}>
+          <Card>
+            <Card.Body>
+                  <h5>Phân tích phương thức thanh toán</h5>
+                  <div style={{ maxWidth: 350, margin: '0 auto' }}>
+                    <Pie data={paymentPieData} />
+                  </div>
+                  <div className="mt-3">
+                    <span style={{ color: '#ff6384' }}>■</span> Thanh toán bằng Momo &nbsp;
+                    <span style={{ color: '#ffcd56' }}>■</span> Thanh toán tại văn phòng &nbsp;
+                    <span style={{ color: '#36a2eb' }}>■</span> Thanh toán bằng Paypal
+                  </div>
+            </Card.Body>
+          </Card>
+        </Col>
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Doanh thu theo ngày</h5>
+                  <Table size="sm" bordered>
+                    <thead>
+                      <tr>
+                        <th>Ngày</th>
+                        <th>Doanh thu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.revenueByDate?.map((r, idx) => (
+                        <tr key={idx}>
+                          <td>{r.date}</td>
+                          <td>{r.revenue?.toLocaleString('vi-VN')} VNĐ</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+        </Col>
       </Row>
 
-      {/* Đã xóa AdminReviewManager (quản lý đánh giá) */}
-    </Container>
-  );
-}
+          <Row className="mb-4">
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Doanh thu theo tháng</h5>
+                  <Table size="sm" bordered>
+                    <thead>
+                      <tr>
+                        <th>Tháng</th>
+                        <th>Năm</th>
+                        <th>Doanh thu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.revenueByMonth?.map((r, idx) => (
+                        <tr key={idx}>
+                          <td>{r.month}</td>
+                          <td>{r.year}</td>
+                          <td>{r.revenue?.toLocaleString('vi-VN')} VNĐ</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+          </Col>
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Top tour đặt nhiều nhất</h5>
+                  <Table size="sm" bordered>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Tên tour</th>
+                        <th>Số lượt đặt</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.topBookedTours?.map((t, idx) => (
+                        <tr key={idx}>
+                          <td>{t.tourId}</td>
+                          <td>{t.tourTitle}</td>
+                          <td>{t.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+          </Col>
+        </Row>
 
-export default Dashboard; 
+          <Row className="mb-4">
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Top tour bị hủy nhiều nhất</h5>
+                  <Table size="sm" bordered>
+        <thead>
+          <tr>
+                        <th>ID</th>
+                        <th>Tên tour</th>
+                        <th>Số lượt hủy</th>
+          </tr>
+        </thead>
+        <tbody>
+                      {data.topCancelledTours?.map((t, idx) => (
+                        <tr key={idx}>
+                          <td>{t.tourId}</td>
+                          <td>{t.tourTitle}</td>
+                          <td>{t.count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </>
+      ) : null}
+    </div>
+  );
+};
+
+export default Revenue; 
