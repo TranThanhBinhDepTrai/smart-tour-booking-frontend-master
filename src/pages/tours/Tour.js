@@ -9,9 +9,14 @@ const SearchForm = ({ onSearch, initialValues }) => {
     startDate: "",
     endDate: "",
     location: "",
-    minPrice: "",
-    maxPrice: ""
+    minPrice: 0,
+    maxPrice: 100000000,
+    minRating: 0,
+    maxRating: 5
   });
+  const [priceRange, setPriceRange] = useState([0, 100000000]);
+  const [ratingRange, setRatingRange] = useState([0, 5]);
+  const [enablePrice, setEnablePrice] = useState(true);
 
   // Sync form state with initial values from URL
   useEffect(() => {
@@ -24,32 +29,69 @@ const SearchForm = ({ onSearch, initialValues }) => {
     }
   }, [initialValues]);
 
+  // Hàm buildSearchParams để chỉ gửi filter thực sự được chọn
+  const buildSearchParams = () => {
+    let params = { keyword: searchParams.keyword };
+    if (searchParams.location) params.location = searchParams.location;
+    if (searchParams.startDate) params.startDate = searchParams.startDate;
+    if (searchParams.endDate) params.endDate = searchParams.endDate;
+    if (enablePrice && (priceRange[0] !== 0 || priceRange[1] !== 100000000)) {
+      params.minPrice = priceRange[0];
+      params.maxPrice = priceRange[1];
+    }
+    if (!(ratingRange[0] === 0 && ratingRange[1] === 5)) {
+      params.minRating = ratingRange[0];
+      params.maxRating = ratingRange[1];
+    }
+    return params;
+  };
+
   // Debounced auto-search on keyword change
   useEffect(() => {
     const handler = setTimeout(() => {
-      // We only want to trigger auto-search when the user is typing in the main search box.
-      // We check if the keyword is not empty to fire the search.
       if (searchParams.keyword) {
-        onSearch(searchParams);
+        onSearch(buildSearchParams());
       }
     }, 500); // 500ms delay
 
     return () => {
       clearTimeout(handler);
     };
-  }, [searchParams.keyword, onSearch]); // Rerun when keyword changes
+  }, [searchParams.keyword, onSearch]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSearchParams(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    const { name, value, type } = e.target;
+    if (name === 'minPrice' || name === 'maxPrice') {
+      const newRange = name === 'minPrice' ? [Number(value), priceRange[1]] : [priceRange[0], Number(value)];
+      setPriceRange(newRange);
+      setSearchParams(prev => ({ ...prev, minPrice: newRange[0], maxPrice: newRange[1] }));
+    } else if (name === 'rating') {
+      // value dạng "1-2", "2-3"...
+      const [min, max] = value.split('-').map(Number);
+      setRatingRange([min, max]);
+      setSearchParams(prev => ({ ...prev, minRating: min, maxRating: max }));
+      if (min === 0 && max === 5) {
+        // Nếu chọn Tất cả, reset lại filter giá
+        setPriceRange([0, 100000000]);
+        setSearchParams(prev => ({ ...prev, minPrice: 0, maxPrice: 100000000 }));
+      }
+    } else {
+      setSearchParams(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleSliderChange = (e) => {
+    const [min, max] = e.target.value.split(',').map(Number);
+    setPriceRange([min, max]);
+    setSearchParams(prev => ({ ...prev, minPrice: min, maxPrice: max }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch(searchParams);
+    onSearch(buildSearchParams());
   };
 
   return (
@@ -99,30 +141,74 @@ const SearchForm = ({ onSearch, initialValues }) => {
           />
         </div>
 
-        <div className="search-group">
-          <label>Giá từ</label>
+        <div className="search-group" style={{width: '100%'}}>
+          <label>Khoảng giá (VNĐ)
+            <button type="button" style={{marginLeft: 10, fontSize: 13, padding: '2px 10px', borderRadius: 8, border: '1px solid #0074bc', background: enablePrice ? '#0074bc' : '#eee', color: enablePrice ? '#fff' : '#333', cursor: 'pointer'}} onClick={() => setEnablePrice(v => !v)}>
+              {enablePrice ? 'Tắt' : 'Bật'}
+            </button>
+          </label>
+          <div style={{display: enablePrice ? 'flex' : 'none', alignItems: 'center', gap: 8}}>
+            <input
+              type="number"
+              name="minPrice"
+              min={0}
+              max={priceRange[1]}
+              value={priceRange[0]}
+              onChange={handleChange}
+              style={{width: 90}}
+              disabled={!enablePrice}
+            />
+            <span>-</span>
+            <input
+              type="number"
+              name="maxPrice"
+              min={priceRange[0]}
+              max={100000000}
+              value={priceRange[1]}
+              onChange={handleChange}
+              style={{width: 90}}
+              disabled={!enablePrice}
+            />
+          </div>
           <input
-            type="number"
-            name="minPrice"
-            placeholder="VNĐ"
-            value={searchParams.minPrice}
-            onChange={handleChange}
+            type="range"
+            min={0}
+            max={100000000}
+            step={100000}
+            value={priceRange[0]}
+            onChange={e => handleChange({ target: { name: 'minPrice', value: e.target.value } })}
+            style={{width: '100%', marginTop: 8, display: enablePrice ? 'block' : 'none'}}
+            disabled={!enablePrice}
           />
+          <input
+            type="range"
+            min={0}
+            max={100000000}
+            step={100000}
+            value={priceRange[1]}
+            onChange={e => handleChange({ target: { name: 'maxPrice', value: e.target.value } })}
+            style={{width: '100%', marginTop: 2, display: enablePrice ? 'block' : 'none'}}
+            disabled={!enablePrice}
+          />
+          <div style={{fontSize: 13, color: '#888', marginTop: 2, display: enablePrice ? 'block' : 'none'}}>
+            {priceRange[0].toLocaleString()} VNĐ - {priceRange[1].toLocaleString()} VNĐ
+          </div>
         </div>
-        
+
         <div className="search-group">
-          <label>Đến giá</label>
-          <input
-            type="number"
-            name="maxPrice"
-            placeholder="VNĐ"
-            value={searchParams.maxPrice}
-            onChange={handleChange}
-          />
+          <label>Đánh giá</label>
+          <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
+            <label><input type="radio" name="rating" value="1-2" checked={ratingRange[0]===1 && ratingRange[1]===2} onChange={handleChange}/> 1-2 sao</label>
+            <label><input type="radio" name="rating" value="2-3" checked={ratingRange[0]===2 && ratingRange[1]===3} onChange={handleChange}/> 2-3 sao</label>
+            <label><input type="radio" name="rating" value="3-4" checked={ratingRange[0]===3 && ratingRange[1]===4} onChange={handleChange}/> 3-4 sao</label>
+            <label><input type="radio" name="rating" value="4-5" checked={ratingRange[0]===4 && ratingRange[1]===5} onChange={handleChange}/> 4-5 sao</label>
+            <label><input type="radio" name="rating" value="0-5" checked={ratingRange[0]===0 && ratingRange[1]===5} onChange={handleChange}/> Tất cả</label>
+          </div>
         </div>
 
         <button type="submit" className="search-button">
-          Tìm kiếm <i className="fas fa-search"></i>
+          <i className="fas fa-search"></i>
+          Tìm kiếm
         </button>
       </div>
     </form>
@@ -188,16 +274,22 @@ const Tour = () => {
     // Check for search params from URL on initial load
     const keyword = searchParamsFromUrl.get('keyword');
     const location = searchParamsFromUrl.get('location');
-    // Add other params like dates if needed
+    const region = searchParamsFromUrl.get('region');
+    // Nếu có region trên URL, ưu tiên lọc theo khu vực
+    let effectiveLocation = location;
+    if (region === 'DOMESTIC') effectiveLocation = 'DOMESTIC';
+    if (region === 'INTERNATIONAL') effectiveLocation = 'INTERNATIONAL';
 
-    if (keyword || location) {
+    if (keyword || effectiveLocation) {
       const paramsFromUrl = {
         keyword: keyword || "",
-        location: location || "",
+        location: effectiveLocation || "",
         startDate: "", // You can add logic for dates if passed
         endDate: "",
         minPrice: "",
-        maxPrice: ""
+        maxPrice: "",
+        minRating: "",
+        maxRating: ""
       };
       handleSearch(paramsFromUrl);
     } else {
@@ -230,6 +322,12 @@ const Tour = () => {
         }
         if (searchParams.maxPrice) {
           formattedParams.maxPrice = Number(searchParams.maxPrice);
+        }
+        if (searchParams.minRating) {
+          formattedParams.minRating = Number(searchParams.minRating);
+        }
+        if (searchParams.maxRating) {
+          formattedParams.maxRating = Number(searchParams.maxRating);
         }
         
         console.log('Formatted search params:', formattedParams);
@@ -288,8 +386,13 @@ const Tour = () => {
     const newSearchParams = new URLSearchParams();
     if (params.keyword) newSearchParams.set('keyword', params.keyword);
     if (params.location) newSearchParams.set('location', params.location);
+    if (params.startDate) newSearchParams.set('startDate', params.startDate);
+    if (params.endDate) newSearchParams.set('endDate', params.endDate);
+    if (params.minPrice !== undefined && params.minPrice !== 0) newSearchParams.set('minPrice', params.minPrice.toString());
+    if (params.maxPrice !== undefined && params.maxPrice !== 100000000) newSearchParams.set('maxPrice', params.maxPrice.toString());
+    if (params.minRating !== undefined && params.minRating !== 0) newSearchParams.set('minRating', params.minRating.toString());
+    if (params.maxRating !== undefined && params.maxRating !== 5) newSearchParams.set('maxRating', params.maxRating.toString());
     setSearchParams(newSearchParams);
-    
     fetchTours(params);
   }, [setSearchParams]);
 

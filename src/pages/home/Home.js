@@ -4,9 +4,11 @@ import TourCategories from '../../components/TourCategories/TourCategories';
 import RecommendedTours from '../../components/RecommendedTours/RecommendedTours';
 import FeaturedTours from '../../components/FeaturedTours/FeaturedTours';
 import HomeSearch from '../../components/HomeSearch/HomeSearch';
+import { useAuth } from '../../contexts/AuthContext';
 import './Home.css';
 
 const Home = () => {
+    const { currentUser } = useAuth();
     return (
         <div className="home-page">
             {/* Hero Section chỉ còn thanh tìm kiếm nhỏ gọn */}
@@ -27,9 +29,11 @@ const Home = () => {
             </section>
 
             {/* Tour gợi ý cho bạn */}
-            <section className="recommended-tours-section-home">
-                <RecommendedTours />
-            </section>
+            {currentUser && (
+                <section className="recommended-tours-section-home">
+                    <RecommendedTours />
+                </section>
+            )}
 
             {/* Tour nổi bật */}
             <section className="featured-tours-section-home">

@@ -357,8 +357,6 @@ const History = () => {
                             <div><strong>Giá tour:</strong> {formatPrice(detailBooking.tour?.price)}</div>
                             <div><strong>Tổng tiền:</strong> {formatPrice(detailBooking.totalPrice)}</div>
                             <div><strong>Trạng thái:</strong> {getStatusBadge(detailBooking.status)}</div>
-                            <div><strong>Hãng bay:</strong> {detailBooking.tour?.airline || 'N/A'}</div>
-                            <div><strong>Khách sạn:</strong> {detailBooking.tour?.hotelName || 'N/A'}</div>
                             <div><strong>Người tham gia:</strong>
                                 <ul style={{paddingLeft: 18}}>
                                     {detailBooking.participants && detailBooking.participants.length > 0 ? (

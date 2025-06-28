@@ -180,7 +180,7 @@ const TourDetail = () => {
       </div>
       <div className="tour-detail-header">
         <h1>{tour.title}</h1>
-        <div className="tour-price-main">
+        <div className="tour-price-main" style={{ color: '#e53935', background: '#fffbe6' }}>
           <FaMoneyBillWave style={{ color: '#ffd600', marginRight: 6 }} />
           {new Intl.NumberFormat('vi-VN').format(tour.priceAdults)} đ
         </div>
@@ -214,8 +214,13 @@ const TourDetail = () => {
         <div className="info-item"><FaCalendarAlt /> Khởi hành: <span>{tour.startDate ? formatDate(tour.startDate) : 'N/A'}</span></div>
         <div className="info-item"><FaMapMarkerAlt /> Điểm đến: <span>{tour.destination || 'N/A'}</span></div>
         <div className="info-item"><FaTag /> Mã tour: <span>{tour.code || tour.id}</span></div>
-        <div className="info-item"><FaUsers /> Số chỗ còn: <span>{tour.availableSlots || 'N/A'}</span></div>
+        <div className="info-item"><FaUsers /> Số chỗ: <span>{tour.capacity ?? 'N/A'}</span></div>
+        <div className="info-item"><FaMoneyBillWave /> Giá người lớn: <span>{tour.priceAdults ? new Intl.NumberFormat('vi-VN').format(tour.priceAdults) + ' VNĐ' : 'N/A'}</span></div>
+        <div className="info-item"><FaMoneyBillWave /> Giá trẻ em: <span>{tour.priceChildren ? new Intl.NumberFormat('vi-VN').format(tour.priceChildren) + ' VNĐ' : 'N/A'}</span></div>
         <div className="info-item"><FaStar style={{ color: '#ffd600' }} /> Đánh giá: <span>{reviewStats?.averageRating ? reviewStats.averageRating.toFixed(1) : 'Chưa có'} / 5</span></div>
+        <div className="info-item"><FaTag /> Trạng thái: <span>{tour.available ? 'Hoạt động' : 'Không hoạt động'}</span></div>
+        <div className="info-item"><FaTag /> Thể loại: <span>{CATEGORY_LABELS[tour.category] || tour.category || 'N/A'}</span></div>
+        <div className="info-item"><FaTag /> Hãng bay: <span>{tour.airline || 'N/A'}</span></div>
       </div>
       <div className="tour-detail-actions">
         <Button className="booking-button" onClick={handleBookTour}>
@@ -228,11 +233,43 @@ const TourDetail = () => {
       <div className="tour-section">
         <h2>Thông tin chi tiết</h2>
         <div className="tour-description">{tour.description}</div>
-                </div>
+      </div>
       <div className="tour-section">
         <h2>Lịch trình</h2>
         <div className="itinerary">{tour.itinerary}</div>
-              </div>
+      </div>
+      {/* Chính sách hủy/phạt - đặt ngay dưới lịch trình, màu giống lịch trình */}
+      <div className="tour-section cancellation-policy" style={{marginTop: 0, background: '#fff', border: '1px solid #b6d6f6', borderRadius: 12, padding: 24, boxShadow: '0 2px 8px rgba(182,214,246,0.08)'}}>
+        <h2 style={{color: '#0074bc', display: 'flex', alignItems: 'center', gap: 8}}>
+          <span role="img" aria-label="pin">📌</span> Chính sách hủy / phạt
+        </h2>
+        <div style={{fontSize: 16, color: '#444', marginTop: 10, whiteSpace: 'pre-line'}}>
+<b>Lưu ý về chuyển hoặc hủy tour</b>
+<br/>
+a) <b>Đối với ngày thường:</b>
+<ul style={{marginTop: 4}}>
+  <li>Du khách chuyển đổi tour sang ngày khác và báo trước ngày khởi hành từ 7 ngày trở lên sẽ không chịu phí (không áp dụng các tour tiết kiệm, tour khách sạn 4–5 sao), nếu trễ hơn sẽ căn cứ theo quy định hủy dưới đây và chỉ được chuyển ngày khởi hành tour 1 lần.</li>
+  <li>Hủy vé trong vòng 24 giờ hoặc ngày khởi hành, chịu phạt 90% tiền tour.</li>
+  <li>Hủy vé từ 2 – 4 ngày trước ngày khởi hành, chịu phạt 50% tiền tour.</li>
+  <li>Hủy vé từ 5 – 7 ngày trước ngày khởi hành, chịu phạt 30% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày, chịu phạt 10% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày trở lên, không phạt.</li>
+</ul>
+<hr/>
+b) <b>Đối với dịp Lễ, Tết:</b>
+<ul style={{marginTop: 4}}>
+  <li>Du khách chuyển đổi tour sang ngày khác và báo trước ngày khởi hành từ 15 ngày trở lên sẽ không chịu phí (không áp dụng các tour khách sạn 4–5 sao), nếu trễ hơn sẽ căn cứ theo quy định hủy dưới đây và chỉ được chuyển ngày khởi hành tour 1 lần.</li>
+  <li>Hủy vé trong vòng 24 giờ hoặc ngày khởi hành, chịu phạt 100% tiền tour.</li>
+  <li>Hủy vé từ 2 – 7 ngày trước ngày khởi hành, chịu phạt 80% tiền tour.</li>
+  <li>Hủy vé từ 8 – 15 ngày trước ngày khởi hành, chịu phạt 50% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày, chịu phạt 20% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày trở lên, không phạt.</li>
+</ul>
+c) Sau khi hủy tour, du khách vui lòng đến nhận tiền trong vòng 15 ngày kể từ ngày kết thúc tour. Chúng tôi chỉ thanh toán trong khoảng thời gian nói trên.<br/>
+d) Trường hợp hủy tour do sự cố khách quan như thiên tai, lũ lụt, dịch bệnh, tàu thủy, xe lửa, máy bay hoãn/hủy chuyến...<br/>
+Lữ hành sẽ không chịu trách nhiệm bồi thường chi phí nào khác ngoài việc hoàn trả chi phí dịch vụ chưa sử dụng của tour đó.
+        </div>
+      </div>
       {/* Review section */}
       <div className="tour-section">
         <h2>Đánh giá tour</h2>

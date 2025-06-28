@@ -94,21 +94,6 @@ const Revenue = () => {
             <Col md={6}>
           <Card>
             <Card.Body>
-                  <h5>Phân tích phương thức thanh toán</h5>
-                  <div style={{ maxWidth: 350, margin: '0 auto' }}>
-                    <Pie data={paymentPieData} />
-                  </div>
-                  <div className="mt-3">
-                    <span style={{ color: '#ff6384' }}>■</span> Thanh toán bằng Momo &nbsp;
-                    <span style={{ color: '#ffcd56' }}>■</span> Thanh toán tại văn phòng &nbsp;
-                    <span style={{ color: '#36a2eb' }}>■</span> Thanh toán bằng Paypal
-                  </div>
-            </Card.Body>
-          </Card>
-        </Col>
-            <Col md={6}>
-              <Card>
-                <Card.Body>
                   <h5>Doanh thu theo ngày</h5>
                   <Table size="sm" bordered>
                     <thead>
@@ -126,12 +111,9 @@ const Revenue = () => {
                       ))}
                     </tbody>
                   </Table>
-                </Card.Body>
-              </Card>
+            </Card.Body>
+          </Card>
         </Col>
-      </Row>
-
-          <Row className="mb-4">
             <Col md={6}>
               <Card>
                 <Card.Body>
@@ -148,6 +130,32 @@ const Revenue = () => {
                       {data.revenueByMonth?.map((r, idx) => (
                         <tr key={idx}>
                           <td>{r.month}</td>
+                          <td>{r.year}</td>
+                          <td>{r.revenue?.toLocaleString('vi-VN')} VNĐ</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card.Body>
+              </Card>
+        </Col>
+      </Row>
+
+          <Row className="mb-4">
+            <Col md={6}>
+              <Card>
+                <Card.Body>
+                  <h5>Doanh thu theo năm</h5>
+                  <Table size="sm" bordered>
+                    <thead>
+                      <tr>
+                        <th>Năm</th>
+                        <th>Doanh thu</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.revenueByYear?.map((r, idx) => (
+                        <tr key={idx}>
                           <td>{r.year}</td>
                           <td>{r.revenue?.toLocaleString('vi-VN')} VNĐ</td>
                         </tr>

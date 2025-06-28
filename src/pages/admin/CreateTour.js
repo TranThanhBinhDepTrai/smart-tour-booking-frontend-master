@@ -40,19 +40,18 @@ const CreateTour = () => {
 
       // Date validation
       if (name === 'startDate' || name === 'endDate') {
-        const otherDateName = name === 'startDate' ? 'endDate' : 'startDate';
-        const otherDateValue = formData[otherDateName];
-        const currentDateValue = newValue;
-
-        if (otherDateValue && currentDateValue) {
-          const start = new Date(name === 'startDate' ? currentDateValue : otherDateValue);
-          const end = new Date(name === 'endDate' ? currentDateValue : otherDateValue);
-          if (start >= end) {
-            setError('Ngày kết thúc phải sau ngày bắt đầu.');
-          } else {
-            setError('');
-          }
+        const startDate = name === 'startDate' ? newValue : formData.startDate;
+        const endDate = name === 'endDate' ? newValue : formData.endDate;
+        const now = new Date();
+        let errorMsg = '';
+        if (startDate && new Date(startDate) < now.setSeconds(0,0)) {
+          errorMsg = 'Không được chọn ngày bắt đầu trong quá khứ.';
+        } else if (endDate && new Date(endDate) < now.setSeconds(0,0)) {
+          errorMsg = 'Không được chọn ngày kết thúc trong quá khứ.';
+        } else if (startDate && endDate && new Date(startDate) >= new Date(endDate)) {
+          errorMsg = 'Ngày bắt đầu phải trước ngày kết thúc.';
         }
+        setError(errorMsg);
       }
     }
   };
@@ -163,7 +162,13 @@ const CreateTour = () => {
       if (!formData.destination?.trim()) throw new Error('Vui lòng nhập điểm đến');
       if (!formData.startDate) throw new Error('Vui lòng chọn ngày bắt đầu');
       if (!formData.endDate) throw new Error('Vui lòng chọn ngày kết thúc');
-      
+      const now = new Date();
+      if (new Date(formData.startDate) < now.setSeconds(0,0)) {
+        throw new Error('Không được chọn ngày bắt đầu trong quá khứ.');
+      }
+      if (new Date(formData.endDate) < now.setSeconds(0,0)) {
+        throw new Error('Không được chọn ngày kết thúc trong quá khứ.');
+      }
       if (new Date(formData.startDate) >= new Date(formData.endDate)) {
         throw new Error('Ngày bắt đầu phải trước ngày kết thúc');
       }
@@ -376,6 +381,7 @@ const CreateTour = () => {
                   value={formData.startDate}
                   onChange={handleInputChange}
                   required
+                  min={new Date().toISOString().slice(0, 16)}
                 />
               </div>
 
@@ -389,6 +395,7 @@ const CreateTour = () => {
                   value={formData.endDate}
                   onChange={handleInputChange}
                   required
+                  min={formData.startDate ? formData.startDate : new Date().toISOString().slice(0, 16)}
                 />
               </div>
 

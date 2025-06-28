@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Header.css';
+import logo512 from '../assets/images/logo512.png';
 
 function Header() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function Header() {
       <div className="header-top">
         <div className="header-logo">
           <Link to="/">
-            <img src="/logo192.png" alt="Logo" className="logo-img" />
+            <img src={logo512} alt="Logo" className="logo-img" />
             <span className="logo-title">SMART TOUR</span>
           </Link>
         </div>

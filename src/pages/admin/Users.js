@@ -39,6 +39,7 @@ const Users = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [historyUser, setHistoryUser] = useState(null);
+    const [validationError, setValidationError] = useState('');
 
     const loadUsers = async (page = currentPage) => {
         try {
@@ -115,6 +116,19 @@ const Users = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setValidationError('');
+        // Email validation
+        const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        if (!emailRegex.test(formData.email)) {
+            setValidationError('Email không hợp lệ!');
+            return;
+        }
+        // Phone validation (Vietnam: 10 digits, starts with 0)
+        const phoneRegex = /^0\d{9}$/;
+        if (!phoneRegex.test(formData.phone)) {
+            setValidationError('Số điện thoại phải là 10 số và bắt đầu bằng 0!');
+            return;
+        }
         try {
             setError('');
             await userService.updateUser(formData);
@@ -127,49 +141,32 @@ const Users = () => {
     };
 
     const handleDelete = async (userId) => {
-        if (window.confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-            try {
-                await userService.deleteUser(userId);
-                setUsers(prevUsers =>
-                    prevUsers.map(u =>
-                        u.id === userId ? { ...u, deleted: true } : u
-                    )
-                );
-            } catch (err) {
-                setError('Không thể xóa người dùng');
-            }
+        if (!window.confirm('Bạn có chắc chắn muốn xóa tài khoản này không?')) return;
+        try {
+            await userService.deleteUser(userId);
+            window.location.reload();
+        } catch (err) {
+            setError('Không thể xóa người dùng');
         }
     };
 
     const handleBlockUser = async (userId) => {
+        if (!window.confirm('Bạn có chắc chắn muốn khóa tài khoản này không?')) return;
         try {
-            const response = await userService.blockUser(userId);
-            if (response?.message?.includes('thành công')) {
-                setUsers(prevUsers =>
-                    prevUsers.map(u =>
-                        u.id === userId ? { ...u, blocked: true } : u
-                    )
-                );
-                setError('');
-            }
+            await userService.blockUser(userId);
+            window.location.reload();
         } catch (err) {
-            setError('Không thể khóa người dùng: ' + (err.message || 'Đã có lỗi xảy ra'));
+            setError('Không thể khóa người dùng');
         }
     };
 
     const handleUnblockUser = async (userId) => {
+        if (!window.confirm('Bạn có chắc chắn muốn mở khóa tài khoản này không?')) return;
         try {
-            const response = await userService.unblockUser(userId);
-            if (response?.message?.includes('thành công')) {
-                setUsers(prevUsers =>
-                    prevUsers.map(u =>
-                        u.id === userId ? { ...u, blocked: false } : u
-                    )
-                );
-                setError('');
-            }
+            await userService.unblockUser(userId);
+            window.location.reload();
         } catch (err) {
-            setError('Không thể mở khóa người dùng: ' + (err.message || 'Đã có lỗi xảy ra'));
+            setError('Không thể mở khóa người dùng');
         }
     };
 
@@ -430,7 +427,11 @@ const Users = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
+                                isInvalid={validationError && validationError.includes('Email')}
                             />
+                            {validationError && validationError.includes('Email') && (
+                                <Form.Control.Feedback type="invalid">{validationError}</Form.Control.Feedback>
+                            )}
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -441,7 +442,11 @@ const Users = () => {
                                 value={formData.phone}
                                 onChange={handleChange}
                                 required
+                                isInvalid={validationError && validationError.includes('Số điện thoại')}
                             />
+                            {validationError && validationError.includes('Số điện thoại') && (
+                                <Form.Control.Feedback type="invalid">{validationError}</Form.Control.Feedback>
+                            )}
                         </Form.Group>
 
                         <Form.Group className="mb-3">

@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button, Dropdown, ButtonGroup } from 'react-bootstrap';
 import './AdminTour.css';
+import { FaPlus, FaSearch } from 'react-icons/fa';
 
 const AdminTour = () => {
   const navigate = useNavigate();
@@ -149,9 +150,10 @@ const AdminTour = () => {
           </div>
           <button
             onClick={() => navigate('/admin/tours/create')}
-            className="add-tour-button"
+            className="add-tour-button d-flex align-items-center gap-2"
+            style={{padding: '0.5rem 1.5rem', fontSize: '1rem', borderRadius: '2rem', boxShadow: '0 2px 8px rgba(59,130,246,0.10)', fontWeight: 700}}
           >
-            Thêm Tour Mới
+            <FaPlus style={{marginRight: 8}} /> Thêm Tour Mới
           </button>
         </div>
 
@@ -163,9 +165,10 @@ const AdminTour = () => {
             placeholder="Tìm kiếm tour du lịch..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            style={{borderRadius: '2rem', boxShadow: '0 1px 4px rgba(59,130,246,0.08)', paddingLeft: 20, fontSize: '1rem'}}
           />
-          <button className="search-button" onClick={handleResetSearch}>
-            X
+          <button className="search-button d-flex align-items-center justify-content-center" onClick={handleResetSearch} style={{borderRadius: '50%', width: 42, height: 42, background: '#3b82f6', color: 'white', fontSize: 18, boxShadow: '0 2px 8px rgba(59,130,246,0.10)'}}>
+            <FaSearch />
           </button>
         </div>
 

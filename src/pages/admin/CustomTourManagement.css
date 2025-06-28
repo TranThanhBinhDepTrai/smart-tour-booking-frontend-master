@@ -60,7 +60,7 @@
 /* Đảm bảo không cuộn ngang toàn trang */
 body, html, #root, .container-fluid {
   max-width: 100vw;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 /* Đảm bảo nút và input không quá nhỏ */

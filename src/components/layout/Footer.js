@@ -6,9 +6,11 @@ const Footer = () => {
     <footer className="travelvn-footer">
       <div className="footer-main">
         <div className="footer-col">
-          <div className="footer-logo">
-            <img src={require('../../assets/images/hero-image.jpg')} alt="Smart Tour Logo" className="footer-logo-img" />
-            <span className="footer-logo-text">SMART TOUR BOOKING</span>
+          <div className="footer-logo" style={{display: 'flex', alignItems: 'center', gap: 12}}>
+            <div style={{width: 48, height: 48, borderRadius: '50%', overflow: 'hidden', border: '3px solid #ffd600', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <img src={require('../../assets/images/logo512.png')} alt="Smart Tour Logo" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%'}} />
+            </div>
+            <span style={{color: '#ffd600', fontWeight: 800, fontSize: 22, letterSpacing: 1, lineHeight: 1.1, textShadow: '0 2px 8px #003366', fontFamily: 'Montserrat, Arial, sans-serif', textTransform: 'uppercase'}}>SMART TOUR<br/>BOOKING</span>
           </div>
           <p className="footer-desc">Đặt tour du lịch thông minh, tiện lợi, an toàn cùng Smart Tour. Đối tác tin cậy của mọi hành trình.</p>
           <div className="footer-social">

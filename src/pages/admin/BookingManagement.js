@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import './BookingManagement.css';
 import { emailService } from '../../services/emailService';
+import { FaSearch } from 'react-icons/fa';
 
 const BookingManagement = () => {
     const [bookings, setBookings] = useState([]);
@@ -326,18 +327,21 @@ const BookingManagement = () => {
                 <h2 className="admin-title">Quản lý đơn đặt tour</h2>
                 <div className="admin-subtitle">Danh sách các đơn đặt tour của khách hàng</div>
             </div>
-            <div className="search-filter-section mb-3">
+            <div className="d-flex align-items-center mb-4" style={{maxWidth: 600, margin: '0 auto', width: '100%'}}>
                 <input
                     type="text"
-                    className="search-input"
+                    className="admin-search-bar flex-grow-1"
+                    style={{borderRadius: '2rem 0 0 2rem', boxShadow: '0 1px 4px rgba(59,130,246,0.08)', fontSize: '1rem', height: 44, paddingLeft: 20}}
                     placeholder="Tìm kiếm theo tên khách, email, SĐT, tên tour, mã đơn, trạng thái..."
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                 />
-                <button className="search-button" type="button">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                <button
+                    className="search-btn d-flex align-items-center justify-content-center"
+                    style={{borderRadius: '0 2rem 2rem 0', width: 54, height: 44, background: '#2563eb', color: 'white', fontSize: 20, boxShadow: '0 2px 8px rgba(59,130,246,0.10)', marginLeft: 0}}
+                    onClick={() => setSearchTerm("")}
+                >
+                    <FaSearch />
                 </button>
             </div>
             

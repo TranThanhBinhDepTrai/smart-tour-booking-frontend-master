@@ -77,6 +77,38 @@ const TourCategoryList = () => {
           ))}
         </div>
       )}
+      {/* Chính sách hủy/phạt */}
+      <div className="tour-section cancellation-policy" style={{marginTop: 32, background: '#fffbe6', borderRadius: 12, padding: 24, boxShadow: '0 2px 8px rgba(255,214,0,0.08)'}}>
+        <h2 style={{color: '#e67e22', display: 'flex', alignItems: 'center', gap: 8}}>
+          <span role="img" aria-label="pin">📌</span> Chính sách hủy / phạt
+        </h2>
+        <div style={{fontSize: 16, color: '#444', marginTop: 10, whiteSpace: 'pre-line'}}>
+<b>Lưu ý về chuyển hoặc hủy tour</b>
+<br/>
+a) <b>Đối với ngày thường:</b>
+<ul style={{marginTop: 4}}>
+  <li>Du khách chuyển đổi tour sang ngày khác và báo trước ngày khởi hành từ 7 ngày trở lên sẽ không chịu phí (không áp dụng các tour tiết kiệm, tour khách sạn 4–5 sao), nếu trễ hơn sẽ căn cứ theo quy định hủy dưới đây và chỉ được chuyển ngày khởi hành tour 1 lần.</li>
+  <li>Hủy vé trong vòng 24 giờ hoặc ngày khởi hành, chịu phạt 90% tiền tour.</li>
+  <li>Hủy vé từ 2 – 4 ngày trước ngày khởi hành, chịu phạt 50% tiền tour.</li>
+  <li>Hủy vé từ 5 – 7 ngày trước ngày khởi hành, chịu phạt 30% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày, chịu phạt 10% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày trở lên, không phạt.</li>
+</ul>
+<hr/>
+b) <b>Đối với dịp Lễ, Tết:</b>
+<ul style={{marginTop: 4}}>
+  <li>Du khách chuyển đổi tour sang ngày khác và báo trước ngày khởi hành từ 15 ngày trở lên sẽ không chịu phí (không áp dụng các tour khách sạn 4–5 sao), nếu trễ hơn sẽ căn cứ theo quy định hủy dưới đây và chỉ được chuyển ngày khởi hành tour 1 lần.</li>
+  <li>Hủy vé trong vòng 24 giờ hoặc ngày khởi hành, chịu phạt 100% tiền tour.</li>
+  <li>Hủy vé từ 2 – 7 ngày trước ngày khởi hành, chịu phạt 80% tiền tour.</li>
+  <li>Hủy vé từ 8 – 15 ngày trước ngày khởi hành, chịu phạt 50% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày, chịu phạt 20% tiền tour.</li>
+  <li>Hủy vé trước 30 ngày trở lên, không phạt.</li>
+</ul>
+c) Sau khi hủy tour, du khách vui lòng đến nhận tiền trong vòng 15 ngày kể từ ngày kết thúc tour. Chúng tôi chỉ thanh toán trong khoảng thời gian nói trên.<br/>
+d) Trường hợp hủy tour do sự cố khách quan như thiên tai, lũ lụt, dịch bệnh, tàu thủy, xe lửa, máy bay hoãn/hủy chuyến...<br/>
+Lữ hành sẽ không chịu trách nhiệm bồi thường chi phí nào khác ngoài việc hoàn trả chi phí dịch vụ chưa sử dụng của tour đó.
+        </div>
+      </div>
     </div>
   );
 };
