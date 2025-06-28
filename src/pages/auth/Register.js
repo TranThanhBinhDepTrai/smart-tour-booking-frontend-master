@@ -20,6 +20,19 @@ const Register = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Hàm validation số điện thoại
+  const validatePhoneNumber = (phone) => {
+    // Loại bỏ tất cả khoảng trắng và ký tự đặc biệt
+    const cleanPhone = phone.replace(/\s+/g, '').replace(/[^\d]/g, '');
+    
+    // Kiểm tra độ dài (10-11 số)
+    if (cleanPhone.length < 10 || cleanPhone.length > 11) {
+      return 'Số điện thoại phải có 10-11 chữ số';
+    }
+    
+    return null; // Không có lỗi
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -49,6 +62,14 @@ const Register = () => {
     }
     if (age < 18) {
       setError('Bạn phải đủ 18 tuổi để đăng ký tài khoản.');
+      setLoading(false);
+      return;
+    }
+
+    // Kiểm tra số điện thoại
+    const phoneError = validatePhoneNumber(formData.phone);
+    if (phoneError) {
+      setError(phoneError);
       setLoading(false);
       return;
     }
@@ -135,6 +156,9 @@ const Register = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
+              placeholder="VD: 0123456789"
+              pattern="[0-9\s-]+"
+              title="Nhập số điện thoại 10-11 chữ số"
               required
             />
           </div>

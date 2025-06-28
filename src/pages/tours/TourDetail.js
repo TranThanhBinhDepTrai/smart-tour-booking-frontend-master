@@ -223,9 +223,15 @@ const TourDetail = () => {
         <div className="info-item"><FaTag /> Hãng bay: <span>{tour.airline || 'N/A'}</span></div>
       </div>
       <div className="tour-detail-actions">
-        <Button className="booking-button" onClick={handleBookTour}>
-          Đặt tour ngay
-        </Button>
+        {tour.available ? (
+          <Button className="booking-button" onClick={handleBookTour}>
+            Đặt tour ngay
+          </Button>
+        ) : (
+          <div style={{color: 'red', fontWeight: 600, marginBottom: 12}}>
+            Tour này hiện không hoạt động, không thể đặt tour.
+          </div>
+        )}
         <Button className="export-pdf-button" onClick={handleDownloadPDF}>
           <FaFilePdf style={{ marginRight: 6 }} /> Tải PDF
         </Button>

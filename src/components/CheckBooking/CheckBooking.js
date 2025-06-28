@@ -57,8 +57,8 @@ const CheckBooking = () => {
                 return;
             }
 
-            if (bookingData.status !== 'PENDING') {
-                setError('Chỉ có thể hủy những đơn hàng đang ở trạng thái chờ xử lý.');
+            if (bookingData.status !== 'PENDING' && bookingData.status !== 'CONFIRMED') {
+                setError('Chỉ có thể hủy những đơn hàng đang ở trạng thái chờ xử lý hoặc đã xác nhận.');
                 return;
             }
 
@@ -88,7 +88,6 @@ const CheckBooking = () => {
                     setError(`Lỗi: ${errorMessage}. Vui lòng liên hệ hỗ trợ nếu cần thiết.`);
                 }
             } else if (err.request) {
-                // Lỗi không thể kết nối đến server
                 setError('Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng và thử lại.');
             } else {
                 setError('Có lỗi xảy ra khi hủy đơn hàng. Vui lòng thử lại sau.');
@@ -123,7 +122,7 @@ const CheckBooking = () => {
 
     // Kiểm tra xem có thể hiển thị nút hủy không
     const canShowCancelButton = (booking) => {
-        return booking.status === 'PENDING' && !booking.refund;
+        return (booking.status === 'PENDING' || booking.status === 'CONFIRMED') && !booking.refund;
     };
 
     return (
