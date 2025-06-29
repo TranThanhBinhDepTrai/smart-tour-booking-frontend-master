@@ -12,6 +12,11 @@ const Profile = () => {
     const [formData, setFormData] = useState(null);
     const navigate = useNavigate();
 
+    // State cho modal xác thực mật khẩu
+    const [showPasswordVerifyModal, setShowPasswordVerifyModal] = useState(false);
+    const [passwordVerify, setPasswordVerify] = useState('');
+    const [pendingAction, setPendingAction] = useState(null); // 'edit' hoặc 'changePassword'
+
     // State cho modal đổi mật khẩu
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [passwordData, setPasswordData] = useState({
@@ -71,6 +76,56 @@ const Profile = () => {
         });
     };
 
+    // Hàm xác thực mật khẩu
+    const verifyPassword = async (password) => {
+        try {
+            const response = await api.post('/auth/verify-password', {
+                password: password
+            });
+            return response.data && response.data.statusCode === 200;
+        } catch (err) {
+            return false;
+        }
+    };
+
+    // Xử lý khi click nút chỉnh sửa
+    const handleEditClick = () => {
+        setPendingAction('edit');
+        setShowPasswordVerifyModal(true);
+    };
+
+    // Xử lý khi click nút đổi mật khẩu
+    const handleChangePasswordClick = () => {
+        setPendingAction('changePassword');
+        setShowPasswordVerifyModal(true);
+    };
+
+    // Xử lý xác thực mật khẩu
+    const handlePasswordVerify = async () => {
+        if (!passwordVerify.trim()) {
+            alert('Vui lòng nhập mật khẩu!');
+            return;
+        }
+
+        try {
+            const isValid = await verifyPassword(passwordVerify);
+            if (isValid) {
+                setShowPasswordVerifyModal(false);
+                setPasswordVerify('');
+                
+                if (pendingAction === 'edit') {
+                    setIsEditing(true);
+                } else if (pendingAction === 'changePassword') {
+                    setShowPasswordModal(true);
+                }
+            } else {
+                alert('Mật khẩu không đúng!');
+            }
+        } catch (err) {
+            alert('Có lỗi xảy ra khi xác thực mật khẩu!');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -122,11 +177,35 @@ const Profile = () => {
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
+        
+        if (!passwordData.oldPassword.trim()) {
+            alert('Vui lòng nhập mật khẩu cũ!');
+            return;
+        }
+        
+        if (!passwordData.newPassword.trim()) {
+            alert('Vui lòng nhập mật khẩu mới!');
+            return;
+        }
+        
         if (passwordData.newPassword !== passwordData.confirmPassword) {
             alert('Mật khẩu mới không khớp!');
             return;
         }
+
+        if (passwordData.newPassword.length < 6) {
+            alert('Mật khẩu mới phải có ít nhất 6 ký tự!');
+            return;
+        }
+
         try {
+            // Xác thực mật khẩu cũ trước
+            const isValidOldPassword = await verifyPassword(passwordData.oldPassword);
+            if (!isValidOldPassword) {
+                alert('Mật khẩu cũ không đúng!');
+                return;
+            }
+
             const response = await api.put('/users', {
                 id: userProfile.id,
                 password: passwordData.newPassword
@@ -294,10 +373,10 @@ const Profile = () => {
                                 </Col>
                             </Row>
                             <div className="d-flex justify-content-end gap-2 mt-3">
-                                <Button variant="primary" onClick={() => setIsEditing(true)}>
+                                <Button variant="primary" onClick={handleEditClick}>
                                     Chỉnh sửa thông tin
                                 </Button>
-                                <Button variant="warning" onClick={() => setShowPasswordModal(true)}>
+                                <Button variant="warning" onClick={handleChangePasswordClick}>
                                     Đổi mật khẩu
                                 </Button>
                                 <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
@@ -309,6 +388,41 @@ const Profile = () => {
                 </Card.Body>
             </Card>
 
+            {/* Modal xác thực mật khẩu */}
+            <Modal show={showPasswordVerifyModal} onHide={() => setShowPasswordVerifyModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Xác thực mật khẩu</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Vui lòng nhập mật khẩu hiện tại để xác thực:</p>
+                    <Form.Group>
+                        <Form.Control
+                            type="password"
+                            placeholder="Nhập mật khẩu"
+                            value={passwordVerify}
+                            onChange={(e) => setPasswordVerify(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handlePasswordVerify();
+                                }
+                            }}
+                        />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => {
+                        setShowPasswordVerifyModal(false);
+                        setPasswordVerify('');
+                        setPendingAction(null);
+                    }}>
+                        Hủy
+                    </Button>
+                    <Button variant="primary" onClick={handlePasswordVerify}>
+                        Xác nhận
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             {/* Modal đổi mật khẩu */}
             <Modal show={showPasswordModal} onHide={() => setShowPasswordModal(false)}>
                 <Modal.Header closeButton>
@@ -316,6 +430,15 @@ const Profile = () => {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handlePasswordChange}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Mật khẩu cũ</Form.Label>
+                            <Form.Control
+                                type="password"
+                                value={passwordData.oldPassword}
+                                onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
+                                required
+                            />
+                        </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Mật khẩu mới</Form.Label>
                             <Form.Control
@@ -335,7 +458,14 @@ const Profile = () => {
                             />
                         </Form.Group>
                         <div className="d-flex justify-content-end gap-2">
-                            <Button variant="secondary" onClick={() => setShowPasswordModal(false)}>
+                            <Button variant="secondary" onClick={() => {
+                                setShowPasswordModal(false);
+                                setPasswordData({
+                                    oldPassword: '',
+                                    newPassword: '',
+                                    confirmPassword: ''
+                                });
+                            }}>
                                 Hủy
                             </Button>
                             <Button variant="primary" type="submit">

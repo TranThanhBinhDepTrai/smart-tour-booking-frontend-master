@@ -11,9 +11,15 @@ const Profile = () => {
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
 
+    // State cho modal xác thực mật khẩu
+    const [showPasswordVerifyModal, setShowPasswordVerifyModal] = useState(false);
+    const [passwordVerify, setPasswordVerify] = useState('');
+    const [pendingAction, setPendingAction] = useState(null); // 'edit' hoặc 'changePassword'
+
     // State cho modal đổi mật khẩu
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [passwordData, setPasswordData] = useState({
+        oldPassword: '',
         newPassword: '',
         confirmPassword: ''
     });
@@ -33,6 +39,9 @@ const Profile = () => {
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const [successMsg, setSuccessMsg] = useState('');
+
+    // State cho xác thực mật khẩu đổi mật khẩu
+    const [isPasswordVerified, setIsPasswordVerified] = useState(false);
 
     useEffect(() => {
         fetchUserProfile();
@@ -67,6 +76,71 @@ const Profile = () => {
             if (error.response?.status === 401) {
                 navigate('/login');
             }
+        }
+    };
+
+    // Hàm xác thực mật khẩu
+    const verifyPassword = async (password) => {
+        try {
+            const token = localStorage.getItem('token');
+            // Sử dụng API /account để xác thực mật khẩu
+            const response = await axios.put('http://localhost:8080/api/v1/account', {
+                id: userProfile.id,
+                fullName: userProfile.fullName,
+                email: userProfile.email,
+                address: userProfile.address,
+                phone: userProfile.phone,
+                birthDate: userProfile.birthDate,
+                gender: userProfile.gender,
+                password: password
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            return response.data && response.data.statusCode === 200;
+        } catch (err) {
+            console.error('Password verification error:', err);
+            return false;
+        }
+    };
+
+    // Xử lý khi click nút chỉnh sửa
+    const handleEditClick = () => {
+        setPendingAction('edit');
+        setShowPasswordVerifyModal(true);
+    };
+
+    // Xử lý khi click nút đổi mật khẩu
+    const handleChangePasswordClick = () => {
+        setPendingAction('changePassword');
+        setShowPasswordVerifyModal(true);
+    };
+
+    // Xử lý xác thực mật khẩu
+    const handlePasswordVerify = async () => {
+        if (!passwordVerify.trim()) {
+            alert('Vui lòng nhập mật khẩu!');
+            return;
+        }
+
+        try {
+            const isValid = await verifyPassword(passwordVerify);
+            if (isValid) {
+                setShowPasswordVerifyModal(false);
+                setPasswordVerify('');
+                if (pendingAction === 'edit') {
+                    setIsEditing(true);
+                } else if (pendingAction === 'changePassword') {
+                    setIsPasswordVerified(true); // Đánh dấu đã xác thực
+                    setShowPasswordModal(true);
+                }
+            } else {
+                alert('Mật khẩu không đúng!');
+            }
+        } catch (err) {
+            alert('Có lỗi xảy ra khi xác thực mật khẩu!');
         }
     };
 
@@ -106,18 +180,10 @@ const Profile = () => {
             console.log('Current form data:', formData);
             const token = localStorage.getItem('token');
             
-            // Yêu cầu người dùng nhập mật khẩu để xác thực
-            const rawPassword = prompt('Vui lòng nhập mật khẩu để xác thực:');
-            if (!rawPassword) {
-                alert('Bạn cần nhập mật khẩu để cập nhật thông tin!');
-                return;
-            }
-
-            // Chỉ gửi các trường cần thiết và thêm rawPassword
+            // Chỉ gửi các trường cần thiết
             const updateData = {
                 id: formData.id,
                 fullName: formData.fullName || '',
-                password: rawPassword,
                 address: formData.address || '',
                 phone: formData.phone || '',
                 birthDate: formData.birthDate || null,
@@ -161,12 +227,32 @@ const Profile = () => {
 
     const handlePasswordChange = async (e) => {
         e.preventDefault();
+        
+        if (!isPasswordVerified && !passwordData.oldPassword.trim()) {
+            alert('Vui lòng nhập mật khẩu cũ!');
+            return;
+        }
+        
+        if (!passwordData.newPassword.trim()) {
+            alert('Vui lòng nhập mật khẩu mới!');
+            return;
+        }
+        
         if (passwordData.newPassword !== passwordData.confirmPassword) {
             alert('Mật khẩu mới không khớp!');
             return;
         }
+
         try {
-            console.log('Changing password...');
+            // Xác thực mật khẩu cũ trước nếu chưa xác thực qua modal
+            if (!isPasswordVerified) {
+                const isValidOldPassword = await verifyPassword(passwordData.oldPassword);
+                if (!isValidOldPassword) {
+                    alert('Mật khẩu cũ không đúng!');
+                    return;
+                }
+            }
+
             const token = localStorage.getItem('token');
             const response = await axios.put('http://localhost:8080/api/v1/users',
                 {
@@ -180,18 +266,17 @@ const Profile = () => {
                     }
                 }
             );
-            console.log('Password change response:', response.data);
             if (response.data) {
                 setShowPasswordModal(false);
                 setPasswordData({
+                    oldPassword: '',
                     newPassword: '',
                     confirmPassword: ''
                 });
+                setIsPasswordVerified(false);
                 alert('Đổi mật khẩu thành công!');
             }
         } catch (err) {
-            console.error('Error changing password:', err);
-            console.error('Error response:', err.response);
             alert('Đổi mật khẩu thất bại: ' + (err.response?.data?.message || err.message));
         }
     };
@@ -231,7 +316,7 @@ const Profile = () => {
         }
     };
 
-    const handleEditClick = (review) => {
+    const handleEditReviewClick = (review) => {
         setEditReview(review);
         setEditData({ rating: review.rating, comment: review.comment });
         setShowEditModal(true);
@@ -280,6 +365,17 @@ const Profile = () => {
             setDeleteLoading(false);
             setDeleteId(null);
         }
+    };
+
+    // Khi đóng modal đổi mật khẩu, reset lại xác thực
+    const handleClosePasswordModal = () => {
+        setShowPasswordModal(false);
+        setPasswordData({
+            oldPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+        });
+        setIsPasswordVerified(false);
     };
 
     if (!userProfile) {
@@ -431,10 +527,10 @@ const Profile = () => {
                                 </Col>
                             </Row>
                             <div className="d-flex justify-content-end gap-2">
-                                <Button variant="primary" onClick={() => setIsEditing(true)}>
+                                <Button variant="primary" onClick={handleEditClick}>
                                     Chỉnh sửa thông tin
                                 </Button>
-                                <Button variant="warning" onClick={() => setShowPasswordModal(true)}>
+                                <Button variant="warning" onClick={handleChangePasswordClick}>
                                     Đổi mật khẩu
                                 </Button>
                                 <Button variant="info" onClick={() => { setShowReviewHistoryModal(true); fetchUserReviews(); }}>
@@ -449,13 +545,60 @@ const Profile = () => {
                 </Card.Body>
             </Card>
 
+            {/* Modal xác thực mật khẩu */}
+            <Modal show={showPasswordVerifyModal} onHide={() => setShowPasswordVerifyModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Xác thực mật khẩu</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Vui lòng nhập mật khẩu hiện tại để xác thực:</p>
+                    <Form.Group>
+                        <Form.Control
+                            type="password"
+                            placeholder="Nhập mật khẩu"
+                            value={passwordVerify}
+                            onChange={(e) => setPasswordVerify(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handlePasswordVerify();
+                                }
+                            }}
+                        />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => {
+                        setShowPasswordVerifyModal(false);
+                        setPasswordVerify('');
+                        setPendingAction(null);
+                    }}>
+                        Hủy
+                    </Button>
+                    <Button variant="primary" onClick={handlePasswordVerify}>
+                        Xác nhận
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             {/* Modal đổi mật khẩu */}
-            <Modal show={showPasswordModal} onHide={() => setShowPasswordModal(false)}>
+            <Modal show={showPasswordModal} onHide={handleClosePasswordModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Đổi mật khẩu</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handlePasswordChange}>
+                        {/* Ẩn trường mật khẩu cũ nếu đã xác thực qua modal */}
+                        {!isPasswordVerified && (
+                            <Form.Group className="mb-3">
+                                <Form.Label>Mật khẩu cũ</Form.Label>
+                                <Form.Control
+                                    type="password"
+                                    value={passwordData.oldPassword}
+                                    onChange={(e) => setPasswordData({...passwordData, oldPassword: e.target.value})}
+                                    required
+                                />
+                            </Form.Group>
+                        )}
                         <Form.Group className="mb-3">
                             <Form.Label>Mật khẩu mới</Form.Label>
                             <Form.Control
@@ -475,7 +618,7 @@ const Profile = () => {
                             />
                         </Form.Group>
                         <div className="d-flex justify-content-end gap-2">
-                            <Button variant="secondary" onClick={() => setShowPasswordModal(false)}>
+                            <Button variant="secondary" onClick={handleClosePasswordModal}>
                                 Hủy
                             </Button>
                             <Button variant="primary" type="submit">
@@ -536,7 +679,7 @@ const Profile = () => {
                                         <td>{r.comment}</td>
                                         <td>{r.tourId}</td>
                                         <td>
-                                            <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditClick(r)}>
+                                            <Button variant="warning" size="sm" className="me-2" onClick={() => handleEditReviewClick(r)}>
                                                 Sửa
                                             </Button>
                                             <Button variant="danger" size="sm" onClick={() => handleDelete(r.id)} disabled={deleteLoading && deleteId === r.id}>
