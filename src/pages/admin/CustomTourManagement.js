@@ -77,12 +77,14 @@ const CustomTourManagement = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentTours = filteredTours.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
-  const pageNumbers = [];
+  const totalPages = Math.max(1, Math.ceil(filteredTours.length / itemsPerPage));
+  const isLastPage = currentPage === totalPages || currentTours.length < itemsPerPage;
 
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
+  // Đảm bảo currentPage luôn hợp lệ
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+    if (currentPage < 1) setCurrentPage(1);
+  }, [currentPage, totalPages]);
 
   // View tour detail
   const viewDetail = async (id) => {
@@ -434,15 +436,13 @@ const CustomTourManagement = () => {
               </Table>
 
               {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="pagination">
-                  <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>Đầu</button>
-                  <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
-                  <span>Trang {currentPage} / {totalPages}</span>
-                  <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>Sau</button>
-                  <button onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>Cuối</button>
-                </div>
-              )}
+              <div className="pagination">
+                <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>Đầu</button>
+                <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
+                <span>Trang {currentPage} / {totalPages}</span>
+                <button onClick={() => setCurrentPage(currentPage + 1)} disabled={isLastPage}>Sau</button>
+                <button onClick={() => setCurrentPage(totalPages)} disabled={isLastPage}>Cuối</button>
+              </div>
             </>
           )}
         </Card.Body>

@@ -35,6 +35,10 @@ const Promotions = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
 
+    const today = new Date();
+    const minToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+    const minTodayISOString = minToday.toISOString().slice(0, 16);
+
     const loadUsers = async () => {
         try {
             const response = await userService.getAllUsers();
@@ -236,9 +240,25 @@ const Promotions = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        const newValue = value;
+        if (name === 'startAt' || name === 'endAt') {
+            const start = new Date(name === 'startAt' ? newValue : formData.startAt);
+            const end = new Date(name === 'endAt' ? newValue : formData.endAt);
+            const today = new Date();
+            const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+            const startOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0, 0);
+            const endOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 0, 0, 0, 0);
+            if ((name === 'startAt' && startOnly < todayOnly) || (name === 'endAt' && endOnly < todayOnly)) {
+                setError('Không được chọn ngày trong quá khứ.');
+            } else if (formData.startAt && formData.endAt && start >= end) {
+                setError('Ngày kết thúc phải sau ngày bắt đầu.');
+            } else {
+                setError('');
+            }
+        }
         setFormData(prev => ({
             ...prev,
-            [name]: value
+            [name]: newValue
         }));
     };
 
@@ -276,8 +296,9 @@ const Promotions = () => {
             <div className="search-filter-section mb-3">
                 <input
                     type="text"
-                    className="search-input"
-                    placeholder="Tìm kiếm theo mã, mô tả, phần trăm giảm, ngày bắt đầu, ngày kết thúc..."
+                    className="admin-search-bar flex-grow-1"
+                    style={{borderRadius: '2rem 0 0 2rem', boxShadow: '0 1px 4px rgba(59,130,246,0.08)', fontSize: '1rem', height: 44, paddingLeft: 20}}
+                    placeholder="Tìm theo mã hoặc mô tả"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                 />
@@ -416,6 +437,7 @@ const Promotions = () => {
                                 value={formData.startAt}
                                 onChange={handleChange}
                                 required
+                                min={minTodayISOString}
                             />
                         </Form.Group>
 
@@ -427,6 +449,7 @@ const Promotions = () => {
                                 value={formData.endAt}
                                 onChange={handleChange}
                                 required
+                                min={formData.startAt || minTodayISOString}
                             />
                         </Form.Group>
 

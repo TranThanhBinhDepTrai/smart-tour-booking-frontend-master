@@ -23,6 +23,7 @@ const History = () => {
     const [showTourDetailModal, setShowTourDetailModal] = useState(false);
     const [detailBooking, setDetailBooking] = useState(null);
     const [reviewTourId, setReviewTourId] = useState(null);
+    const [reviewedTourIds, setReviewedTourIds] = useState([]);
 
     useEffect(() => {
         console.log('Current user in History:', currentUser);
@@ -111,6 +112,32 @@ const History = () => {
         }
         return '0 VNĐ';
     };
+
+    const checkUserReviewedTours = async (bookings) => {
+        if (!currentUser) return;
+        const reviewed = [];
+        for (const booking of bookings) {
+            if (booking.status === 'COMPLETED' && booking.tour?.tourId) {
+                try {
+                    const res = await axios.get(`http://localhost:8080/api/v1/reviews/tour/${booking.tour.tourId}`);
+                    if (res.data && res.data.data && Array.isArray(res.data.data.reviews)) {
+                        const found = res.data.data.reviews.find(r => r.userId === currentUser.id);
+                        if (found) reviewed.push(booking.tour.tourId);
+                    }
+                } catch (e) {
+                    // Bỏ qua lỗi
+                }
+            }
+        }
+        setReviewedTourIds(reviewed);
+    };
+
+    useEffect(() => {
+        if (bookings.length > 0 && currentUser) {
+            checkUserReviewedTours(bookings);
+        }
+        // eslint-disable-next-line
+    }, [bookings, currentUser]);
 
     if (loading) {
         return (
@@ -318,6 +345,7 @@ const History = () => {
                                 });
                                 if (res.data && res.data.statusCode === 200) {
                                     setReviewSuccess('Đánh giá thành công!');
+                                    setReviewedTourIds(prev => [...prev, tourId]);
                                     setTimeout(() => {
                                         setShowReviewModal(false);
                                     }, 1200);
@@ -376,20 +404,26 @@ const History = () => {
                     <Button variant="secondary" onClick={() => setShowTourDetailModal(false)}>
                         Đóng
                     </Button>
-                    <Button
-                        variant="success"
-                        onClick={() => {
-                            setReviewBooking(detailBooking);
-                            setReviewTourId(detailBooking?.tour?.tourId);
-                            setReviewRating(5);
-                            setReviewComment('');
-                            setShowReviewModal(true);
-                            setReviewSuccess('');
-                            setReviewError('');
-                        }}
-                    >
-                        Đánh giá tour
-                    </Button>
+                    {reviewedTourIds.includes(detailBooking?.tour?.tourId) ? (
+                        <div style={{ color: '#28a745', fontWeight: 600, marginTop: 8 }}>
+                            Bạn đã đánh giá tour này
+                        </div>
+                    ) : (
+                        <Button
+                            variant="success"
+                            onClick={() => {
+                                setReviewBooking(detailBooking);
+                                setReviewTourId(detailBooking?.tour?.tourId);
+                                setReviewRating(5);
+                                setReviewComment('');
+                                setShowReviewModal(true);
+                                setReviewSuccess('');
+                                setReviewError('');
+                            }}
+                        >
+                            Đánh giá tour
+                        </Button>
+                    )}
                 </Modal.Footer>
             </Modal>
         </Container>

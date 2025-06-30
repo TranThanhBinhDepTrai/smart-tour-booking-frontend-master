@@ -215,22 +215,25 @@ const BookTour = () => {
             
             if (response.statusCode === 200) {
                 if (response.data.vnPayUrl) {
-                    // Nếu có URL VNPay, chuyển hướng đến trang thanh toán
+                    // Nếu có URL VNPay, chuyển hướng đến trang thanh toán (KHÔNG gửi email ở đây)
                     window.location.href = response.data.vnPayUrl;
                 } else {
-                    // Nếu thanh toán tiền mặt, gửi email xác nhận và chuyển đến trang lịch sử
-                    try {
-                        const bookingId = response.data.data?.id;
-                        if (bookingId) {
-                            await emailService.sendBookingConfirmation(bookingId);
+                    // Nếu thanh toán tiền mặt, gửi email xác nhận và chuyển đến trang chủ
+                    if (formData.paymentMethod === 'CASH') {
+                        try {
+                            const bookingId = response.data.data?.id;
+                            if (bookingId) {
+                                await emailService.sendBookingConfirmation(bookingId);
+                            }
+                        } catch (emailError) {
+                            console.error("Lỗi khi gửi email xác nhận:", emailError);
+                            // Không hiển thị lỗi email cho user
                         }
-                    } catch (emailError) {
-                        console.error("Lỗi khi gửi email xác nhận:", emailError);
-                        // Không hiển thị lỗi email cho user
+                        alert('Đặt tour thành công! Email xác nhận đã được gửi đến địa chỉ email của bạn.');
+                    } else {
+                        alert('Đặt tour thành công! Vui lòng hoàn tất chuyển khoản để nhận xác nhận.');
                     }
-                    
-                    alert('Đặt tour thành công! Email xác nhận đã được gửi đến địa chỉ email của bạn.');
-                    navigate('/history');
+                    navigate('/');
                 }
             } else {
                 setError(response.message || 'Có lỗi xảy ra khi đặt tour');

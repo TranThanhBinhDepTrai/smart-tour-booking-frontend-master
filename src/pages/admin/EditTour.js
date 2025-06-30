@@ -29,6 +29,10 @@ const EditTour = () => {
     images: []
   });
 
+  const today = new Date();
+  const minToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0);
+  const minTodayISOString = minToday.toISOString().slice(0, 16);
+
   useEffect(() => {
     fetchTourData();
   }, [id]);
@@ -88,11 +92,16 @@ const EditTour = () => {
       if (name === 'startDate' || name === 'endDate') {
         const startDate = name === 'startDate' ? newValue : formData.startDate;
         const endDate = name === 'endDate' ? newValue : formData.endDate;
-        const now = new Date();
         let errorMsg = '';
-        if (name === 'startDate' && startDate && new Date(startDate) < now.setSeconds(0,0)) {
-          errorMsg = 'Không được chọn ngày bắt đầu trong quá khứ.';
-        } else if (startDate && endDate && new Date(startDate) >= new Date(endDate)) {
+        if (startDate) {
+          const now = new Date();
+          const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+          const startDateOnly = new Date(new Date(startDate).getFullYear(), new Date(startDate).getMonth(), new Date(startDate).getDate(), 0, 0, 0, 0);
+          if (startDateOnly < todayOnly) {
+            errorMsg = 'Không được chọn ngày bắt đầu trong quá khứ.';
+          }
+        }
+        if (startDate && endDate && new Date(startDate) >= new Date(endDate)) {
           errorMsg = 'Ngày bắt đầu phải trước ngày kết thúc.';
         }
         setError(errorMsg);
@@ -198,7 +207,9 @@ const EditTour = () => {
       if (!formData.startDate) throw new Error('Vui lòng chọn ngày bắt đầu');
       if (!formData.endDate) throw new Error('Vui lòng chọn ngày kết thúc');
       const now = new Date();
-      if (new Date(formData.startDate) < now.setSeconds(0,0)) {
+      const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      const startDateOnly = new Date(new Date(formData.startDate).getFullYear(), new Date(formData.startDate).getMonth(), new Date(formData.startDate).getDate(), 0, 0, 0, 0);
+      if (startDateOnly < todayOnly) {
         throw new Error('Không được chọn ngày bắt đầu trong quá khứ.');
       }
       if (new Date(formData.startDate) >= new Date(formData.endDate)) {
@@ -436,8 +447,7 @@ const EditTour = () => {
                   value={formData.startDate}
                   onChange={handleInputChange}
                   required
-                  min={new Date().toISOString().slice(0, 16)}
-                  disabled
+                  min={minTodayISOString}
                 />
               </div>
 
@@ -451,6 +461,7 @@ const EditTour = () => {
                   value={formData.endDate}
                   onChange={handleInputChange}
                   required
+                  min={formData.startDate || minTodayISOString}
                 />
               </div>
 

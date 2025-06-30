@@ -114,9 +114,14 @@ const CreatePromotion = () => {
                             <Form.Label>Giới hạn sử dụng</Form.Label>
                             <Form.Control type="number" name="usageLimit" value={formData.usageLimit} onChange={handleChange} required min="1" />
                         </Form.Group>
-                        <Button type="submit" variant="primary" disabled={loading}>
-                            {loading ? 'Đang tạo...' : 'Tạo Khuyến Mãi'}
-                        </Button>
+                        <div className="d-flex justify-content-end gap-2">
+                            <Button variant="secondary" type="button" onClick={() => navigate('/admin/promotions')}>
+                                Hủy
+                            </Button>
+                            <Button type="submit" variant="primary" disabled={loading}>
+                                {loading ? 'Đang tạo...' : 'Tạo Khuyến Mãi'}
+                            </Button>
+                        </div>
                     </Form>
                 </Card.Body>
             </Card>

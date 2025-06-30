@@ -21,6 +21,8 @@ const BookingManagement = () => {
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [modalLoading, setModalLoading] = useState(false);
 
+    const [isLastPage, setIsLastPage] = useState(false);
+
     const STATUS_OPTIONS = {
         PENDING: { text: 'Chờ xử lý', variant: 'warning' },
         CONFIRMED: { text: 'Đã xác nhận', variant: 'success' },
@@ -72,7 +74,14 @@ const BookingManagement = () => {
             );
             if (response.data.statusCode === 200) {
                 setBookings(response.data.data);
-                setTotalPages(5);
+                setIsLastPage(response.data.data.length < limit);
+                if (currentPage === 0 && response.data.data.length < limit) {
+                  setTotalPages(1);
+                } else if (response.data.data.length === limit) {
+                  setTotalPages(currentPage + 2);
+                } else {
+                  setTotalPages(currentPage + 1);
+                }
             }
         } catch (err) {
             console.error('Lỗi khi tải danh sách đơn đặt tour:', err);
@@ -206,6 +215,7 @@ const BookingManagement = () => {
     };
 
     const handlePageChange = (pageNumber) => {
+        if (pageNumber < 0 || (isLastPage && pageNumber > currentPage)) return;
         setCurrentPage(pageNumber);
     };
 
@@ -332,7 +342,7 @@ const BookingManagement = () => {
                     type="text"
                     className="admin-search-bar flex-grow-1"
                     style={{borderRadius: '2rem 0 0 2rem', boxShadow: '0 1px 4px rgba(59,130,246,0.08)', fontSize: '1rem', height: 44, paddingLeft: 20}}
-                    placeholder="Tìm kiếm theo tên khách, email, SĐT, tên tour, mã đơn, trạng thái..."
+                    placeholder="Tìm theo tên tour, email, số điện thoại, tên khách"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                 />
@@ -416,9 +426,9 @@ const BookingManagement = () => {
             <div className="pagination">
               <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>Đầu</button>
               <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trước</button>
-              <span>Trang {currentPage + 1} / {totalPages}</span>
-              <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages - 1}>Sau</button>
-              <button onClick={() => handlePageChange(totalPages - 1)} disabled={currentPage === totalPages - 1}>Cuối</button>
+              <span>Trang {currentPage + 1}{isLastPage ? '' : ` / ${totalPages}`}</span>
+              <button onClick={() => handlePageChange(currentPage + 1)} disabled={isLastPage}>Sau</button>
+              <button onClick={() => handlePageChange(totalPages - 1)} disabled={isLastPage}>Cuối</button>
             </div>
 
             {/* Booking Details Modal */}
