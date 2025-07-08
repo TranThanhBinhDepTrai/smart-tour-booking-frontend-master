@@ -153,17 +153,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.search-button {
-  padding: 1.2rem 2.5rem;
-  background-color: #00ba94;
-  border: none;
-  border-radius: 0 8px 8px 0;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1.1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
+
 
 .search-button:hover {
   background-color: #008f6f;
@@ -375,8 +365,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  margin-bottom: 2.5rem;
+  overflow: visible !important;
+    margin-bottom: 2.5rem;
 }
 .hero-bg-overlay {
   position: absolute;
@@ -586,7 +576,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.2rem;
+  margin-bottom: 4rem; /* hoặc 5rem, 6rem... tùy ý */
   padding: 0;
 }
 .hero-bg-img {
@@ -642,6 +632,8 @@
   .hero-section-home.search-only {
     min-height: 260px;
     height: 300px;
+    /* Có thể có margin-bottom nhỏ ở đây, hãy tăng lên luôn! */
+    margin-bottom: 8rem;
   }
   .hero-bg-img {
     min-height: 300px;
@@ -670,4 +662,51 @@
   background: linear-gradient(90deg, #0074bc 0%, #ffd600 100%);
   margin: 1rem auto 0 auto;
   border-radius: 2px;
+} 
+
+.suggestions-dropdown {
+  font-size: 1.18rem !important;
+  min-width: 380px !important;
+  padding: 8px 0 !important;
+  top: 60px !important; /* hoặc 64px, tùy chiều cao input */
+}
+.suggestions-dropdown li {
+  padding: 18px 24px !important;
+  font-size: 1.12rem !important;
+} 
+
+/* Style input tìm kiếm admin */
+.admin-search-input {
+  background: #fff !important;
+  color: #333 !important;
+  border: none !important;
+  border-radius: 32px 0 0 32px !important;
+  padding: 16px 24px !important;
+  font-size: 1.1rem !important;
+  outline: none !important;
+  min-width: 320px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Style nút tìm kiếm admin */
+.admin-search-btn {
+  background: #0074bc !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0 32px 32px 0 !important;
+  padding: 0 32px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600;
+  height: 44px;
+  min-width: 60px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-search-btn i {
+  margin-left: 8px;
 } 

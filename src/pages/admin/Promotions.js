@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { promotionService } from '../../services/promotionService';
 import { userService } from '../../services/userService';
 import './AdminTour.css';
+import { FaSearch } from 'react-icons/fa';
 
 const Promotions = () => {
     const [promotions, setPromotions] = useState([]);
@@ -296,16 +297,13 @@ const Promotions = () => {
             <div className="search-filter-section mb-3">
                 <input
                     type="text"
-                    className="admin-search-bar flex-grow-1"
-                    style={{borderRadius: '2rem 0 0 2rem', boxShadow: '0 1px 4px rgba(59,130,246,0.08)', fontSize: '1rem', height: 44, paddingLeft: 20}}
+                    className="admin-search-input"
                     placeholder="Tìm theo mã hoặc mô tả"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                 />
-                <button className="search-button" type="button">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="search-icon">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
+                <button className="admin-search-btn" type="button">
+                    <FaSearch />
                 </button>
             </div>
 

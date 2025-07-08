@@ -242,16 +242,18 @@ const CustomTourManagement = () => {
         <Card.Body>
           <Row className="mb-3">
             <Col md={6}>
-              <InputGroup>
-                <Form.Control 
+              <div className="search-filter-section">
+                <input
+                  type="text"
+                  className="admin-search-input"
                   placeholder="Tìm kiếm theo tên, email, SĐT, điểm đến..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <Button variant="outline-secondary">
+                <button className="admin-search-btn" type="button">
                   <FaSearch />
-                </Button>
-              </InputGroup>
+                </button>
+              </div>
             </Col>
           </Row>
 

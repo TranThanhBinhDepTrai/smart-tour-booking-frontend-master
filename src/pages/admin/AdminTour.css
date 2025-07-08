@@ -537,6 +537,42 @@ image.png.admin-tour-container {
   color: #2d3436;
 }
 
+.admin-search-input {
+  background: #fff !important;
+  color: #333 !important;
+  border: none !important;
+  border-radius: 32px 0 0 32px !important;
+  padding: 16px 24px !important;
+  font-size: 1.1rem !important;
+  outline: none !important;
+  min-width: 1800px;
+  height: 44px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.admin-search-btn {
+  background: #0074bc !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0 32px 32px 0 !important;
+  padding: 0 32px !important;
+  font-size: 1.1rem !important;
+  font-weight: 600;
+  height: 44px;
+  min-width: 60px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-search-btn svg {
+  color: #fff !important;
+  font-size: 1.2em;
+}
+
 /* Responsive cho laptop 13-14 inch (1366-1440px) */
 @media (max-width: 1440px) and (min-width: 1200px) {
   .admin-tour-title, .admin-tour-subtitle, .search-results-info, .pagination-info, .tour-info-primary, .tour-info-secondary, .tour-code, .tour-status, .empty-table, .sidebar-header, .sidebar-link, .sidebar-nav li, .admin-title, .admin-brand, .admin-user {

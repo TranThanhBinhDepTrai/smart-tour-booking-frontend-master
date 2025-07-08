@@ -152,7 +152,8 @@
 .block-btn:hover {
   background: #374151 !important;
 }
-.admin-search-bar, .search-input {
+.admin-search-bar {
+  min-width: 806px;
   border-radius: 22px 0 0 22px !important;
   border: 1.5px solid #e3eaf3 !important;
   padding: 0 1.2rem !important;
@@ -162,7 +163,7 @@
   outline: none !important;
   transition: border 0.2s;
 }
-.admin-search-bar:focus, .search-input:focus {
+.admin-search-bar:focus {
   border-color: #2563eb !important;
   background: #fff !important;
 }

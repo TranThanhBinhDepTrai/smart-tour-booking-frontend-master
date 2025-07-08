@@ -207,4 +207,29 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+body, #root, .main-content, .hero-section, .hero-content {
+  overflow: visible !important;
+  z-index: auto !important;
+}
+
+.suggestions-dropdown {
+  border-radius: 0 0 12px 12px !important;
+  z-index: 999999 !important;
+}
+
+.suggestions-dropdown li {
+  padding: 12px 18px;
+  font-size: 1.08rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestions-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.suggestions-dropdown li:hover {
+  background: #f5faff;
 } 

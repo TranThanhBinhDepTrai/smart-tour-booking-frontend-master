@@ -337,10 +337,10 @@ const BookingManagement = () => {
                 <h2 className="admin-title">Quản lý đơn đặt tour</h2>
                 <div className="admin-subtitle">Danh sách các đơn đặt tour của khách hàng</div>
             </div>
-            <div className="d-flex align-items-center mb-4" style={{maxWidth: 600, margin: '0 auto', width: '100%'}}>
+            <div className="d-flex align-items-center mb-4">
                 <input
                     type="text"
-                    className="admin-search-bar flex-grow-1"
+                    className="admin-search-bar"
                     style={{borderRadius: '2rem 0 0 2rem', boxShadow: '0 1px 4px rgba(59,130,246,0.08)', fontSize: '1rem', height: 44, paddingLeft: 20}}
                     placeholder="Tìm theo tên tour, email, số điện thoại, tên khách"
                     value={searchTerm}

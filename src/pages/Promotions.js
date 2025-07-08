@@ -3,28 +3,34 @@ import { Container, Row, Col, Card, Alert, Spinner, Button, Form, Modal } from '
 import { Link } from 'react-router-dom';
 import { promotionService } from '../services/promotionService';
 import { useAuth } from '../contexts/AuthContext';
-import { FaPercent, FaCalendarAlt, FaRedo, FaGift } from 'react-icons/fa';
+import { FaPercent, FaCalendarAlt, FaRedo, FaGift, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './Promotions.css';
 
 const Promotions = () => {
     const [promotions, setPromotions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [currentPage] = useState(0);
-    const [pageSize] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1); // Bắt đầu từ trang 1
+    const pageSize = 9;
     const { currentUser } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedPromotion, setSelectedPromotion] = useState(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+    const [allPromotions, setAllPromotions] = useState([]); // Lưu toàn bộ danh sách để filter client
 
     useEffect(() => {
         if (currentUser) {
             loadUserPromotions();
         } else {
             setPromotions([]);
+            setAllPromotions([]);
             setLoading(false);
         }
     }, [currentUser]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
 
     const loadUserPromotions = async () => {
         try {
@@ -34,17 +40,34 @@ const Promotions = () => {
             if (response?.data) {
                 const activePromotions = response.data.filter(p => p.active === true);
                 setPromotions(activePromotions);
+                setAllPromotions(activePromotions);
             } else {
                 setPromotions([]);
+                setAllPromotions([]);
             }
         } catch (err) {
             console.error('Error loading user promotions:', err);
             setError('Không thể tải danh sách khuyến mãi. Vui lòng thử lại sau.');
             setPromotions([]);
+            setAllPromotions([]);
         } finally {
             setLoading(false);
         }
     };
+
+    // Tự động lọc khi nhập searchTerm
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setPromotions(allPromotions);
+        } else {
+            const filtered = allPromotions.filter(p =>
+                p.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+            setPromotions(filtered);
+        }
+        setCurrentPage(1);
+    }, [searchTerm, allPromotions]);
 
     const handleSearch = async () => {
         if (!searchTerm.trim()) {
@@ -91,6 +114,16 @@ const Promotions = () => {
         });
     };
 
+    // Tính toán promotions hiển thị theo trang
+    const paginatedPromotions = promotions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    const totalPages = Math.ceil(promotions.length / pageSize);
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
+
     if (loading) {
         return (
             <Container className="text-center my-5">
@@ -128,13 +161,9 @@ const Promotions = () => {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <Button variant="primary" onClick={handleSearch}>
-                                Tìm kiếm
-                            </Button>
                             {searchTerm && (
                                 <Button variant="secondary" onClick={() => {
                                     setSearchTerm('');
-                                    loadUserPromotions();
                                 }}>
                                     Xóa
                                 </Button>
@@ -149,8 +178,9 @@ const Promotions = () => {
                     )}
 
                     {promotions.length > 0 ? (
+                        <>
                         <Row xs={1} md={2} lg={3} className="g-4">
-                            {promotions.map((promotion) => (
+                            {paginatedPromotions.map((promotion) => (
                                 <Col key={promotion.id}>
                                     <Card className="h-100 promotion-card">
                                         <Card.Body>
@@ -185,6 +215,31 @@ const Promotions = () => {
                                 </Col>
                             ))}
                         </Row>
+                        {/* Pagination controls */}
+                        {totalPages > 1 && (
+                            <div className="d-flex justify-content-center align-items-center mt-4">
+                                <Button
+                                    variant="outline-primary"
+                                    className="me-2"
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                >
+                                    <FaChevronLeft />
+                                </Button>
+                                <span style={{ minWidth: 80, textAlign: 'center' }}>
+                                    Trang {currentPage} / {totalPages}
+                                </span>
+                                <Button
+                                    variant="outline-primary"
+                                    className="ms-2"
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                >
+                                    <FaChevronRight />
+                                </Button>
+                            </div>
+                        )}
+                        </>
                     ) : (
                         <Alert variant="info" className="text-center">
                             <h4>Không tìm thấy khuyến mãi</h4>
