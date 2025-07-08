@@ -162,7 +162,14 @@ const AdminTour = () => {
           <div className="search-filter-section">
             <input
               type="text"
-              className="admin-search-input"
+              className="admin-search-bar"
+              style={{
+                borderRadius: '2rem 0 0 2rem',
+                boxShadow: '0 1px 4px rgba(59,130,246,0.08)',
+                fontSize: '1rem',
+                height: 44,
+                paddingLeft: 20
+              }}
               placeholder="Tìm kiếm theo tiêu đề hoặc điểm đến"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}

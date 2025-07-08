@@ -25,3 +25,144 @@ h2 {
     text-align: center;
     margin-bottom: 2rem;
 } 
+/* Điện thoại nhỏ: 320px – 375px */
+@media (max-width: 375px) {
+    .home-page {
+      padding: 0 4px;
+    }
+    .section-title-home {
+      font-size: 1.1rem;
+    }
+    /* Thêm các class khác cần thu nhỏ, ẩn bớt, căn giữa... */
+  }
+  
+  /* Điện thoại trung: 376px – 414px */
+  @media (min-width: 376px) and (max-width: 414px) {
+    .home-page {
+      padding: 0 8px;
+    }
+    .section-title-home {
+      font-size: 1.2rem;
+    }
+  }
+  
+  /* Điện thoại lớn: 415px – 480px */
+  @media (min-width: 415px) and (max-width: 480px) {
+    .home-page {
+      padding: 0 12px;
+    }
+    .section-title-home {
+      font-size: 1.3rem;
+    }
+  }
+  
+  /* Máy tính bảng dọc (iPad): 481px – 768px */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .home-page {
+      padding: 0 20px;
+    }
+    .section-title-home {
+      font-size: 1.5rem;
+    }
+  }
+
+@media (max-width: 992px) {
+  .header-nav {
+    display: none !important;
+  }
+  .header-nav.open {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 110;
+    background: #0074bc;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 0 0 1rem 0;
+  }
+}
+.travelvn-header {
+  position: relative;
+}
+/* Điện thoại nhỏ: 320px – 375px */
+@media (max-width: 375px) {
+  .home-page {
+    padding: 0 4px;
+  }
+  .section-title-home {
+    font-size: 1.1rem;
+  }
+  /* Thêm các class khác cần thu nhỏ, ẩn bớt, căn giữa... */
+}
+
+/* Điện thoại trung: 376px – 414px */
+@media (min-width: 376px) and (max-width: 414px) {
+  .home-page {
+    padding: 0 8px;
+  }
+  .section-title-home {
+    font-size: 1.2rem;
+  }
+}
+
+/* Điện thoại lớn: 415px – 480px */
+@media (min-width: 415px) and (max-width: 480px) {
+  .home-page {
+    padding: 0 12px;
+  }
+  .section-title-home {
+    font-size: 1.3rem;
+  }
+}
+
+/* Máy tính bảng dọc (iPad): 481px – 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+  .home-page {
+    padding: 0 20px;
+  }
+  .section-title-home {
+    font-size: 1.5rem;
+  }
+}
+
+.history-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 16px;
+    background: #f9f9f9;
+}
+@media (max-width: 600px) {
+    .history-page-container {
+        padding: 6px 1px;
+    }
+}
+
+@media (max-width: 900px) {
+  .search-filter-section {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .booking-search-input {
+    width: 90vw !important;
+    max-width: 340px !important;
+    margin-bottom: 8px !important;
+    font-size: 1rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+  }
+  .booking-search-btn {
+    width: 90vw !important;
+    max-width: 340px !important;
+    font-size: 1.1rem !important;
+    padding: 10px 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+  }
+}

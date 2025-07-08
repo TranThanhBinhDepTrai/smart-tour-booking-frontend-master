@@ -637,6 +637,7 @@
   }
   .hero-bg-img {
     min-height: 300px;
+    width: 100%;
   }
   .hero-content-home.search-only {
     max-width: 98vw;
@@ -710,3 +711,43 @@
 .admin-search-btn i {
   margin-left: 8px;
 } 
+/* Điện thoại nhỏ: 320px – 375px */
+@media (max-width: 375px) {
+  .home-page {
+    padding: 0 4px;
+  }
+  .section-title-home {
+    font-size: 1.1rem;
+  }
+  /* Thêm các class khác cần thu nhỏ, ẩn bớt, căn giữa... */
+}
+
+/* Điện thoại trung: 376px – 414px */
+@media (min-width: 376px) and (max-width: 414px) {
+  .home-page {
+    padding: 0 8px;
+  }
+  .section-title-home {
+    font-size: 1.2rem;
+  }
+}
+
+/* Điện thoại lớn: 415px – 480px */
+@media (min-width: 415px) and (max-width: 480px) {
+  .home-page {
+    padding: 0 12px;
+  }
+  .section-title-home {
+    font-size: 1.3rem;
+  }
+}
+
+/* Máy tính bảng dọc (iPad): 481px – 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+  .home-page {
+    padding: 0 20px;
+  }
+  .section-title-home {
+    font-size: 1.5rem;
+  }
+}

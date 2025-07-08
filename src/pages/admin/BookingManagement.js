@@ -341,7 +341,13 @@ const BookingManagement = () => {
                 <input
                     type="text"
                     className="admin-search-bar"
-                    style={{borderRadius: '2rem 0 0 2rem', boxShadow: '0 1px 4px rgba(59,130,246,0.08)', fontSize: '1rem', height: 44, paddingLeft: 20}}
+                    style={{
+                      borderRadius: '2rem 0 0 2rem',
+                      boxShadow: '0 1px 4px rgba(59,130,246,0.08)',
+                      fontSize: '1rem',
+                      height: 44,
+                      paddingLeft: 20
+                    }}
                     placeholder="Tìm theo tên tour, email, số điện thoại, tên khách"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
