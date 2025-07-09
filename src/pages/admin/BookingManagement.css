@@ -397,8 +397,4 @@ tbody td {
   width: 100%;
   margin: 0 auto;
 }
-.home-search-bar-container input,
-.home-search-bar-container button {
-  /* width: auto hoặc % hoặc max-width, KHÔNG fix cứng px lớn */
-} 
 

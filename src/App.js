@@ -24,7 +24,7 @@ import BookTour from './pages/tours/BookTour';
 import CustomTourPage from './pages/custom-tour/CustomTourPage';
 import Profile from './pages/profile/Profile';
 import AdminPromotions from './pages/admin/Promotions';
-import Promotions from './pages/Promotions';
+import Promotions from './pages/promotions/Promotions';
 import CheckBooking from './components/CheckBooking/CheckBooking';
 import BookingManagement from './pages/admin/BookingManagement';
 import CustomTourManagement from './pages/admin/CustomTourManagement';

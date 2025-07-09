@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Alert, Spinner, Button, Form, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { promotionService } from '../services/promotionService';
-import { useAuth } from '../contexts/AuthContext';
+import { promotionService } from '../../services/promotionService';
+import { useAuth } from '../../contexts/AuthContext';
 import { FaPercent, FaCalendarAlt, FaRedo, FaGift, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './Promotions.css';
 
@@ -298,4 +298,4 @@ const Promotions = () => {
     );
 };
 
-export default Promotions;
+export default Promotions; 
