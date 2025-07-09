@@ -80,3 +80,30 @@
 .search-btn:hover {
   background: #1d4ed8 !important;
 } 
+
+.modal {
+  z-index: 2000 !important;
+}
+.modal-backdrop {
+  z-index: 1999 !important;
+} 
+
+.admin-tour-detail-modal,
+.admin-tour-detail-modal .modal-dialog,
+.admin-tour-detail-modal .modal-content,
+.modal-backdrop {
+  z-index: 3000 !important;
+}
+
+.admin-tour-detail-modal {
+  position: fixed !important;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: auto;
+} 
+
+.sidebar {
+  z-index: 100 !important;
+} 

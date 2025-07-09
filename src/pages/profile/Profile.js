@@ -533,12 +533,16 @@ const Profile = () => {
                                 <Button variant="warning" onClick={handleChangePasswordClick}>
                                     Đổi mật khẩu
                                 </Button>
-                                <Button variant="info" onClick={() => { setShowReviewHistoryModal(true); fetchUserReviews(); }}>
-                                    Lịch sử đánh giá
-                                </Button>
-                                <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
-                                    Xóa tài khoản
-                                </Button>
+                                {userProfile.role?.name?.toLowerCase() !== 'admin' && (
+                                    <>
+                                        <Button variant="info" onClick={() => { setShowReviewHistoryModal(true); fetchUserReviews(); }}>
+                                            Lịch sử đánh giá
+                                        </Button>
+                                        <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+                                            Xóa tài khoản
+                                        </Button>
+                                    </>
+                                )}
                             </div>
                         </>
                     )}

@@ -254,7 +254,6 @@ const TourDetail = () => {
 <br/>
 a) <b>Đối với ngày thường:</b>
 <ul style={{marginTop: 4}}>
-  <li>Du khách chuyển đổi tour sang ngày khác và báo trước ngày khởi hành từ 7 ngày trở lên sẽ không chịu phí (không áp dụng các tour tiết kiệm, tour khách sạn 4–5 sao), nếu trễ hơn sẽ căn cứ theo quy định hủy dưới đây và chỉ được chuyển ngày khởi hành tour 1 lần.</li>
   <li>Hủy vé trong vòng 24 giờ hoặc ngày khởi hành, chịu phạt 90% tiền tour.</li>
   <li>Hủy vé từ 2 – 4 ngày trước ngày khởi hành, chịu phạt 50% tiền tour.</li>
   <li>Hủy vé từ 5 – 7 ngày trước ngày khởi hành, chịu phạt 30% tiền tour.</li>
@@ -285,7 +284,10 @@ Lữ hành sẽ không chịu trách nhiệm bồi thường chi phí nào khác
           <div>
             {reviewStats.reviews.map((review, idx) => (
               <div key={idx} style={{ marginBottom: 12, borderBottom: '1px solid #eee', paddingBottom: 8 }}>
-                <div style={{ fontWeight: 600 }}>{review.userName || 'Ẩn danh'} <span style={{ color: '#ffd600', marginLeft: 8 }}><FaStar /> {review.rating}/5</span></div>
+                <div style={{ fontWeight: 600 }}>
+  {review.userName || review.user?.fullName || review.user?.name || review.username || 'Ẩn danh'}
+  <span style={{ color: '#ffd600', marginLeft: 8 }}><FaStar /> {review.rating}/5</span>
+</div>
                 <div style={{ color: '#555', fontSize: 15 }}>{review.comment}</div>
                     </div>
             ))}

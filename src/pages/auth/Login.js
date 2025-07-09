@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import './Auth.css';
+import './Login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -78,11 +78,7 @@ function Login() {
             />
           </Form.Group>
 
-          <Button
-            type="submit"
-            className="auth-button"
-            disabled={loading}
-          >
+          <Button type="submit" className="auth-button" variant={null} disabled={loading}>
             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
           </Button>
         </Form>

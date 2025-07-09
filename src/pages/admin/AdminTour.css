@@ -58,6 +58,10 @@ image.png.admin-tour-container {
   margin-bottom: 20px;
   padding: 0 10px;
 }
+.modal-content{
+  width: 1300px;
+  margin: 0 auto;
+}
 
 .search-container {
   margin-bottom: 20px;
@@ -809,4 +813,60 @@ thead th {
 tbody td {
   vertical-align: middle;
   border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-tour-detail-modal .modal-dialog {
+  max-width: 800px;
+  width: 90vw;
+  margin: 2rem auto;
+}
+.admin-tour-detail-modal {
+  z-index: 2000 !important;
+}
+
+.admin-sidebar {
+  z-index: 1000 !important;
+}
+
+.admin-navbar {
+  z-index: 1000 !important;
+}
+
+.tour-detail-modal .modal {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.tour-detail-modal .modal-dialog {
+  max-width: 600px !important;
+  width: 95vw;
+}
+
+.tour-detail-modal .modal-content {
+  margin: auto;
+}
+
+.modal.tour-detail-modal {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.modal.tour-detail-modal .modal-dialog {
+  max-width: 600px !important;
+  width: 95vw;
+  margin: 32px auto !important; /* 32px cách trên/dưới, auto căn giữa ngang */
+}
+.modal.tour-detail-modal .modal-content {
+  margin: 0 auto !important;
+}
+.tour-detail-modal .modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.tour-detail-modal .modal-body h4,
+.tour-detail-modal .modal-body .tour-images {
+  text-align: center;
+  margin: 0 auto;
 }

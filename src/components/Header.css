@@ -45,7 +45,7 @@
 }
 .header-top {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 0.5rem 2rem;
   border-bottom: 1px solid #e0e0e0;
@@ -72,6 +72,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-left: auto;
 }
 .hotline-label {
   margin-right: 4px;
@@ -131,65 +132,6 @@
   .nav-list, .nav-auth {
     flex-direction: column;
     width: 100%;
-  }
-  .nav-list li, .nav-auth li {
-    width: 100%;
-    margin: 0.2rem 0;
-  }
-  .nav-list li a, .nav-auth li a, .logout-btn {
-    width: 100%;
-    text-align: left;
-    padding: 0.7rem 1rem;
-  }
-} 
-
-/* Hamburger menu styles */
-.hamburger-menu {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 120;
-}
-.hamburger-menu .bar {
-  width: 28px;
-  height: 3px;
-  background: #0074bc;
-  margin: 4px 0;
-  border-radius: 2px;
-  transition: 0.3s;
-}
-@media (max-width: 992px) {
-  .hamburger-menu {
-    display: flex;
-    position: absolute;
-    right: 16px;
-    top: 16px;
-  }
-  .header-nav {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    background: #0074bc;
-    position: absolute;
-    left: 0;
-    top: 100%;
-    z-index: 110;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    padding: 0 0 1rem 0;
-  }
-  .header-nav.open {
-    display: flex;
-  }
-  .nav-list, .nav-auth {
-    flex-direction: column;
-    width: 100%;
-    align-items: flex-start;
   }
   .nav-list li, .nav-auth li {
     width: 100%;

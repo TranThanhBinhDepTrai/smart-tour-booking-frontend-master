@@ -145,7 +145,7 @@ const Promotions = () => {
                         <Button as={Link} to="/login" variant="primary" className="me-2">
                             Đăng nhập
                         </Button>
-                        <Button as={Link} to="/register" variant="outline-primary">
+                        <Button as={Link} to="/register" variant="primary">
                             Đăng ký
                         </Button>
                     </div>

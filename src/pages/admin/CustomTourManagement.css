@@ -9,6 +9,10 @@
   font-size: 15px;
   vertical-align: middle;
 }
+.modal-content {
+  width: 900px;
+  margin: 0 auto;
+}
 
 @media (max-width: 1440px) {
   .table th, .table td {

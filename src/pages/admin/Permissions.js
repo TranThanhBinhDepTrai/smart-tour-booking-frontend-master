@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form, Alert } from 'react-bootstrap';
 import { permissionService } from '../../services/permissionService';
-import './AdminTour.css';
+import './Permissions.css';
 
 const Permissions = () => {
   const [permissions, setPermissions] = useState([]);

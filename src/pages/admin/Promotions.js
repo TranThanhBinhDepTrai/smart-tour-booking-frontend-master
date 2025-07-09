@@ -57,12 +57,11 @@ const Promotions = () => {
     const loadPromotions = async (page = currentPage) => {
         try {
             setLoading(true);
-            const response = await promotionService.getAllPromotions(page, pageSize);
+            const response = await promotionService.getAllPromotions();
             console.log('API Response:', response);
 
-            if (response?.data) {
-                // Hiển thị tất cả khuyến mãi, không filter active nữa
-                setPromotions(response.data);
+            if (Array.isArray(response?.data)) {
+                setPromotions(response.data.slice(page * pageSize, (page + 1) * pageSize));
                 setTotalItems(response.data.length);
                 setTotalPages(Math.ceil(response.data.length / pageSize));
                 setCurrentPage(page);
@@ -74,7 +73,6 @@ const Promotions = () => {
                 setError('Không có dữ liệu khuyến mãi');
             }
         } catch (err) {
-            console.error('Error loading promotions:', err);
             setError(err.message || 'Không thể tải danh sách khuyến mãi');
             setPromotions([]);
             setTotalItems(0);
@@ -339,7 +337,8 @@ const Promotions = () => {
                                     (promotion.startAt && promotion.startAt.toLowerCase().includes(s)) ||
                                     (promotion.endAt && promotion.endAt.toLowerCase().includes(s))
                                 );
-                            }).map((promotion) => (
+                            })
+                            .map((promotion) => (
                                 <tr key={promotion.id}>
                                     <td>{promotion.id}</td>
                                     <td>{promotion.code}</td>
