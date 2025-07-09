@@ -549,11 +549,12 @@ image.png.admin-tour-container {
   padding: 16px 24px !important;
   font-size: 1.1rem !important;
   outline: none !important;
-  min-width: 1800px;
+  min-width: 0;
+  max-width: 600px;
+  width: 100%;
   height: 44px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-
 .admin-search-btn {
   background: #0074bc !important;
   color: #fff !important;
@@ -576,32 +577,30 @@ image.png.admin-tour-container {
   color: #fff !important;
   font-size: 1.2em;
 }
-
-/* Responsive cho laptop 13-14 inch (1366-1440px) */
-@media (max-width: 1440px) and (min-width: 1200px) {
-  .admin-tour-title, .admin-tour-subtitle, .search-results-info, .pagination-info, .tour-info-primary, .tour-info-secondary, .tour-code, .tour-status, .empty-table, .sidebar-header, .sidebar-link, .sidebar-nav li, .admin-title, .admin-brand, .admin-user {
-    font-size: 13px !important;
+@media (max-width: 900px) {
+  .admin-search-input {
+    flex: 0 1 75%;
+    width: 75%;
+    min-width: 0;
+    max-width: unset;
   }
-  .tour-table th, .tour-table td {
-    font-size: 12px !important;
-    padding: 0.4rem 0.5rem !important;
+  .admin-search-btn {
+    flex: 0 1 25%;
+    width: 25%;
+    min-width: 44px;
+    max-width: 80px;
   }
-  .search-input, .search-category, .search-box input, .search-box, .search-wrapper, .search-container {
-    font-size: 12px !important;
-    padding: 0.3rem 0.5rem !important;
-    height: 28px !important;
+}
+@media (max-width: 600px) {
+  .admin-search-input {
+    flex: 0 1 70%;
+    width: 70%;
   }
-  .pagination-button, .action-button, .edit-button, .delete-button, .btn, .page-link {
-    font-size: 12px !important;
-    padding: 0.3rem 0.7rem !important;
+  .admin-search-btn {
+    flex: 0 1 30%;
+    width: 30%;
   }
-  .admin-tour-card, .dashboard-card, .main-area, .form-section, .form-group {
-    padding: 10px !important;
-  }
-  .admin-tour-header {
-    margin-bottom: 0.7rem !important;
-  }
-} 
+}
 
 /* Căn chỉnh 3 nút Xem - Sửa - Xóa cho đều nhau */
 .action-buttons {
@@ -656,65 +655,45 @@ image.png.admin-tour-container {
   background-color: #d97706 !important;
 }
 
-/* Responsive improvements for AdminTour */
-@media (max-width: 900px) {
-  .admin-tour-container {
-    padding: 8px 2px !important;
-  }
-  .admin-tour-header {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 10px !important;
-    text-align: center !important;
-  }
-  .admin-tour-title {
-    font-size: 1.2rem !important;
-    text-align: center !important;
-  }
-  .admin-tour-subtitle {
-    font-size: 1rem !important;
-    text-align: center !important;
-  }
-  .add-tour-button {
-    width: 100% !important;
-    justify-content: center !important;
-    font-size: 1.05rem !important;
-    margin-top: 8px !important;
-  }
-  .search-filter-section {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 8px !important;
-    align-items: stretch !important;
-  }
-  .admin-search-input {
-    width: 100% !important;
-    margin-bottom: 8px !important;
-    font-size: 1rem !important;
-  }
-  .admin-search-btn {
-    width: 100% !important;
-    font-size: 1.1rem !important;
-    padding: 10px 0 !important;
-  }
-  .search-results-info {
-    text-align: center !important;
-    font-size: 0.98rem !important;
-    margin-bottom: 8px !important;
-  }
-  .admin-tour-card {
-    padding: 8px 2px !important;
-  }
-  .table-responsive {
-    overflow-x: auto !important;
-    width: 100vw !important;
-    margin-left: -8px !important;
-    margin-right: -8px !important;
-  }
-  table {
-    min-width: 600px !important;
-    font-size: 0.98rem !important;
-  }
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .admin-tour-title, .admin-tour-subtitle, .search-results-info, .pagination-info, .tour-info-primary, .tour-info-secondary, .tour-code, .tour-status, .empty-table, .sidebar-header, .sidebar-link, .sidebar-nav li, .admin-title, .admin-brand, .admin-user { font-size: 1.08rem; }
+  .tour-table th, .tour-table td { font-size: 1rem; padding: 0.75rem 1rem; }
+  .search-input, .search-category, .search-box input, .search-box, .search-wrapper, .search-container { font-size: 1rem; padding: 0.5rem 1rem; }
+  .pagination-button, .action-button, .edit-button, .delete-button, .btn, .page-link { font-size: 1rem; padding: 0.5rem 1.2rem; }
+  .admin-tour-card, .dashboard-card, .main-area, .form-section, .form-group { padding: 1.5rem; }
+  .admin-tour-header { margin-bottom: 2rem; }
+}
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .admin-tour-title { font-size: 1rem; }
+  .tour-table th, .tour-table td { font-size: 0.95rem; padding: 0.5rem 0.8rem; }
+  .admin-tour-card { padding: 1rem; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .admin-tour-header { flex-direction: column; align-items: flex-start; }
+  .admin-tour-title { font-size: 0.95rem; }
+  .tour-table th, .tour-table td { font-size: 0.9rem; padding: 0.4rem 0.6rem; }
+  .admin-tour-card { padding: 0.8rem; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .admin-tour-header { flex-direction: column; align-items: flex-start; }
+  .admin-tour-title { font-size: 0.9rem; }
+  .tour-table th, .tour-table td { font-size: 0.85rem; padding: 0.3rem 0.4rem; }
+  .admin-tour-card { padding: 0.5rem; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .admin-tour-header { flex-direction: column; align-items: flex-start; }
+  .admin-tour-title { font-size: 0.85rem; }
+  .tour-table th, .tour-table td { font-size: 0.8rem; padding: 0.2rem 0.2rem; }
+  .admin-tour-card { padding: 0.2rem; }
 }
 
 /* General improvements */
@@ -869,4 +848,232 @@ tbody td {
 .tour-detail-modal .modal-body .tour-images {
   text-align: center;
   margin: 0 auto;
+}
+
+@media (max-width: 767px) {
+  .modal-content {
+    width: 98vw !important;
+    min-width: unset !important;
+    max-width: 98vw !important;
+    padding: 8px 2px !important;
+    border-radius: 10px !important;
+  }
+  .modal-body {
+    padding: 8px 2px !important;
+  }
+  .modal-body img {
+    width: 90px !important;
+    height: 60px !important;
+    object-fit: cover;
+    border-radius: 6px;
+    margin: 0 2px 8px 2px;
+  }
+  .modal-body h4, .modal-body p, .modal-body strong, .modal-body ul, .modal-body li {
+    font-size: 0.98rem !important;
+    text-align: center !important;
+    word-break: break-word;
+  }
+  .modal-body ul {
+    padding-left: 16px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .tour-table-container {
+    width: 100vw !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    margin: 0;
+    padding: 0;
+  }
+  .tour-table {
+    min-width: 600px !important;
+    font-size: 0.92rem !important;
+  }
+  .tour-table th, .tour-table td {
+    padding: 0.3rem 0.4rem !important;
+    font-size: 0.92rem !important;
+    white-space: nowrap !important;
+  }
+  .action-button, .edit-button, .delete-button, .view-btn {
+    font-size: 0.92rem !important;
+    padding: 0.3rem 0.7rem !important;
+    min-width: 54px !important;
+    border-radius: 8px !important;
+  }
+  .tour-thumbnail {
+    width: 60px !important;
+    height: 40px !important;
+    object-fit: cover;
+    border-radius: 4px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .search-filter-section {
+    flex-direction: row !important;
+    gap: 0 !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    justify-content: stretch !important;
+    background: none !important;
+  }
+  .admin-search-bar {
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 1rem !important;
+    border-radius: 24px 0 0 24px !important;
+    padding: 0 1rem !important;
+    margin-bottom: 0 !important;
+    box-sizing: border-box !important;
+    border: 1.5px solid #0074bc !important;
+    border-right: none !important;
+    height: 44px !important;
+    outline: none !important;
+    background: #fff !important;
+    display: block !important;
+    line-height: 44px !important;
+  }
+  .admin-search-btn {
+    width: 48px !important;
+    height: 44px !important;
+    min-width: 48px !important;
+    font-size: 1.2rem !important;
+    border-radius: 0 24px 24px 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #0074bc !important;
+    color: #fff !important;
+    border: 1.5px solid #0074bc !important;
+    border-left: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .admin-search-btn svg {
+    color: #fff !important;
+    font-size: 1.3em !important;
+    display: block !important;
+    margin: 0 auto !important;
+    pointer-events: none;
+  }
+}
+
+/* OVERRIDE hoàn toàn các style cũ liên quan admin-search-bar */
+.admin-search-bar, .admin-search-bar .input-group, .admin-search-bar .form-control, .admin-search-bar .btn {
+  all: unset !important;
+  display: none !important;
+}
+
+/* Đảm bảo search-filter-section flush, không gap, input 80%, button 20% */
+.search-filter-section {
+  display: flex;
+  width: 100%;
+  margin-bottom: 1rem;
+  align-items: center;
+  gap: 0 !important;
+}
+.admin-search-input {
+  flex: 0 1 80%;
+  width: 80%;
+  min-width: 0;
+  max-width: unset;
+  border-radius: 32px 0 0 32px !important;
+  border: 1.5px solid #e3eaf3 !important;
+  padding: 0 1.2rem !important;
+  font-size: 1.1rem !important;
+  background: #fff !important;
+  height: 44px !important;
+  outline: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 0 !important;
+}
+.admin-search-btn {
+  flex: 0 1 20%;
+  width: 20%;
+  min-width: 44px;
+  max-width: 80px;
+  height: 44px !important;
+  border-radius: 0 32px 32px 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0074bc !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  font-size: 1.2rem !important;
+}
+.admin-search-btn svg {
+  color: #fff !important;
+  font-size: 1.2em;
+}
+@media (max-width: 900px) {
+  .admin-search-input {
+    flex: 0 1 75%;
+    width: 75%;
+    min-width: 0;
+    max-width: unset;
+  }
+  .admin-search-btn {
+    flex: 0 1 25%;
+    width: 25%;
+    min-width: 44px;
+    max-width: 80px;
+  }
+}
+@media (max-width: 600px) {
+  .admin-search-input {
+    flex: 0 1 70%;
+    width: 70%;
+  }
+  .admin-search-btn {
+    flex: 0 1 30%;
+    width: 30%;
+  }
+}
+
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 1.5rem auto;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+  padding: 0 0.25rem;
+}
+.search-bar-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.1rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+}
+.search-bar-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-bar-btn:hover {
+  background: #1d4ed8;
 }

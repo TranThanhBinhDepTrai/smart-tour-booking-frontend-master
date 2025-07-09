@@ -293,28 +293,46 @@
   outline-offset: 2px;
 }
 
-@media (max-width: 900px) {
-  .recommended-tours-masonry {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "big1 big2"
-      "big3 small1"
-      "small2 small3";
-    grid-template-rows: repeat(3, 180px);
-  }
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .recommended-tours-section { padding: 3rem 0; }
+  .recommended-tours-section .section-title { font-size: 1.5rem; margin-bottom: 2rem; }
+  .recommended-tours-masonry { grid-template-columns: 1.5fr 1.5fr 1fr; grid-template-rows: repeat(3, 180px); gap: 24px; }
+  .tour-card-masonry.big { width: 480px; height: 520px; }
+  .tour-card-masonry.small { width: 230px; height: 230px; }
 }
-@media (max-width: 600px) {
-  .recommended-tours-masonry {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "big1"
-      "big2"
-      "big3"
-      "small1"
-      "small2"
-      "small3";
-    grid-template-rows: repeat(6, 160px);
-  }
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .recommended-tours-section { padding: 2.5rem 0; }
+  .recommended-tours-section .section-title { font-size: 1.4rem; margin-bottom: 1.7rem; }
+  .recommended-tours-masonry { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 180px); gap: 20px; }
+  .tour-card-masonry.big { width: 400px; height: 440px; }
+  .tour-card-masonry.small { width: 180px; height: 180px; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .recommended-tours-section { padding: 2rem 0; }
+  .recommended-tours-section .section-title { font-size: 1.3rem; margin-bottom: 1.2rem; }
+  .recommended-tours-masonry { grid-template-columns: 1fr; grid-template-rows: repeat(6, 160px); gap: 16px; }
+  .tour-card-masonry.big, .tour-card-masonry.small { width: 100%; height: 180px; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .recommended-tours-section { padding: 1.2rem 0; }
+  .recommended-tours-section .section-title { font-size: 1.1rem; margin-bottom: 1rem; }
+  .recommended-tours-masonry { grid-template-columns: 1fr; grid-template-rows: repeat(6, 140px); gap: 10px; }
+  .tour-card-masonry.big, .tour-card-masonry.small { width: 100%; height: 140px; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .recommended-tours-section { padding: 0.7rem 0; }
+  .recommended-tours-section .section-title { font-size: 1rem; margin-bottom: 0.7rem; }
+  .recommended-tours-masonry { grid-template-columns: 1fr; grid-template-rows: repeat(6, 120px); gap: 6px; }
+  .tour-card-masonry.big, .tour-card-masonry.small { width: 100%; height: 120px; }
 }
 
 .tour-card-masonry {

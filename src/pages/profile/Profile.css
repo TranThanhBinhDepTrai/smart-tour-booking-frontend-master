@@ -55,3 +55,36 @@
     font-size: 1rem;
     color: #2c3e50;
 } 
+
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .profile-container { max-width: 800px; padding: 2rem; }
+  .info-group { grid-template-columns: 150px 1fr; }
+}
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .profile-container { max-width: 700px; padding: 1.5rem; }
+  .info-group { grid-template-columns: 120px 1fr; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .profile-container { max-width: 95vw; padding: 1rem; }
+  .info-group { grid-template-columns: 100px 1fr; }
+  .profile-container h1 { font-size: 1.5rem; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .profile-container { max-width: 99vw; padding: 0.5rem; }
+  .info-group { grid-template-columns: 1fr; gap: 0.5rem; }
+  .profile-container h1 { font-size: 1.2rem; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .profile-container { max-width: 100vw; padding: 0.2rem; border-radius: 0; }
+  .info-group { grid-template-columns: 1fr; gap: 0.3rem; }
+  .profile-container h1 { font-size: 1rem; }
+} 

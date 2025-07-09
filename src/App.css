@@ -182,3 +182,28 @@ a {
     font-size: 14px;
   }
 } 
+
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  /* Thêm style cho desktop lớn ở đây */
+}
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  /* Thêm style cho laptop ở đây */
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* Thêm style cho tablet ở đây */
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  /* Thêm style cho điện thoại lớn ở đây */
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  /* Thêm style cho điện thoại nhỏ ở đây */
+} 

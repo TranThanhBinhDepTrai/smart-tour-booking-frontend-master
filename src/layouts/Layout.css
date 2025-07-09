@@ -186,42 +186,37 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .admin-container {
-    flex-direction: column;
-  }
-
-  .admin-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #dee2e6;
-  }
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .footer-content { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .main-content, .admin-content { padding: 40px; }
 }
 
-/* Responsive cho laptop 13-14 inch (1366-1440px) */
-@media (max-width: 1440px) and (min-width: 1200px) {
-  .navbar, .footer {
-    padding: 1.2rem 2rem;
-  }
-  .nav-link {
-    font-size: 1.1rem;
-  }
-  .main-content, .admin-content {
-    padding: 28px;
-  }
-  .footer-content {
-    gap: 32px;
-  }
-  .footer-section h3 {
-    font-size: 1.1rem;
-  }
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .footer-content { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+  .main-content, .admin-content { padding: 32px; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .footer-content { grid-template-columns: 1fr; gap: 30px; }
+  .main-content, .admin-content { padding: 20px; }
+  .admin-container { flex-direction: column; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .footer-content { grid-template-columns: 1fr; gap: 20px; }
+  .main-content, .admin-content { padding: 12px; }
+  .admin-container { flex-direction: column; }
+  .nav-links { display: none; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .footer-content { grid-template-columns: 1fr; gap: 10px; }
+  .main-content, .admin-content { padding: 6px; }
+  .admin-container { flex-direction: column; }
+  .nav-links { display: none; }
 } 

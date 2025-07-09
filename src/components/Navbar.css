@@ -89,61 +89,43 @@
     border-top: 1px solid #eee;
 }
 
-@media (max-width: 768px) {
-    .navbar-collapse {
-        background: #333333;
-        padding: 1rem;
-        border-radius: 8px;
-        margin-top: 0.5rem;
-    }
-
-    .nav-link {
-        padding: 0.8rem 1rem !important;
-    }
-
-    .dropdown-menu {
-        background: transparent;
-        box-shadow: none;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .dropdown-item {
-        color: rgba(255, 255, 255, 0.9) !important;
-    }
-
-    .dropdown-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: white !important;
-    }
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .navbar { padding: 0.1rem 0.1rem !important; }
+  .navbar-nav, .nav { gap: 0 !important; }
+  .nav-link { font-size: 10px !important; padding: 0.18rem 0.25rem !important; margin: 0 !important; letter-spacing: 0 !important; white-space: nowrap !important; }
+  .brand-name { font-size: 13px !important; }
+  .company-text { font-size: 8px !important; }
+  #user-nav-dropdown { padding: 0.18rem 0.25rem !important; font-size: 10px !important; }
+  .navbar-brand img { height: 20px !important; width: auto !important; }
 }
 
-/* Responsive cho laptop 13-14 inch (1366-1440px) */
-@media (max-width: 1440px) and (min-width: 1200px) {
-  .navbar {
-    padding: 0.1rem 0.1rem !important;
-  }
-  .navbar-nav, .nav {
-    gap: 0 !important;
-  }
-  .nav-link {
-    font-size: 10px !important;
-    padding: 0.18rem 0.25rem !important;
-    margin: 0 !important;
-    letter-spacing: 0 !important;
-    white-space: nowrap !important;
-  }
-  .brand-name {
-    font-size: 13px !important;
-  }
-  .company-text {
-    font-size: 8px !important;
-  }
-  #user-nav-dropdown {
-    padding: 0.18rem 0.25rem !important;
-    font-size: 10px !important;
-  }
-  .navbar-brand img {
-    height: 20px !important;
-    width: auto !important;
-  }
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .navbar { padding: 0.3rem 0.3rem !important; }
+  .nav-link { font-size: 12px !important; padding: 0.3rem 0.5rem !important; }
+  .brand-name { font-size: 15px !important; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .navbar { padding: 0.5rem 0.5rem !important; }
+  .nav-link { font-size: 13px !important; padding: 0.5rem 0.8rem !important; }
+  .brand-name { font-size: 16px !important; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .navbar-collapse { background: #333333; padding: 1rem; border-radius: 8px; margin-top: 0.5rem; }
+  .nav-link { padding: 0.8rem 1rem !important; }
+  .dropdown-menu { background: transparent; box-shadow: none; border: 1px solid rgba(255, 255, 255, 0.1); }
+  .dropdown-item { color: rgba(255, 255, 255, 0.9) !important; }
+  .dropdown-item:hover { background-color: rgba(255, 255, 255, 0.1); color: white !important; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .navbar { padding: 0.2rem 0.2rem !important; }
+  .nav-link { font-size: 11px !important; padding: 0.2rem 0.3rem !important; }
+  .brand-name { font-size: 12px !important; }
 } 

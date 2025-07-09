@@ -99,14 +99,55 @@
 
 /* Đảm bảo không ghi đè .admin-search-bar */
 
-@media (max-width: 1440px) and (min-width: 1200px) {
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header {
+    font-size: 13px !important;
+    padding: 0.4rem 0.7rem !important;
+  }
+  .btn, .page-link { padding: 0.4rem 0.9rem !important; }
+}
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
   table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header {
     font-size: 12px !important;
     padding: 0.3rem 0.5rem !important;
   }
-  .btn, .page-link {
-    padding: 0.3rem 0.7rem !important;
-  }
+  .btn, .page-link { padding: 0.3rem 0.7rem !important; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .admin-search-bar, .booking-search-input, .booking-search-btn { min-width: 200px !important; width: 200px !important; font-size: 0.98rem !important; }
+  .booking-management-container, .booking-management-card { padding: 8px 2px !important; }
+  .booking-management-header { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; text-align: center !important; }
+  .booking-management-title { font-size: 1.1rem !important; text-align: center !important; }
+  .add-booking-button { width: 100% !important; justify-content: center !important; font-size: 1rem !important; margin-top: 8px !important; }
+  .search-filter-section { flex-direction: column !important; width: 100% !important; gap: 8px !important; align-items: center !important; justify-content: center !important; }
+  .table-responsive { overflow-x: auto !important; width: 100vw !important; margin-left: -8px !important; margin-right: -8px !important; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .admin-search-bar, .booking-search-input, .booking-search-btn { min-width: 150px !important; width: 150px !important; font-size: 0.95rem !important; }
+  .booking-management-container, .booking-management-card { padding: 4px 1px !important; }
+  .booking-management-header { flex-direction: column !important; align-items: stretch !important; gap: 8px !important; text-align: center !important; }
+  .booking-management-title { font-size: 1rem !important; text-align: center !important; }
+  .add-booking-button { width: 100% !important; justify-content: center !important; font-size: 0.95rem !important; margin-top: 6px !important; }
+  .search-filter-section { flex-direction: column !important; width: 100% !important; gap: 6px !important; align-items: center !important; justify-content: center !important; }
+  .table-responsive { overflow-x: auto !important; width: 100vw !important; margin-left: -8px !important; margin-right: -8px !important; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .admin-search-bar, .booking-search-input, .booking-search-btn { min-width: 100px !important; width: 100px !important; font-size: 0.9rem !important; }
+  .booking-management-container, .booking-management-card { padding: 2px 0 !important; }
+  .booking-management-header { flex-direction: column !important; align-items: stretch !important; gap: 6px !important; text-align: center !important; }
+  .booking-management-title { font-size: 0.95rem !important; text-align: center !important; }
+  .add-booking-button { width: 100% !important; justify-content: center !important; font-size: 0.9rem !important; margin-top: 4px !important; }
+  .search-filter-section { flex-direction: column !important; width: 100% !important; gap: 4px !important; align-items: center !important; justify-content: center !important; }
+  .table-responsive { overflow-x: auto !important; width: 100vw !important; margin-left: -8px !important; margin-right: -8px !important; }
 }
 
 /* ===== ADMIN BUTTONS & SEARCH BAR STYLES (Đồng bộ toàn bộ admin) ===== */
@@ -182,84 +223,6 @@
 .search-btn:hover {
   background: #1d4ed8 !important;
 } 
-
-/* Responsive improvements for BookingManagement */
-@media (max-width: 900px) {
-  .admin-search-bar {
-    min-width: 250px !important;
-    width: 250px !important;
-}
-  .booking-management-container {
-    padding: 8px 2px !important;
-  }
-  .booking-management-header {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 10px !important;
-    text-align: center !important;
-  }
-  .booking-management-title {
-    font-size: 1.2rem !important;
-    text-align: center !important;
-  }
-  .add-booking-button {
-    width: 100% !important;
-    justify-content: center !important;
-    font-size: 1.05rem !important;
-    margin-top: 8px !important;
-  }
-  .search-filter-section {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 8px !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  .booking-search-input {
-    width: 250px !important;
-    max-width: 250px !important;
-    margin-bottom: 8px !important;
-    font-size: 1rem !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    display: block !important;
-  }
-  .booking-search-btn {
-    width: 250px !important;
-    max-width: 250px !important;
-    font-size: 1.1rem !important;
-    padding: 10px 0 !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    display: block !important;
-  }
-  .search-results-info {
-    text-align: center !important;
-    font-size: 0.98rem !important;
-    margin-bottom: 8px !important;
-  }
-  .booking-management-card {
-    padding: 8px 2px !important;
-  }
-  .table-responsive {
-    overflow-x: auto !important;
-    width: 100vw !important;
-    margin-left: -8px !important;
-    margin-right: -8px !important;
-  }
-  table {
-    min-width: 600px !important;
-    font-size: 0.98rem !important;
-  }
-}
-
-@media (max-width: 900px) {
-  .admin-search-bar {
-    min-width: 250px !important;
-    width: 250px !important;
-  }
-  
-}
 
 /* General improvements */
 .booking-management-header {
@@ -397,4 +360,58 @@ tbody td {
   width: 100%;
   margin: 0 auto;
 }
+
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 1.5rem auto;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+  padding: 0 0.25rem;
+}
+.search-bar-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.1rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+}
+.search-bar-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-bar-btn:hover {
+  background: #1d4ed8;
+}
+@media (max-width: 600px) {
+  .search-bar-wrapper {
+    max-width: 98vw;
+    padding: 0 0.1rem;
+  }
+  .search-bar-input {
+    font-size: 1rem;
+    padding: 0.7rem 0.7rem;
+  }
+  .search-bar-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+} 
 

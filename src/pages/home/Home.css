@@ -220,143 +220,6 @@
   border-radius: 4px;
 }
 
-@media (max-width: 992px) {
-  .hero-content h1 {
-    font-size: 2.5rem;
-  }
-
-  .hero-content p {
-    font-size: 1.2rem;
-  }
-
-  .search-input,
-  .search-button {
-    padding: 1rem 1.5rem;
-  }
-
-  .filter-button {
-    padding: 0.7rem 1.2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-section {
-    min-height: 350px;
-    padding: 2rem 1rem;
-  }
-
-  .hero-content h1 {
-    font-size: 2rem;
-  }
-
-  .hero-content p {
-    font-size: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .search-container {
-    padding: 0 1rem;
-  }
-
-  .search-input {
-    padding: 0.8rem 1rem;
-  }
-
-  .search-button {
-    padding: 0.8rem 1.2rem;
-  }
-
-  .search-filters {
-    gap: 1rem;
-    padding: 0 1rem;
-  }
-
-  .filter-button {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .section-title {
-    font-size: 1.8rem;
-    margin-bottom: 2rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .hero-content h1 {
-    font-size: 1.8rem;
-  }
-
-  .search-container {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .search-input,
-  .search-button {
-    border-radius: 8px;
-  }
-
-  .filter-button {
-    width: calc(50% - 0.5rem);
-  }
-}
-
-/* Responsive cho laptop 13-14 inch (1366-1440px) */
-@media (max-width: 1440px) and (min-width: 1200px) {
-  .hero-content h1 {
-    font-size: 2.2rem;
-  }
-  .hero-content p {
-    font-size: 1.15rem;
-  }
-  .search-input, .search-button {
-    font-size: 1.05rem;
-    padding: 1.1rem 1.5rem;
-  }
-  .filter-button {
-    font-size: 1rem;
-    padding: 0.9rem 1.5rem;
-  }
-  .section-title {
-    font-size: 2.1rem;
-    margin-bottom: 2.5rem;
-  }
-  .tour-categories-section {
-    padding: 3.5rem 0;
-  }
-  .search-section {
-    height: 480px;
-  }
-  .navbar {
-    padding: 0.1rem 0.1rem !important;
-  }
-  .navbar-nav, .nav {
-    gap: 0 !important;
-  }
-  .nav-link {
-    font-size: 10px !important;
-    padding: 0.18rem 0.25rem !important;
-    margin: 0 !important;
-    letter-spacing: 0 !important;
-    white-space: nowrap !important;
-  }
-  .brand-name {
-    font-size: 13px !important;
-  }
-  .company-text {
-    font-size: 8px !important;
-  }
-  #user-nav-dropdown {
-    padding: 0.18rem 0.25rem !important;
-    font-size: 10px !important;
-  }
-  .navbar-brand img {
-    height: 20px !important;
-    width: auto !important;
-  }
-}
-
 /* HERO SECTION HOME */
 .hero-section-home {
   position: relative;
@@ -711,43 +574,65 @@
 .admin-search-btn i {
   margin-left: 8px;
 } 
-/* Điện thoại nhỏ: 320px – 375px */
-@media (max-width: 375px) {
-  .home-page {
-    padding: 0 4px;
-  }
-  .section-title-home {
-    font-size: 1.1rem;
-  }
-  /* Thêm các class khác cần thu nhỏ, ẩn bớt, căn giữa... */
+
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .hero-content h1, .hero-title { font-size: 2.2rem; }
+  .hero-content p, .hero-sub { font-size: 1.15rem; }
+  .search-input, .search-button { font-size: 1.05rem; padding: 1.1rem 1.5rem; }
+  .filter-button { font-size: 1rem; padding: 0.9rem 1.5rem; }
+  .section-title, .section-title-home { font-size: 2.1rem; margin-bottom: 2.5rem; }
+  .tour-categories-section { padding: 3.5rem 0; }
+  .search-section { height: 480px; }
+  .navbar { padding: 0.1rem 0.1rem !important; }
+  .navbar-nav, .nav { gap: 0 !important; }
+  .nav-link { font-size: 10px !important; padding: 0.18rem 0.25rem !important; margin: 0 !important; letter-spacing: 0 !important; white-space: nowrap !important; }
+  .brand-name { font-size: 13px !important; }
+  .company-text { font-size: 8px !important; }
+  #user-nav-dropdown { padding: 0.18rem 0.25rem !important; font-size: 10px !important; }
+  .navbar-brand img { height: 20px !important; width: auto !important; }
 }
 
-/* Điện thoại trung: 376px – 414px */
-@media (min-width: 376px) and (max-width: 414px) {
-  .home-page {
-    padding: 0 8px;
-  }
-  .section-title-home {
-    font-size: 1.2rem;
-  }
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .hero-content h1, .hero-title { font-size: 2.0rem; }
+  .hero-content p, .hero-sub { font-size: 1.1rem; }
+  .search-input, .search-button { font-size: 1rem; padding: 1rem 1.2rem; }
+  .filter-button { font-size: 0.98rem; padding: 0.8rem 1.2rem; }
+  .section-title, .section-title-home { font-size: 1.9rem; margin-bottom: 2.2rem; }
 }
 
-/* Điện thoại lớn: 415px – 480px */
-@media (min-width: 415px) and (max-width: 480px) {
-  .home-page {
-    padding: 0 12px;
-  }
-  .section-title-home {
-    font-size: 1.3rem;
-  }
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .hero-section, .hero-section-home { min-height: 350px; padding: 2rem 1rem; }
+  .hero-content h1, .hero-title { font-size: 1.8rem; }
+  .hero-content p, .hero-sub { font-size: 1rem; margin-bottom: 2rem; }
+  .search-container { padding: 0 1rem; }
+  .search-input { padding: 0.8rem 1rem; }
+  .search-button { padding: 0.8rem 1.2rem; }
+  .search-filters { gap: 1rem; padding: 0 1rem; }
+  .filter-button { padding: 0.6rem 1rem; font-size: 0.9rem; }
+  .section-title, .section-title-home { font-size: 1.5rem; margin-bottom: 2rem; }
+  .home-page { padding: 0 20px; }
 }
 
-/* Máy tính bảng dọc (iPad): 481px – 768px */
-@media (min-width: 481px) and (max-width: 768px) {
-  .home-page {
-    padding: 0 20px;
-  }
-  .section-title-home {
-    font-size: 1.5rem;
-  }
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .hero-content h1, .hero-title { font-size: 1.5rem; }
+  .hero-content p, .hero-sub { font-size: 0.95rem; }
+  .search-container { flex-direction: column; gap: 0.5rem; }
+  .search-input, .search-button { border-radius: 8px; }
+  .filter-button { width: calc(50% - 0.5rem); }
+  .section-title, .section-title-home { font-size: 1.3rem; }
+  .home-page { padding: 0 12px; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .hero-content h1, .hero-title { font-size: 1.1rem; }
+  .search-container { flex-direction: column; gap: 0.5rem; }
+  .search-input, .search-button { border-radius: 8px; }
+  .filter-button { width: 100%; }
+  .section-title, .section-title-home { font-size: 1.1rem; }
+  .home-page { padding: 0 4px; }
 }

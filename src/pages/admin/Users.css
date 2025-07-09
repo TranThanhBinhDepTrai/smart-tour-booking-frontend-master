@@ -1,12 +1,33 @@
-@media (max-width: 1440px) and (min-width: 1200px) {
-  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header {
-    font-size: 12px !important;
-    padding: 0.3rem 0.5rem !important;
-  }
-  .btn, .page-link {
-    padding: 0.3rem 0.7rem !important;
-  }
-} 
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header { font-size: 1rem !important; padding: 0.5rem 1rem !important; }
+  .btn, .page-link { padding: 0.5rem 1.2rem !important; }
+}
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header { font-size: 0.95rem !important; padding: 0.4rem 0.8rem !important; }
+  .btn, .page-link { padding: 0.4rem 1rem !important; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header { font-size: 0.9rem !important; padding: 0.3rem 0.6rem !important; }
+  .btn, .page-link { padding: 0.3rem 0.8rem !important; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header { font-size: 0.85rem !important; padding: 0.2rem 0.4rem !important; }
+  .btn, .page-link { padding: 0.2rem 0.6rem !important; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  table, th, td, .table th, .table td, .admin-title, .admin-header, .btn, .page-link, .form-label, .form-control, .form-select, .form-group, .sidebar, .sidebar-link, .sidebar-header { font-size: 0.8rem !important; padding: 0.1rem 0.2rem !important; }
+  .btn, .page-link { padding: 0.1rem 0.3rem !important; }
+}
+
 search-filter-section {
   display: flex;
   align-items: center;
@@ -137,7 +158,9 @@ search-filter-section {
   padding: 16px 24px !important;
   font-size: 1.1rem !important;
   outline: none !important;
-  min-width: 320px;
+  min-width: 0;
+  max-width: 600px;
+  width: 100%;
   height: 44px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
@@ -163,6 +186,71 @@ search-filter-section {
 .admin-search-btn svg {
   color: #fff !important;
   font-size: 1.2em;
+}
+@media (max-width: 900px) {
+  .admin-search-input {
+    width: 90vw !important;
+    min-width: unset !important;
+    max-width: 98vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+} 
+
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 1.5rem auto;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+  padding: 0 0.25rem;
+}
+.search-bar-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.1rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+}
+.search-bar-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-bar-btn:hover {
+  background: #1d4ed8;
+}
+@media (max-width: 600px) {
+  .search-bar-wrapper {
+    max-width: 98vw;
+    padding: 0 0.1rem;
+  }
+  .search-bar-input {
+    font-size: 1rem;
+    padding: 0.7rem 0.7rem;
+  }
+  .search-bar-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
 } 
 
 

@@ -14,51 +14,44 @@
   margin: 0 auto;
 }
 
-@media (max-width: 1440px) {
-  .table th, .table td {
-    font-size: 14px;
-    padding: 0.4rem 0.3rem;
-  }
-  .card-body, .modal-body {
-    padding: 1rem;
-  }
-  .form-control, .form-select {
-    font-size: 15px;
-    min-height: 38px;
-  }
-  .btn, .page-link {
-    font-size: 15px;
-    padding: 0.35rem 0.75rem;
-  }
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .table th, .table td { font-size: 15px; padding: 0.5rem 0.5rem; }
+  .modal-content { width: 900px; }
+  .form-control, .form-select { font-size: 15px; min-height: 38px; }
+  .btn, .page-link { font-size: 15px; padding: 0.35rem 0.75rem; }
 }
 
-@media (max-width: 1200px) {
-  .table th, .table td {
-    font-size: 13px;
-    padding: 0.3rem 0.2rem;
-  }
-  .form-control, .form-select {
-    font-size: 14px;
-    min-height: 36px;
-  }
-  .btn, .page-link {
-    font-size: 14px;
-    padding: 0.3rem 0.6rem;
-  }
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .table th, .table td { font-size: 14px; padding: 0.4rem 0.3rem; }
+  .card-body, .modal-body { padding: 1rem; }
+  .form-control, .form-select { font-size: 15px; min-height: 38px; }
+  .btn, .page-link { font-size: 15px; padding: 0.35rem 0.75rem; }
 }
 
-/* Modal tối ưu cho laptop nhỏ */
-.modal-lg {
-  max-width: 90vw;
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .table th, .table td { font-size: 13px; padding: 0.3rem 0.2rem; }
+  .form-control, .form-select { font-size: 14px; min-height: 36px; }
+  .btn, .page-link { font-size: 14px; padding: 0.3rem 0.6rem; }
+  .modal-lg { max-width: 98vw; }
 }
 
-@media (max-width: 992px) {
-  .modal-lg {
-    max-width: 98vw;
-  }
-  .table th, .table td {
-    font-size: 12px;
-  }
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .table th, .table td { font-size: 12px; padding: 0.2rem 0.1rem; }
+  .form-control, .form-select { font-size: 13px; min-height: 34px; }
+  .btn, .page-link { font-size: 13px; padding: 0.2rem 0.5rem; }
+  .modal-lg { max-width: 98vw; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .table th, .table td { font-size: 11px; padding: 0.15rem 0.08rem; }
+  .form-control, .form-select { font-size: 12px; min-height: 32px; }
+  .btn, .page-link { font-size: 12px; padding: 0.15rem 0.4rem; }
+  .modal-lg { max-width: 99vw; }
 }
 
 /* Đảm bảo không cuộn ngang toàn trang */
@@ -161,12 +154,11 @@ body, html, #root, .container-fluid {
   font-size: 1.1rem !important;
   outline: none !important;
   min-width: 0;
-  max-width: 600px;   /* hoặc 700px, 800px tùy ý */
+  max-width: 600px;
   width: 100%;
   height: 44px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-
 .admin-search-btn {
   background: #0074bc !important;
   color: #fff !important;
@@ -188,9 +180,74 @@ body, html, #root, .container-fluid {
 .admin-search-btn svg {
   color: #fff !important;
   font-size: 1.2em;
-} 
+}
+@media (max-width: 900px) {
+  .admin-search-input {
+    width: 90vw !important;
+    min-width: unset !important;
+    max-width: 98vw !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+}
 
 .admin-search-bar {
   min-width: 806px !important;
   width: 806px !important;   /* Nếu muốn cố định luôn */
+}
+
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 1.5rem auto;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.10);
+  padding: 0 0.25rem;
+}
+.search-bar-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1.1rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+}
+.search-bar-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-bar-btn:hover {
+  background: #1d4ed8;
+}
+@media (max-width: 600px) {
+  .search-bar-wrapper {
+    max-width: 98vw;
+    padding: 0 0.1rem;
+  }
+  .search-bar-input {
+    font-size: 1rem;
+    padding: 0.7rem 0.7rem;
+  }
+  .search-bar-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
 } 

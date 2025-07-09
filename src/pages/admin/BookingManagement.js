@@ -337,26 +337,15 @@ const BookingManagement = () => {
                 <h2 className="admin-title">Quản lý đơn đặt tour</h2>
                 <div className="admin-subtitle">Danh sách các đơn đặt tour của khách hàng</div>
             </div>
-            <div className="d-flex align-items-center mb-4">
+            <div className="search-bar-wrapper">
                 <input
                     type="text"
-                    className="admin-search-bar"
-                    style={{
-                      borderRadius: '2rem 0 0 2rem',
-                      boxShadow: '0 1px 4px rgba(59,130,246,0.08)',
-                      fontSize: '1rem',
-                      height: 44,
-                      paddingLeft: 20
-                    }}
+                    className="search-bar-input"
                     placeholder="Tìm theo tên tour, email, số điện thoại, tên khách"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                 />
-                <button
-                    className="search-btn d-flex align-items-center justify-content-center"
-                    style={{borderRadius: '0 2rem 2rem 0', width: 54, height: 44, background: '#2563eb', color: 'white', fontSize: 20, boxShadow: '0 2px 8px rgba(59,130,246,0.10)', marginLeft: 0}}
-                    onClick={() => setSearchTerm("")}
-                >
+                <button className="search-bar-btn" type="button" disabled>
                     <FaSearch />
                 </button>
             </div>

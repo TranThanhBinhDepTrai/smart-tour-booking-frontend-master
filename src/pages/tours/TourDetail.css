@@ -519,29 +519,6 @@
     border-radius: 12px;
   }
 }
-@media (max-width: 600px) {
-  .tour-detail {
-    padding: 2px;
-  }
-  .tour-detail-content {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .tour-detail-main, .tour-section, .booking-card, .related-tour-card {
-    border-radius: 8px;
-  }
-  .tour-detail-actions {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .booking-button, .export-pdf-button {
-    width: 100%;
-    min-width: unset;
-    max-width: unset;
-    font-size: 0.98rem;
-    padding: 0.7rem 0;
-  }
-}
 
 /* --- SLIDER ẢNH LỚN, DOT, MŨI TÊN RÕ --- */
 .detail-carousel, .carousel, .carousel-container {
@@ -651,55 +628,60 @@
   font-weight: 600;
   margin-top: 2px;
 }
-@media (max-width: 900px) {
-  .tour-info-quick {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .tour-detail-header h1 {
-    font-size: 1.5rem;
-  }
-  .tour-price-main {
-    font-size: 1.3rem;
-    min-width: 120px;
-    padding: 8px 12px;
-  }
-}
-@media (max-width: 600px) {
-  .tour-info-quick {
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-  .tour-detail-header h1 {
-    font-size: 1.1rem;
-  }
-  .tour-price-main {
-    font-size: 1.1rem;
-    min-width: 80px;
-    padding: 6px 6px;
-  }
+
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .tour-detail-header h1 { font-size: 2.3rem; }
+  .tour-price-main { font-size: 2.2rem; min-width: 220px; padding: 10px 32px; }
+  .tour-info-quick { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .related-tours-list { grid-template-columns: repeat(3, 1fr); }
 }
 
-@media (max-width: 1100px) {
-  .related-tours-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .tour-detail-header h1 { font-size: 2rem; }
+  .tour-price-main { font-size: 1.7rem; min-width: 180px; padding: 8px 18px; }
+  .tour-info-quick { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .related-tours-list { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 700px) {
-  .related-tours-list {
-    grid-template-columns: 1fr;
-  }
-  .related-tour-card {
-    border-radius: 14px;
-    min-height: 320px;
-  }
-  .related-tour-img {
-    border-radius: 14px 14px 0 0;
-    height: 180px;
-  }
-  .related-tour-info {
-    border-radius: 0 0 14px 14px;
-    top: -14px;
-    padding: 12px 8px 8px 8px;
-  }
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .tour-detail-header h1 { font-size: 1.5rem; }
+  .tour-price-main { font-size: 1.3rem; min-width: 120px; padding: 8px 12px; }
+  .tour-info-quick { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .related-tours-list { grid-template-columns: 1fr 1fr; }
+  .booking-card { position: static; margin-bottom: 2rem; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .tour-detail-header h1 { font-size: 1.1rem; }
+  .tour-price-main { font-size: 1.1rem; min-width: 80px; padding: 6px 6px; }
+  .tour-info-quick { grid-template-columns: 1fr; gap: 8px; }
+  .related-tours-list { grid-template-columns: 1fr; }
+  .related-tour-card { border-radius: 14px; min-height: 320px; }
+  .related-tour-img { border-radius: 14px 14px 0 0; height: 180px; }
+  .related-tour-info { border-radius: 0 0 14px 14px; top: -14px; padding: 12px 8px 8px 8px; }
+  .tour-detail { padding: 2px; }
+  .tour-detail-content { grid-template-columns: 1fr; gap: 8px; }
+  .tour-detail-main, .tour-section, .booking-card, .related-tour-card { border-radius: 8px; }
+  .tour-detail-actions { flex-direction: column; gap: 10px; }
+  .booking-button, .export-pdf-button { width: 100%; min-width: unset; max-width: unset; font-size: 0.98rem; padding: 0.7rem 0; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .tour-detail-header h1 { font-size: 1.1rem; }
+  .tour-price-main { font-size: 1.1rem; min-width: 80px; padding: 6px 6px; }
+  .tour-info-quick { grid-template-columns: 1fr; gap: 8px; }
+  .related-tours-list { grid-template-columns: 1fr; }
+  .related-tour-card { border-radius: 14px; min-height: 320px; }
+  .related-tour-img { border-radius: 14px 14px 0 0; height: 180px; }
+  .related-tour-info { border-radius: 0 0 14px 14px; top: -14px; padding: 12px 8px 8px 8px; }
+  .tour-detail { padding: 2px; }
+  .tour-detail-content { grid-template-columns: 1fr; gap: 8px; }
+  .tour-detail-main, .tour-section, .booking-card, .related-tour-card { border-radius: 8px; }
+  .tour-detail-actions { flex-direction: column; gap: 10px; }
+  .booking-button, .export-pdf-button { width: 100%; min-width: unset; max-width: unset; font-size: 0.98rem; padding: 0.7rem 0; }
 } 

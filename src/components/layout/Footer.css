@@ -101,22 +101,30 @@
   margin-right: 7px;
   font-size: 1.1rem;
 }
-@media (max-width: 992px) {
-  .footer-main {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
+
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .footer-main { grid-template-columns: repeat(4, 1fr); gap: 2.5rem; padding: 0 2rem 2.2rem 2rem; }
 }
-@media (max-width: 600px) {
-  .footer-main {
-    grid-template-columns: 1fr;
-    text-align: center;
-    padding: 0 1rem 2rem 1rem;
-  }
-  .footer-social {
-    justify-content: center;
-  }
-  .footer-logo {
-    justify-content: center;
-  }
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .footer-main { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .footer-main { grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .footer-main { grid-template-columns: 1fr; text-align: center; padding: 0 1rem 2rem 1rem; }
+  .footer-social, .footer-logo { justify-content: center; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .footer-main { grid-template-columns: 1fr; text-align: center; padding: 0 0.5rem 1.5rem 0.5rem; }
+  .footer-social, .footer-logo { justify-content: center; }
 } 

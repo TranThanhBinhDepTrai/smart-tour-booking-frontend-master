@@ -321,240 +321,240 @@ const BookTour = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <div className="book-tour-container">
-                <h2>Đặt Tour</h2>
-                
-                {error && <Alert variant="danger">{error}</Alert>}
+        <div className="book-tour-container">
+            <h2>Đặt Tour</h2>
+            
+            {error && <Alert variant="danger">{error}</Alert>}
 
-                {tour && (
-                    <Row>
-                        <Col md={8}>
-                            <Card className="mb-4">
-                                <Card.Body>
-                                    <Form onSubmit={handleSubmit}>
-                                        <section className="booking-section">
-                                            <h3>Thông tin người đặt</h3>
-                                            <Row>
-                                                <Col md={6}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Label>Họ tên</Form.Label>
-                                                        <Form.Control
-                                                            type="text"
-                                                            name="fullName"
-                                                            value={formData.fullName}
-                                                            onChange={handleInputChange}
-                                                            required
-                                                        />
-                                                    </Form.Group>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Label>Email</Form.Label>
-                                                        <Form.Control
-                                                            type="email"
-                                                            name="email"
-                                                            value={formData.email}
-                                                            onChange={handleInputChange}
-                                                            required
-                                                        />
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col md={6}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Label>Số điện thoại</Form.Label>
-                                                        <Form.Control
-                                                            type="tel"
-                                                            name="phone"
-                                                            value={formData.phone}
-                                                            onChange={handleInputChange}
-                                                            required
-                                                        />
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                        </section>
-
-                                        <section className="booking-section">
-                                            <h3>Số lượng người tham gia</h3>
-                                            <Row>
-                                                <Col md={6}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Label>Số người lớn</Form.Label>
-                                                        <Form.Control
-                                                            type="number"
-                                                            name="numAdults"
-                                                            value={formData.numAdults}
-                                                            onChange={handleInputChange}
-                                                            min="1"
-                                                            required
-                                                        />
-                                                    </Form.Group>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <Form.Group className="mb-3">
-                                                        <Form.Label>Số trẻ em</Form.Label>
-                                                        <Form.Control
-                                                            type="number"
-                                                            name="numChildren"
-                                                            value={formData.numChildren}
-                                                            onChange={handleInputChange}
-                                                            min="0"
-                                                        />
-                                                    </Form.Group>
-                                                </Col>
-                                            </Row>
-                                        </section>
-
-                                        <section className="booking-section">
-                                            <div className="d-flex justify-content-between align-items-center mb-3">
-                                                <h3>Thông tin người tham gia</h3>
-                                                <Button 
-                                                    variant="outline-primary" 
-                                                    onClick={handleAddParticipant}
-                                                    className="d-flex align-items-center"
-                                                >
-                                                    <i className="fas fa-plus me-1"></i> Thêm người
-                                                </Button>
-                                            </div>
-                                            {formData.participants.map((participant, index) => (
-                                                <div key={index} className="participant-section">
-                                                    <div className="d-flex justify-content-between align-items-center mb-3">
-                                                        <h4>Người thứ {index + 1}</h4>
-                                                        {index > 0 && (
-                                                            <Button 
-                                                                variant="outline-danger" 
-                                                                size="sm"
-                                                                onClick={() => handleRemoveParticipant(index)}
-                                                            >
-                                                                <i className="fas fa-times"></i>
-                                                            </Button>
-                                                        )}
-                                                    </div>
-                                                    <Row>
-                                                        <Col md={6}>
-                                                            <Form.Group className="mb-3">
-                                                                <Form.Label>Họ tên</Form.Label>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    value={participant.fullName}
-                                                                    onChange={(e) => handleParticipantChange(index, 'fullName', e.target.value)}
-                                                                    required
-                                                                />
-                                                            </Form.Group>
-                                                        </Col>
-                                                        <Col md={6}>
-                                                            <Form.Group className="mb-3">
-                                                                <Form.Label>Số điện thoại</Form.Label>
-                                                                <Form.Control
-                                                                    type="tel"
-                                                                    value={participant.phone}
-                                                                    onChange={(e) => handleParticipantChange(index, 'phone', e.target.value)}
-                                                                    required
-                                                                />
-                                                            </Form.Group>
-                                                        </Col>
-                                                    </Row>
-                                                    <Row>
-                                                        <Col md={6}>
-                                                            <Form.Group className="mb-3">
-                                                                <Form.Label>Giới tính</Form.Label>
-                                                                <div>
-                                                                    <Form.Check
-                                                                        inline
-                                                                        type="radio"
-                                                                        label="Nam"
-                                                                        name={`gender-${index}`}
-                                                                        checked={participant.gender === 'MALE'}
-                                                                        onChange={() => handleParticipantChange(index, 'gender', 'MALE')}
-                                                                    />
-                                                                    <Form.Check
-                                                                        inline
-                                                                        type="radio"
-                                                                        label="Nữ"
-                                                                        name={`gender-${index}`}
-                                                                        checked={participant.gender === 'FEMALE'}
-                                                                        onChange={() => handleParticipantChange(index, 'gender', 'FEMALE')}
-                                                                    />
-                                                                </div>
-                                                            </Form.Group>
-                                                        </Col>
-                                                    </Row>
-                                                </div>
-                                            ))}
-                                        </section>
-
-                                        <section className="booking-section">
-                                            <h3>Phương thức thanh toán</h3>
-                                            <Form.Group className="mb-3">
-                                                <div>
-                                                    <Form.Check
-                                                        type="radio"
-                                                        label="Thanh toán tiền mặt"
-                                                        name="paymentMethod"
-                                                        checked={formData.paymentMethod === 'CASH'}
-                                                        onChange={() => setFormData({ ...formData, paymentMethod: 'CASH' })}
-                                                    />
-                                                    <Form.Check
-                                                        type="radio"
-                                                        label="Thanh toán chuyển khoản"
-                                                        name="paymentMethod"
-                                                        checked={formData.paymentMethod === 'BANK_TRANSFER'}
-                                                        onChange={() => setFormData({ ...formData, paymentMethod: 'BANK_TRANSFER' })}
-                                                    />
-                                                </div>
-                                            </Form.Group>
-                                        </section>
-
-                                        <section className="booking-section">
-                                            <h3>Mã giảm giá</h3>
-                                            <Form.Group className="mb-3">
-                                                <InputGroup>
+            {tour && (
+                <Row>
+                    <Col md={8}>
+                        <Card className="mb-4">
+                            <Card.Body>
+                                <Form onSubmit={handleSubmit}>
+                                    <section className="booking-section">
+                                        <h3>Thông tin người đặt</h3>
+                                        <Row>
+                                            <Col md={6}>
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Họ tên</Form.Label>
                                                     <Form.Control
                                                         type="text"
-                                                        name="promotionCode"
-                                                        value={promotionCode}
+                                                        name="fullName"
+                                                        value={formData.fullName}
                                                         onChange={handleInputChange}
-                                                        placeholder="Nhập mã giảm giá (nếu có)"
-                                                        isValid={promotionStatus === 'success'}
-                                                        isInvalid={promotionStatus === 'error'}
-                                                        disabled={promotionStatus === 'success'}
+                                                        required
                                                     />
-                                                    {promotionStatus === 'success' ? (
+                                                </Form.Group>
+                                            </Col>
+                                            <Col md={6}>
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Email</Form.Label>
+                                                    <Form.Control
+                                                        type="email"
+                                                        name="email"
+                                                        value={formData.email}
+                                                        onChange={handleInputChange}
+                                                        required
+                                                    />
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col md={6}>
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Số điện thoại</Form.Label>
+                                                    <Form.Control
+                                                        type="tel"
+                                                        name="phone"
+                                                        value={formData.phone}
+                                                        onChange={handleInputChange}
+                                                        required
+                                                    />
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                    </section>
+
+                                    <section className="booking-section">
+                                        <h3>Số lượng người tham gia</h3>
+                                        <Row>
+                                            <Col md={6}>
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Số người lớn</Form.Label>
+                                                    <Form.Control
+                                                        type="number"
+                                                        name="numAdults"
+                                                        value={formData.numAdults}
+                                                        onChange={handleInputChange}
+                                                        min="1"
+                                                        required
+                                                    />
+                                                </Form.Group>
+                                            </Col>
+                                            <Col md={6}>
+                                                <Form.Group className="mb-3">
+                                                    <Form.Label>Số trẻ em</Form.Label>
+                                                    <Form.Control
+                                                        type="number"
+                                                        name="numChildren"
+                                                        value={formData.numChildren}
+                                                        onChange={handleInputChange}
+                                                        min="0"
+                                                    />
+                                                </Form.Group>
+                                            </Col>
+                                        </Row>
+                                    </section>
+
+                                    <section className="booking-section">
+                                        <div className="d-flex justify-content-between align-items-center mb-3">
+                                            <h3>Thông tin người tham gia</h3>
+                                            <Button 
+                                                variant="outline-primary" 
+                                                onClick={handleAddParticipant}
+                                                className="d-flex align-items-center"
+                                            >
+                                                <i className="fas fa-plus me-1"></i> Thêm người
+                                            </Button>
+                                        </div>
+                                        {formData.participants.map((participant, index) => (
+                                            <div key={index} className="participant-section">
+                                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                                    <h4>Người thứ {index + 1}</h4>
+                                                    {index > 0 && (
                                                         <Button 
                                                             variant="outline-danger" 
-                                                            onClick={clearPromotionCode}
+                                                            size="sm"
+                                                            onClick={() => handleRemoveParticipant(index)}
                                                         >
-                                                            Xóa
-                                                        </Button>
-                                                    ) : (
-                                                        <Button 
-                                                            variant="outline-primary" 
-                                                            onClick={validatePromotionCode}
-                                                            disabled={checkingPromotion || !promotionCode.trim()}
-                                                        >
-                                                            {checkingPromotion ? 'Đang kiểm tra...' : 'Áp dụng'}
+                                                            <i className="fas fa-times"></i>
                                                         </Button>
                                                     )}
-                                                </InputGroup>
-                                                {promotionMessage && (
-                                                    <Form.Text 
-                                                        className={
-                                                            promotionStatus === 'success' 
-                                                                ? 'text-success' 
-                                                                : promotionStatus === 'error' 
-                                                                    ? 'text-danger' 
-                                                                    : ''
-                                                        }
-                                                    >
-                                                        {promotionMessage}
-                                                    </Form.Text>
-                                                )}
-                                            </Form.Group>
-                                        </section>
+                                                </div>
+                                                <Row>
+                                                    <Col md={6}>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Họ tên</Form.Label>
+                                                            <Form.Control
+                                                                type="text"
+                                                                value={participant.fullName}
+                                                                onChange={(e) => handleParticipantChange(index, 'fullName', e.target.value)}
+                                                                required
+                                                            />
+                                                        </Form.Group>
+                                                    </Col>
+                                                    <Col md={6}>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Số điện thoại</Form.Label>
+                                                            <Form.Control
+                                                                type="tel"
+                                                                value={participant.phone}
+                                                                onChange={(e) => handleParticipantChange(index, 'phone', e.target.value)}
+                                                                required
+                                                            />
+                                                        </Form.Group>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col md={6}>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Giới tính</Form.Label>
+                                                            <div>
+                                                                <Form.Check
+                                                                    inline
+                                                                    type="radio"
+                                                                    label="Nam"
+                                                                    name={`gender-${index}`}
+                                                                    checked={participant.gender === 'MALE'}
+                                                                    onChange={() => handleParticipantChange(index, 'gender', 'MALE')}
+                                                                />
+                                                                <Form.Check
+                                                                    inline
+                                                                    type="radio"
+                                                                    label="Nữ"
+                                                                    name={`gender-${index}`}
+                                                                    checked={participant.gender === 'FEMALE'}
+                                                                    onChange={() => handleParticipantChange(index, 'gender', 'FEMALE')}
+                                                                />
+                                                            </div>
+                                                        </Form.Group>
+                                                    </Col>
+                                                </Row>
+                                            </div>
+                                        ))}
+                                    </section>
 
-                                        <div className="d-grid gap-2">
+                                    <section className="booking-section">
+                                        <h3>Phương thức thanh toán</h3>
+                                        <Form.Group className="mb-3">
+                                            <div>
+                                                <Form.Check
+                                                    type="radio"
+                                                    label="Thanh toán tiền mặt"
+                                                    name="paymentMethod"
+                                                    checked={formData.paymentMethod === 'CASH'}
+                                                    onChange={() => setFormData({ ...formData, paymentMethod: 'CASH' })}
+                                                />
+                                                <Form.Check
+                                                    type="radio"
+                                                    label="Thanh toán chuyển khoản"
+                                                    name="paymentMethod"
+                                                    checked={formData.paymentMethod === 'BANK_TRANSFER'}
+                                                    onChange={() => setFormData({ ...formData, paymentMethod: 'BANK_TRANSFER' })}
+                                                />
+                                            </div>
+                                        </Form.Group>
+                                    </section>
+
+                                    <section className="booking-section">
+                                        <h3>Mã giảm giá</h3>
+                                        <Form.Group className="mb-3">
+                                            <InputGroup>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="promotionCode"
+                                                    value={promotionCode}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Nhập mã giảm giá (nếu có)"
+                                                    isValid={promotionStatus === 'success'}
+                                                    isInvalid={promotionStatus === 'error'}
+                                                    disabled={promotionStatus === 'success'}
+                                                />
+                                                {promotionStatus === 'success' ? (
+                                                    <Button 
+                                                        variant="outline-danger" 
+                                                        onClick={clearPromotionCode}
+                                                    >
+                                                        Xóa
+                                                    </Button>
+                                                ) : (
+                                                    <Button 
+                                                        variant="outline-primary" 
+                                                        onClick={validatePromotionCode}
+                                                        disabled={checkingPromotion || !promotionCode.trim()}
+                                                    >
+                                                        {checkingPromotion ? 'Đang kiểm tra...' : 'Áp dụng'}
+                                                    </Button>
+                                                )}
+                                            </InputGroup>
+                                            {promotionMessage && (
+                                                <Form.Text 
+                                                    className={
+                                                        promotionStatus === 'success' 
+                                                            ? 'text-success' 
+                                                            : promotionStatus === 'error' 
+                                                                ? 'text-danger' 
+                                                                : ''
+                                                    }
+                                                >
+                                                    {promotionMessage}
+                                                </Form.Text>
+                                            )}
+                                        </Form.Group>
+                                    </section>
+
+                                    <div className="d-grid gap-2">
                                             <Button variant="primary" type="submit" size="lg" disabled={bookingLoading}>
                                                 {bookingLoading ? (
                                                     <>
@@ -564,64 +564,64 @@ const BookTour = () => {
                                                 ) : (
                                                     'Đặt Tour'
                                                 )}
-                                            </Button>
-                                        </div>
-                                    </Form>
-                                </Card.Body>
-                            </Card>
-                        </Col>
+                                        </Button>
+                                    </div>
+                                </Form>
+                            </Card.Body>
+                        </Card>
+                    </Col>
 
-                        <Col md={4}>
-                            <Card>
-                                <Card.Body>
-                                    <h5 className="mb-3">Thông tin tour</h5>
-                                    <p><strong>Tên tour:</strong> {tour.title}</p>
-                                    <p><strong>Mã tour:</strong> {tour.code}</p>
-                                    <p><strong>Điểm đến:</strong> {tour.destination}</p>
-                                    <p><strong>Thời gian:</strong> {tour.durationDays} ngày {tour.durationNights} đêm</p>
-                                    <p><strong>Ngày khởi hành:</strong> {new Date(tour.startDate).toLocaleDateString('vi-VN')}</p>
-                                    <p><strong>Ngày kết thúc:</strong> {new Date(tour.endDate).toLocaleDateString('vi-VN')}</p>
-                                    <hr />
-                                    <p><strong>Giá người lớn:</strong> {tour.priceAdults?.toLocaleString('vi-VN')} VNĐ</p>
-                                    <p><strong>Giá trẻ em:</strong> {tour.priceChildren?.toLocaleString('vi-VN')} VNĐ</p>
-                                    <hr />
-                                    
-                                    {/* Hiển thị thông tin giá và giảm giá */}
-                                    <div className="price-summary">
-                                        <div className="d-flex justify-content-between">
-                                            <p><strong>Tạm tính:</strong></p>
-                                            <p>
-                                                {((formData.numAdults * tour.priceAdults) + (formData.numChildren * tour.priceChildren)).toLocaleString('vi-VN')} VNĐ
-                                            </p>
-                                        </div>
-                                        
-                                        {promotionStatus === 'success' && appliedDiscount > 0 && (
-                                            <div className="d-flex justify-content-between text-success">
-                                                <p><strong>Giảm giá ({appliedDiscount}%):</strong></p>
-                                                <p>- {calculateDiscountAmount().toLocaleString('vi-VN')} VNĐ</p>
-                                            </div>
-                                        )}
-                                        
-                                        <div className="d-flex justify-content-between mt-2">
-                                            <p><strong>Tổng tiền:</strong></p>
-                                            <p className="text-danger fw-bold fs-5">{calculateTotalPrice().toLocaleString('vi-VN')} VNĐ</p>
-                                        </div>
+                    <Col md={4}>
+                        <Card>
+                            <Card.Body>
+                                <h5 className="mb-3">Thông tin tour</h5>
+                                <p><strong>Tên tour:</strong> {tour.title}</p>
+                                <p><strong>Mã tour:</strong> {tour.code}</p>
+                                <p><strong>Điểm đến:</strong> {tour.destination}</p>
+                                <p><strong>Thời gian:</strong> {tour.durationDays} ngày {tour.durationNights} đêm</p>
+                                <p><strong>Ngày khởi hành:</strong> {new Date(tour.startDate).toLocaleDateString('vi-VN')}</p>
+                                <p><strong>Ngày kết thúc:</strong> {new Date(tour.endDate).toLocaleDateString('vi-VN')}</p>
+                                <hr />
+                                <p><strong>Giá người lớn:</strong> {tour.priceAdults?.toLocaleString('vi-VN')} VNĐ</p>
+                                <p><strong>Giá trẻ em:</strong> {tour.priceChildren?.toLocaleString('vi-VN')} VNĐ</p>
+                                <hr />
+                                
+                                {/* Hiển thị thông tin giá và giảm giá */}
+                                <div className="price-summary">
+                                    <div className="d-flex justify-content-between">
+                                        <p><strong>Tạm tính:</strong></p>
+                                        <p>
+                                            {((formData.numAdults * tour.priceAdults) + (formData.numChildren * tour.priceChildren)).toLocaleString('vi-VN')} VNĐ
+                                        </p>
                                     </div>
                                     
-                                    {promotionStatus === 'success' && promotionCode && (
-                                        <div className="promotion-applied mt-2 p-2 bg-light rounded">
-                                            <small className="text-success">
-                                                <i className="fas fa-check-circle me-1"></i>
-                                                Đã áp dụng mã giảm giá: {promotionCode}
-                                            </small>
+                                    {promotionStatus === 'success' && appliedDiscount > 0 && (
+                                        <div className="d-flex justify-content-between text-success">
+                                            <p><strong>Giảm giá ({appliedDiscount}%):</strong></p>
+                                            <p>- {calculateDiscountAmount().toLocaleString('vi-VN')} VNĐ</p>
                                         </div>
                                     )}
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-                )}
-            </div>
+                                    
+                                    <div className="d-flex justify-content-between mt-2">
+                                        <p><strong>Tổng tiền:</strong></p>
+                                        <p className="text-danger fw-bold fs-5">{calculateTotalPrice().toLocaleString('vi-VN')} VNĐ</p>
+                                    </div>
+                                </div>
+                                
+                                {promotionStatus === 'success' && promotionCode && (
+                                    <div className="promotion-applied mt-2 p-2 bg-light rounded">
+                                        <small className="text-success">
+                                            <i className="fas fa-check-circle me-1"></i>
+                                            Đã áp dụng mã giảm giá: {promotionCode}
+                                        </small>
+                                    </div>
+                                )}
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            )}
+        </div>
         </>
     );
 };

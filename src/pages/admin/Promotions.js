@@ -292,15 +292,15 @@ const Promotions = () => {
                     + Thêm khuyến mãi
                 </button>
             </div>
-            <div className="search-filter-section mb-3">
+            <div className="search-bar-wrapper">
                 <input
                     type="text"
-                    className="admin-search-input"
+                    className="search-bar-input"
                     placeholder="Tìm theo mã hoặc mô tả"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                 />
-                <button className="admin-search-btn" type="button">
+                <button className="search-bar-btn" type="button" disabled>
                     <FaSearch />
                 </button>
             </div>

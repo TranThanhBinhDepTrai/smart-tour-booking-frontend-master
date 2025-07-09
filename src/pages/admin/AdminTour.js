@@ -158,26 +158,17 @@ const AdminTour = () => {
         </div>
 
         {/* Search Bar */}
-        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-          <div className="search-filter-section">
-            <input
-              type="text"
-              className="admin-search-bar"
-              style={{
-                borderRadius: '2rem 0 0 2rem',
-                boxShadow: '0 1px 4px rgba(59,130,246,0.08)',
-                fontSize: '1rem',
-                height: 44,
-                paddingLeft: 20
-              }}
-              placeholder="Tìm kiếm theo tiêu đề hoặc điểm đến"
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-            />
-            <button className="admin-search-btn" onClick={handleResetSearch}>
-              <FaSearch />
-            </button>
-          </div>
+        <div className="search-bar-wrapper">
+          <input
+            type="text"
+            className="search-bar-input"
+            placeholder="Tìm kiếm theo tiêu đề hoặc điểm đến"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+          <button className="search-bar-btn" type="button" disabled>
+            <FaSearch />
+          </button>
         </div>
 
         <div className="search-results-info">

@@ -28,13 +28,6 @@
     transform: translateY(-2px);
 }
 
-@media (max-width: 992px) {
-    .navbar-dark .nav-link {
-        padding: 8px 12px;
-        margin: 5px 0;
-    }
-}
-
 /* Header travel.com.vn style */
 .travelvn-header {
   width: 100%;
@@ -123,11 +116,91 @@
 .logout-btn {
   outline: none;
 }
+
+/* Hamburger menu button - chỉ hiện trên mobile */
+.hamburger-menu {
+  display: none;
+  background: none;
+  border: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 1201;
+}
+.hamburger-menu .bar {
+  width: 28px;
+  height: 3px;
+  background: #0074bc;
+  margin: 4px 0;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .header-top { padding: 0.5rem 2rem; }
+  .header-nav { padding: 0 2rem; }
+  .logo-title { font-size: 1.7rem; }
+}
+
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .header-top { padding: 0.5rem 1.5rem; }
+  .header-nav { padding: 0 1.5rem; }
+  .logo-title { font-size: 1.5rem; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .header-top { padding: 0.5rem 1rem; }
+  .header-nav { padding: 0 1rem; }
+  .logo-title { font-size: 1.3rem; }
+  .nav-list li a, .nav-auth li a, .logout-btn { font-size: 1rem; padding: 0.6rem 1rem; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .header-top, .header-nav { flex-direction: column; align-items: flex-start; padding: 0.5rem 1rem; }
+  .nav-list, .nav-auth { flex-direction: column; width: 100%; }
+  .nav-list li, .nav-auth li { width: 100%; margin: 0.2rem 0; }
+  .nav-list li a, .nav-auth li a, .logout-btn { width: 100%; text-align: left; padding: 0.7rem 1rem; }
+  .logo-title { font-size: 1.1rem; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .header-top, .header-nav { flex-direction: column; align-items: flex-start; padding: 0.3rem 0.5rem; }
+  .nav-list, .nav-auth { flex-direction: column; width: 100%; }
+  .nav-list li, .nav-auth li { width: 100%; margin: 0.1rem 0; }
+  .nav-list li a, .nav-auth li a, .logout-btn { width: 100%; text-align: left; padding: 0.5rem 0.7rem; font-size: 0.95rem; }
+  .logo-title { font-size: 0.95rem; }
+}
+
+/* Chỉ hiện hamburger trên mobile */
 @media (max-width: 992px) {
-  .header-top, .header-nav {
+  .hamburger-menu {
+    display: flex;
+  }
+  .header-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 116, 188, 0.98);
     flex-direction: column;
     align-items: flex-start;
-    padding: 0.5rem 1rem;
+    padding: 80px 24px 24px 24px;
+    z-index: 1200;
+    transition: all 0.3s;
+    overflow-y: auto;
+  }
+  .header-nav.open {
+    display: flex;
   }
   .nav-list, .nav-auth {
     flex-direction: column;
@@ -135,11 +208,12 @@
   }
   .nav-list li, .nav-auth li {
     width: 100%;
-    margin: 0.2rem 0;
+    margin: 0.5rem 0;
   }
   .nav-list li a, .nav-auth li a, .logout-btn {
     width: 100%;
     text-align: left;
-    padding: 0.7rem 1rem;
+    font-size: 1.1rem;
+    padding: 1rem 0.7rem;
   }
 } 

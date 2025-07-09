@@ -92,33 +92,40 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-    .promotion-card {
-        margin-bottom: 1rem;
-    }
-    
-    .promotion-details-modal {
-        padding: 0.5rem;
-    }
-    
-    .promotion-code {
-        font-size: 1.2rem;
-    }
+/* Desktop lớn */
+@media (min-width: 1200px) {
+  .promotion-card { font-size: 1.05rem; padding: 1.1rem; }
+  .promotion-code { font-size: 1.25rem; }
+  .promotion-details-modal { padding: 1.1rem; }
+  .search-bar { padding: 1.1rem; }
 }
 
-/* Responsive cho laptop 13-14 inch (1366-1440px) */
-@media (max-width: 1440px) and (min-width: 1200px) {
-  .promotion-card {
-    font-size: 1.05rem;
-    padding: 1.1rem;
-  }
-  .promotion-code {
-    font-size: 1.25rem;
-  }
-  .promotion-details-modal {
-    padding: 1.1rem;
-  }
-  .search-bar {
-    padding: 1.1rem;
-  }
+/* Laptop */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .promotion-card { font-size: 1rem; padding: 1rem; }
+  .promotion-code { font-size: 1.15rem; }
+  .promotion-details-modal { padding: 1rem; }
+  .search-bar { padding: 1rem; }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .promotion-card { font-size: 0.98rem; padding: 0.8rem; }
+  .promotion-code { font-size: 1.1rem; }
+  .promotion-details-modal { padding: 0.8rem; }
+  .search-bar { padding: 0.8rem; }
+}
+
+/* Điện thoại lớn */
+@media (min-width: 576px) and (max-width: 767px) {
+  .promotion-card { margin-bottom: 1rem; font-size: 0.95rem; padding: 0.6rem; }
+  .promotion-details-modal { padding: 0.5rem; }
+  .promotion-code { font-size: 1.05rem; }
+}
+
+/* Điện thoại nhỏ */
+@media (max-width: 575px) {
+  .promotion-card { margin-bottom: 1rem; font-size: 0.9rem; padding: 0.3rem; }
+  .promotion-details-modal { padding: 0.2rem; }
+  .promotion-code { font-size: 0.95rem; }
 } 
