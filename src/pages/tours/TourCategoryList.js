@@ -96,7 +96,6 @@ a) <b>Đối với ngày thường:</b>
 <hr/>
 b) <b>Đối với dịp Lễ, Tết:</b>
 <ul style={{marginTop: 4}}>
-  <li>Du khách chuyển đổi tour sang ngày khác và báo trước ngày khởi hành từ 15 ngày trở lên sẽ không chịu phí (không áp dụng các tour khách sạn 4–5 sao), nếu trễ hơn sẽ căn cứ theo quy định hủy dưới đây và chỉ được chuyển ngày khởi hành tour 1 lần.</li>
   <li>Hủy vé trong vòng 24 giờ hoặc ngày khởi hành, chịu phạt 100% tiền tour.</li>
   <li>Hủy vé từ 2 – 7 ngày trước ngày khởi hành, chịu phạt 80% tiền tour.</li>
   <li>Hủy vé từ 8 – 15 ngày trước ngày khởi hành, chịu phạt 50% tiền tour.</li>

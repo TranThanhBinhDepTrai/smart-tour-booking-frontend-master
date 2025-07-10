@@ -106,13 +106,7 @@ function AdminLayout() {
           }}
         >
           <div className="p-3">
-            <Form className="mb-4">
-              <Form.Control
-                type="search"
-                placeholder="Tìm kiếm..."
-                className="bg-dark text-white border-secondary"
-              />
-            </Form>
+            {/* Đã xóa thanh tìm kiếm trên menu admin theo yêu cầu */}
             <Nav className="flex-column">
               {menuItems.map((item, index) => (
                 <div key={index}>

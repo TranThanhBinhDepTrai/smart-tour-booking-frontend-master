@@ -1077,3 +1077,44 @@ tbody td {
 .search-bar-btn:hover {
   background: #1d4ed8;
 }
+
+
+/* 10 inch – Netbook, mini laptop (1024x600) */
+@media (min-width: 720px) and (max-width: 1023px) {
+  /* Giao diện cho laptop 10 inch */
+}
+
+/* 11.6 inch – Chromebook, nhỏ gọn (1366x768) */
+@media (min-width: 1024px) and (max-width: 1135px) {
+  /* Giao diện cho laptop 11.6 inch */
+}
+
+/* 12.5 inch – Surface, Macbook 12 (1366x768 hoặc FHD) */
+@media (min-width: 1136px) and (max-width: 1279px) {
+  /* Giao diện cho laptop 12.5 inch */
+}
+
+/* 13.3 inch – MacBook Pro 13”, Dell XPS 13 */
+@media (min-width: 1280px) and (max-width: 1359px) {
+  /* Giao diện cho laptop 13.3 inch */
+}
+
+/* 14 inch – HP, Asus phổ thông (1366x768, FHD) */
+@media (min-width: 1360px) and (max-width: 1439px) {
+  /* Giao diện cho laptop 14 inch */
+}
+
+/* 15.6 inch – Laptop phổ biến nhất */
+@media (min-width: 1440px) and (max-width: 1599px) {
+  /* Giao diện cho laptop 15.6 inch */
+}
+
+/* 16 inch – MacBook Pro, LG Gram */
+@media (min-width: 1600px) and (max-width: 1679px) {
+  /* Giao diện cho laptop 16 inch */
+}
+
+/* 17.3 inch – Laptop gaming, đồ họa */
+@media (min-width: 1680px) and (max-width: 1920px) {
+  /* Giao diện cho laptop 17.3 inch */
+}
