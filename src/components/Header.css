@@ -217,3 +217,133 @@
     padding: 1rem 0.7rem;
   }
 } 
+/* Fix cho mobile dưới 768px */
+@media (max-width: 767px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .header-logo {
+    margin-bottom: 0.5rem;
+  }
+
+  .header-hotline {
+    font-size: 1rem;
+    margin-left: 0;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .logo-img {
+    height: 40px;
+    width: 40px;
+    margin-right: 6px;
+  }
+
+  .logo-title {
+    font-size: 1.1rem;
+  }
+
+  .nav-list li a, .nav-auth li a, .logout-btn {
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .navbar-dark .nav-link {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    margin: 0;
+  }
+}
+
+/* Fix cho mobile rất nhỏ dưới 480px */
+@media (max-width: 480px) {
+  .header-top, .header-nav {
+    padding: 0.3rem 0.7rem;
+  }
+
+  .logo-img {
+    height: 36px;
+    width: 36px;
+  }
+
+  .logo-title {
+    font-size: 1rem;
+  }
+
+  .hotline-number {
+    font-size: 1rem;
+  }
+
+  .nav-list li a, .nav-auth li a, .logout-btn {
+    font-size: 0.95rem;
+    padding: 0.7rem 0.8rem;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .header-hotline {
+    margin-left: 0;
+    font-size: 1rem;
+    gap: 6px;
+  }
+
+  .logo-title {
+    font-size: 1.2rem;
+  }
+
+  .logo-img {
+    height: 44px;
+    width: 44px;
+  }
+
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .header-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 116, 188, 0.98);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 80px 24px 24px 24px;
+    z-index: 1200;
+    transition: all 0.3s;
+    overflow-y: auto;
+  }
+
+  .header-nav.open {
+    display: flex;
+  }
+
+  .nav-list, .nav-auth {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-list li, .nav-auth li {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .nav-list li a, .nav-auth li a, .logout-btn {
+    width: 100%;
+    text-align: left;
+    font-size: 1.05rem;
+    padding: 1rem 0.8rem;
+  }
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form, Alert } from 'react-bootstrap';
 import { permissionService } from '../../services/permissionService';
 import './Permissions.css';
+import { FaPlus } from 'react-icons/fa';
 
 const Permissions = () => {
   const [permissions, setPermissions] = useState([]);
@@ -156,79 +157,85 @@ const Permissions = () => {
   };
 
   return (
-        <Container fluid className="mt-4">
-            {error && <Alert variant="danger">{error}</Alert>}
-            
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Quản lý phân quyền</h2>
-                <Button variant="primary" onClick={() => handleShow()}>
-                    Thêm mới quyền
-                </Button>
+    <div className="admin-tour-container p-6">
+      <div className="admin-tour-card p-6">
+        {/* Header */}
+        <div className="admin-tour-header">
+          <div>
+            <h1 className="admin-tour-title">Quản Lý Phân Quyền</h1>
+            <p className="admin-tour-subtitle">Danh sách quyền hệ thống</p>
+          </div>
+          <button
+            onClick={() => handleShow()}
+            className="add-tour-button d-flex align-items-center gap-2"
+            style={{padding: '0.5rem 1.5rem', fontSize: '1rem', borderRadius: '2rem', boxShadow: '0 2px 8px rgba(59,130,246,0.10)', fontWeight: 700}}
+          >
+            <FaPlus style={{marginRight: 8}} /> Thêm mới quyền
+          </button>
         </div>
 
-            {loading ? (
-                <div className="text-center my-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Đang tải...</span>
-          </div>
+        <div className="search-results-info">
+          Hiển thị <strong>{permissions.length}</strong> trên tổng số <strong>{totalItems}</strong> quyền
+        </div>
+
+        {error && <Alert variant="danger">{error}</Alert>}
+        {loading ? (
+          <div className="text-center my-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Đang tải...</span>
+            </div>
           </div>
         ) : (
-          <>
-                    <Table striped bordered hover responsive>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Tên quyền</th>
-                                <th>API Path</th>
-                                <th>Method</th>
-                                <th>Module</th>
-                                <th style={{width: "150px"}}>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                            {permissions && permissions.length > 0 ? (
-                                permissions.map(permission => (
-                    <tr key={permission.id}>
-                      <td>{permission.id}</td>
-                      <td>{permission.name}</td>
-                                        <td>{permission.apiPath}</td>
-                      <td>
-                                            <span className={`method-badge ${permission.method.toLowerCase()}`}>
-                                                {permission.method}
-                                            </span>
-                                        </td>
-                                        <td>{permission.module}</td>
-                                        <td>
-                                            <div className="d-flex gap-2 justify-content-center">
-                                                <button className="action-button edit-button" onClick={() => handleShow(permission)} title="Sửa">Sửa</button>
-                                                <button className="action-button delete-btn" onClick={() => handleDelete(permission.id)} title="Xóa">Xóa</button>
-                                            </div>
-                                          </td>
-                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="6" className="text-center">
-                                        Không có quyền nào
-                                    </td>
-                                </tr>
-                            )}
-                </tbody>
-                    </Table>
-
-                    {permissions && permissions.length > 0 && (
-                        <div className="pagination">
-                            <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>Đầu</button>
-                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
-                            <span>Trang {currentPage} / {totalPages} (Tổng: {totalItems} quyền)</span>
-                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Sau</button>
-                            <button onClick={() => handlePageChange(totalPages)} disabled={currentPage >= totalPages}>Cuối</button>
-                        </div>
+          <div className="user-list">
+                    {permissions && permissions.length > 0 ? (
+                        permissions.map(permission => (
+                            <div className="user-card-item" key={permission.id}>
+                                <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                                    <span className="user-id fw-bold">#{permission.id}</span>
+                                    <span className={`method-badge ${permission.method.toLowerCase()}`}>{permission.method}</span>
+                                </div>
+                                <div className="user-card-body mb-2">
+                                    <div><strong>Tên quyền:</strong> {permission.name}</div>
+                                    <div><strong>API Path:</strong> {permission.apiPath}</div>
+                                    <div><strong>Module:</strong> {permission.module}</div>
+                                </div>
+                                <div className="user-card-actions d-flex flex-wrap gap-2">
+                                    <Button 
+                                        variant="primary" 
+                                        size="sm"
+                                        onClick={() => handleShow(permission)}
+                                        title="Sửa"
+                                    >
+                                        <i className="fas fa-edit"></i>
+                                    </Button>
+                                    <Button 
+                                        variant="danger" 
+                                        size="sm"
+                                        onClick={() => handleDelete(permission.id)}
+                                        title="Xóa"
+                                    >
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-center">Không có quyền nào</div>
                     )}
-          </>
-        )}
-
-            <Modal show={showModal} onHide={handleClose}>
+                </div>
+            )}
+            {permissions && permissions.length > 0 && (
+                <div className="pagination mt-3">
+                    <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>Đầu</button>
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
+                    <span>Trang {currentPage} / {totalPages} (Tổng: {totalItems} quyền)</span>
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Sau</button>
+                    <button onClick={() => handlePageChange(totalPages)} disabled={currentPage >= totalPages}>Cuối</button>
+                </div>
+            )}
+        </div>
+        {/* Modal giữ nguyên */}
+        <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isEditing ? 'Cập nhật quyền' : 'Thêm mới quyền'}</Modal.Title>
                 </Modal.Header>
@@ -294,7 +301,7 @@ const Permissions = () => {
                     </Form>
                 </Modal.Body>
             </Modal>
-        </Container>
+    </div>
   );
 };
 

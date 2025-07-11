@@ -12,7 +12,7 @@
 /* Danh sách nút danh mục */
 .category-buttons {
     display: grid;
-    grid-template-columns: repeat(4, 320px);
+    grid-template-columns: 1fr;
     gap: 2.5rem;
     justify-content: center;
     width: 100%;
@@ -92,7 +92,7 @@
 /* Desktop lớn */
 @media (min-width: 1200px) {
   .tour-categories-container { padding: 3rem 2rem; }
-  .category-buttons { grid-template-columns: repeat(4, 320px); gap: 2.5rem; }
+  .category-buttons { grid-template-columns: repeat(4, 1fr); gap: 2.5rem; }
   .category-card { padding: 4rem 2rem; }
   .category-icon { font-size: 6rem; }
   .category-card h4 { font-size: 2rem; }

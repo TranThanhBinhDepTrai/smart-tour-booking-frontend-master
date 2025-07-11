@@ -156,3 +156,58 @@ button.delete-button {
 button.delete-button:hover {
   background-color: #b91c1c !important;
 }
+
+.user-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.07);
+  padding: 32px 32px 24px 32px;
+  margin-bottom: 32px;
+  margin-right: 0;
+  margin-left: 0;
+  transition: box-shadow 0.2s;
+  min-width: 320px;
+  max-width: 100%;
+}
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 16px;
+  margin-top: 8px;
+}
+.user-card-item {
+  background: #fff;
+  border-radius: 20px;
+  border: 1.5px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(59,130,246,0.07);
+  padding: 24px 20px 16px 20px;
+  margin-bottom: 24px;
+  margin-right: 16px;
+  margin-left: 0;
+  transition: box-shadow 0.2s;
+  min-width: 320px;
+  max-width: 420px;
+  display: inline-block;
+  vertical-align: top;
+}
+.user-card-item:hover {
+  box-shadow: 0 4px 16px rgba(59,130,246,0.13);
+  border-color: #3b82f6;
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.admin-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+.admin-subtitle {
+  font-size: 1.1rem;
+  color: #64748b;
+  font-weight: 400;
+}

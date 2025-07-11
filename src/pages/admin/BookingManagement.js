@@ -333,97 +333,75 @@ const BookingManagement = () => {
 
     return (
         <Container fluid className="admin-page-container py-4">
-            <div className="admin-header mb-3">
-                <h2 className="admin-title">Quản lý đơn đặt tour</h2>
-                <div className="admin-subtitle">Danh sách các đơn đặt tour của khách hàng</div>
-            </div>
-            <div className="search-bar-wrapper">
-                <input
-                    type="text"
-                    className="search-bar-input"
-                    placeholder="Tìm theo tên tour, email, số điện thoại, tên khách"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                />
-                <button className="search-bar-btn" type="button" disabled>
-                    <FaSearch />
-                </button>
-            </div>
-            
-            <div className="table-responsive">
-                <Table striped bordered hover className="admin-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Khách hàng</th>
-                            <th>Tour</th>
-                            <th>Ngày đặt</th>
-                            <th>Tổng tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Khuyến mãi</th>
-                            <th>Hoàn tiền</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {bookings.filter(booking => {
-                            const s = searchTerm.toLowerCase();
-                            return (
-                                booking.id.toString().includes(s) ||
-                                booking.customerName.toLowerCase().includes(s) ||
-                                booking.customerEmail.toLowerCase().includes(s) ||
-                                booking.customerPhone.toLowerCase().includes(s) ||
-                                booking.tour.title.toLowerCase().includes(s) ||
-                                (booking.status && booking.status.toLowerCase().includes(s))
-                            );
-                        }).map((booking) => (
-                            <tr key={booking.id}>
-                                <td>{booking.id}</td>
-                                <td>
-                                    <div><strong>{booking.customerName}</strong></div>
-                                    <div>{booking.customerEmail}</div>
-                                    <div>{booking.customerPhone}</div>
-                                </td>
-                                <td>
-                                    <div><strong>{booking.tour.title}</strong></div>
-                                    <div>Bắt đầu: {formatDate(booking.tour.startDate)}</div>
-                                    <div>Kết thúc: {formatDate(booking.tour.endDate)}</div>
-                                </td>
-                                <td>{booking.bookingAt}</td>
-                                <td>{formatPrice(booking.totalPrice)}</td>
-                                <td>{renderStatusDropdown(booking)}</td>
-                                <td>
-                                    {booking.promotionDto ? (
-                                        <>
-                                            <div><strong>{booking.promotionDto.code}</strong></div>
-                                            <div>Giảm {booking.promotionDto.discountPercent}%</div>
-                                        </>
-                                    ) : (
-                                        'Không có'
-                                    )}
-                                </td>
-                                <td>{renderRefundStatusDropdown(booking)}</td>
-                                <td>
-                                    <Button 
-                                        variant="info" 
-                                        size="sm"
-                                        onClick={() => fetchBookingDetails(booking.id)}
-                                    >
-                                        Chi tiết
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
-            </div>
+            <div className="booking-card">
+                <div className="admin-header booking-header mb-3 text-start">
+                    <div>
+                        <h2 className="admin-title mb-0 text-start">Quản lý đơn đặt tour</h2>
+                        <div className="admin-subtitle text-start">Danh sách các đơn đặt tour của khách hàng</div>
+                    </div>
+                </div>
+                <div className="search-bar-wrapper">
+                    <input
+                        type="text"
+                        className="search-bar-input"
+                        placeholder="Tìm theo tên tour, email, số điện thoại, tên khách"
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
+                    <button className="search-bar-btn" type="button" disabled>
+                        <FaSearch />
+                    </button>
+                </div>
+                
+                <div className="user-list">
+                    {bookings.filter(booking => {
+                        const s = searchTerm.toLowerCase();
+                        return (
+                            booking.id.toString().includes(s) ||
+                            booking.customerName.toLowerCase().includes(s) ||
+                            booking.customerEmail.toLowerCase().includes(s) ||
+                            booking.customerPhone.toLowerCase().includes(s) ||
+                            booking.tour.title.toLowerCase().includes(s) ||
+                            (booking.status && booking.status.toLowerCase().includes(s))
+                        );
+                    }).map((booking) => (
+                        <div className="user-card-item" key={booking.id}>
+                            <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                                <span className="user-id fw-bold">#{booking.id}</span>
+                                <span className="ms-2 badge bg-primary booking-title-badge">{booking.tour.title}</span>
+                            </div>
+                            <div className="user-card-body mb-2">
+                                <div><strong>Khách hàng:</strong> {booking.customerName} ({booking.customerEmail}, {booking.customerPhone})</div>
+                                <div><strong>Ngày đặt:</strong> {booking.bookingAt}</div>
+                                <div><strong>Thời gian tour:</strong> {formatDate(booking.tour.startDate)} - {formatDate(booking.tour.endDate)}</div>
+                                <div><strong>Tổng tiền:</strong> {formatPrice(booking.totalPrice)}</div>
+                                <div><strong>Khuyến mãi:</strong> {booking.promotionDto ? `${booking.promotionDto.code} (${booking.promotionDto.discountPercent}%)` : 'Không có'}</div>
+                            </div>
+                            <div className="user-card-status mb-2">
+                                {renderStatusDropdown(booking)}
+                                <div className="mt-1">Hoàn tiền: {renderRefundStatusDropdown(booking)}</div>
+                            </div>
+                            <div className="user-card-actions d-flex flex-wrap gap-2">
+                                <Button 
+                                    variant="info" 
+                                    size="sm"
+                                    onClick={() => fetchBookingDetails(booking.id)}
+                                    title="Chi tiết"
+                                >
+                                    <i className="fas fa-eye"></i>
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
 
-            <div className="pagination">
-              <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>Đầu</button>
-              <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trước</button>
-              <span>Trang {currentPage + 1}{isLastPage ? '' : ` / ${totalPages}`}</span>
-              <button onClick={() => handlePageChange(currentPage + 1)} disabled={isLastPage}>Sau</button>
-              <button onClick={() => handlePageChange(totalPages - 1)} disabled={isLastPage}>Cuối</button>
+                <div className="pagination">
+                    <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>Đầu</button>
+                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trước</button>
+                    <span>Trang {currentPage + 1}{isLastPage ? '' : ` / ${totalPages}`}</span>
+                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={isLastPage}>Sau</button>
+                    <button onClick={() => handlePageChange(totalPages - 1)} disabled={isLastPage}>Cuối</button>
+                </div>
             </div>
 
             {/* Booking Details Modal */}

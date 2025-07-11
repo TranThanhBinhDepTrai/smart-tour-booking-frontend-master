@@ -272,171 +272,121 @@ const CustomTourManagement = () => {
                   </p>
                 )}
               </div>
-              
               {useDemoData && (
-                <Table responsive striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th width="5%">ID</th>
-                      <th width="15%">Họ tên</th>
-                      <th width="15%">Thông tin liên hệ</th>
-                      <th width="15%">Điểm đến</th>
-                      <th width="10%">Số người</th>
-                      <th width="15%">Thời gian</th>
-                      <th width="10%">Khu vực</th>
-                      <th width="15%">Trạng thái</th>
-                      <th width="10%">Thao tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {demoTours.map(tour => (
-                      <tr key={tour.id}>
-                        <td>{tour.id}</td>
-                        <td>{tour.name}</td>
-                        <td>
-                          <div>{tour.email}</div>
-                          <div>{tour.phone}</div>
-                        </td>
-                        <td>{tour.destination}</td>
-                        <td>
-                          <div>Tổng: {tour.capacity} người</div>
-                          <div>Người lớn: {tour.adultsCapacity}</div>
-                          <div>Trẻ em: {tour.childrenCapacity}</div>
-                        </td>
-                        <td>
-                          <div>Từ: {formatDate(tour.startDate)}</div>
-                          <div>Đến: {formatDate(tour.endDate)}</div>
-                          <div>{tour.durationDays} ngày {tour.durationNights} đêm</div>
-                        </td>
-                        <td>{tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</td>
-                        <td>
-                          <Badge bg="warning" text="dark">Chưa xử lý</Badge>
-                        </td>
-                        <td>
-                          <div className="d-flex gap-1">
-                            <Button 
-                              variant="info" 
-                              size="sm" 
-                              onClick={() => handleDemoViewDetail(tour.id)}
-                            >
-                              <FaEye /> Xem
-                            </Button>
-                            <Button 
-                              variant="danger" 
-                              size="sm"
-                              onClick={() => alert('Đây chỉ là dữ liệu mẫu! Vui lòng đăng nhập để thao tác.')}
-                            >
-                              <FaTrash />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
+                <div className="user-list">
+                  {demoTours.map(tour => (
+                    <div className="user-card-item" key={tour.id}>
+                      <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                        <span className="user-id fw-bold">#{tour.id}</span>
+                        <Badge bg="warning" text="dark">Chưa xử lý</Badge>
+                      </div>
+                      <div className="user-card-body mb-2">
+                        <div><strong>Họ tên:</strong> {tour.name}</div>
+                        <div><strong>Email:</strong> {tour.email}</div>
+                        <div><strong>SĐT:</strong> {tour.phone}</div>
+                        <div><strong>Điểm đến:</strong> {tour.destination}</div>
+                        <div><strong>Số người:</strong> Tổng: {tour.capacity} (Người lớn: {tour.adultsCapacity}, Trẻ em: {tour.childrenCapacity})</div>
+                        <div><strong>Thời gian:</strong> {formatDate(tour.startDate)} - {formatDate(tour.endDate)} ({tour.durationDays} ngày {tour.durationNights} đêm)</div>
+                        <div><strong>Khu vực:</strong> {tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</div>
+                      </div>
+                      <div className="user-card-actions d-flex flex-wrap gap-2">
+                        <Button 
+                          variant="info" 
+                          size="sm" 
+                          onClick={() => handleDemoViewDetail(tour.id)}
+                          title="Xem chi tiết"
+                        >
+                          <FaEye />
+                        </Button>
+                        <Button 
+                          variant="danger" 
+                          size="sm"
+                          onClick={() => alert('Đây chỉ là dữ liệu mẫu! Vui lòng đăng nhập để thao tác.')}
+                          title="Xóa"
+                        >
+                          <FaTrash />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           ) : (
             <>
-              <Table responsive striped bordered hover>
-                <thead>
-                  <tr>
-                    <th width="5%">ID</th>
-                    <th width="15%">Họ tên</th>
-                    <th width="15%">Thông tin liên hệ</th>
-                    <th width="15%">Điểm đến</th>
-                    <th width="10%">Số người</th>
-                    <th width="15%">Thời gian</th>
-                    <th width="10%">Khu vực</th>
-                    <th width="15%">Trạng thái</th>
-                    <th width="10%">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentTours.length > 0 ? (
-                    currentTours.map(tour => (
-                      <tr key={tour.id}>
-                        <td>{tour.id}</td>
-                        <td>{tour.name}</td>
-                        <td>
-                          <div>{tour.email}</div>
-                          <div>{tour.phone}</div>
-                        </td>
-                        <td>{tour.destination}</td>
-                        <td>
-                          <div>Tổng: {tour.capacity} người</div>
-                          <div>Người lớn: {tour.adultsCapacity}</div>
-                          <div>Trẻ em: {tour.childrenCapacity}</div>
-                        </td>
-                        <td>
-                          <div>Từ: {formatDate(tour.startDate)}</div>
-                          <div>Đến: {formatDate(tour.endDate)}</div>
-                          <div>{tour.durationDays} ngày {tour.durationNights} đêm</div>
-                        </td>
-                        <td>{tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</td>
-                        <td>
-                          <DropdownButton
-                            id={`dropdown-status-${tour.id}`}
-                            title={
-                              tour.status
-                                ? <span style={{ color: 'white' }}>Đã xử lý</span>
-                                : <span style={{ color: 'black' }}>Chưa xử lý</span>
+              <div className="user-list">
+                {currentTours.length > 0 ? (
+                  currentTours.map(tour => (
+                    <div className="user-card-item" key={tour.id}>
+                      <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                        <span className="user-id fw-bold">#{tour.id}</span>
+                        <DropdownButton
+                          id={`dropdown-status-${tour.id}`}
+                          title={
+                            tour.status
+                              ? <span style={{ color: 'white' }}>Đã xử lý</span>
+                              : <span style={{ color: 'black' }}>Chưa xử lý</span>
+                          }
+                          variant={tour.status ? "success" : "warning"}
+                          size="sm"
+                          onSelect={async (selectedStatus) => {
+                            try {
+                              await axios.patch(
+                                `http://localhost:8080/api/v1/tour/custom/${tour.id}/status?status=${selectedStatus}`,
+                                {},
+                                getAuthConfig()
+                              );
+                              setCustomTours(prev =>
+                                prev.map(t =>
+                                  t.id === tour.id ? { ...t, status: selectedStatus === "true" } : t
+                                )
+                              );
+                            } catch (err) {
+                              alert("Cập nhật trạng thái thất bại!");
                             }
-                            variant={tour.status ? "success" : "warning"}
-                            size="sm"
-                            onSelect={async (selectedStatus) => {
-                              try {
-                                await axios.patch(
-                                  `http://localhost:8080/api/v1/tour/custom/${tour.id}/status?status=${selectedStatus}`,
-                                  {},
-                                  getAuthConfig()
-                                );
-                                setCustomTours(prev =>
-                                  prev.map(t =>
-                                    t.id === tour.id ? { ...t, status: selectedStatus === "true" } : t
-                                  )
-                                );
-                              } catch (err) {
-                                alert("Cập nhật trạng thái thất bại!");
-                              }
-                            }}
-                          >
-                            <Dropdown.Item eventKey="true" style={{ color: 'green' }}>
-                              Đã xử lý
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="false" style={{ color: 'black' }}>
-                              Chưa xử lý
-                            </Dropdown.Item>
-                          </DropdownButton>
-                        </td>
-                        <td>
-                          <div className="d-flex gap-1">
-                            <Button 
-                              variant="info" 
-                              size="sm" 
-                              onClick={() => viewDetail(tour.id)}
-                            >
-                              <FaEye /> Xem
-                            </Button>
-                            <Button 
-                              variant="danger" 
-                              size="sm"
-                              onClick={() => deleteCustomTour(tour.id)}
-                            >
-                              <FaTrash />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="8" className="text-center">Không có dữ liệu</td>
-                    </tr>
-                  )}
-                </tbody>
-              </Table>
-
+                          }}
+                        >
+                          <Dropdown.Item eventKey="true" style={{ color: 'green' }}>
+                            Đã xử lý
+                          </Dropdown.Item>
+                          <Dropdown.Item eventKey="false" style={{ color: 'black' }}>
+                            Chưa xử lý
+                          </Dropdown.Item>
+                        </DropdownButton>
+                      </div>
+                      <div className="user-card-body mb-2">
+                        <div><strong>Họ tên:</strong> {tour.name}</div>
+                        <div><strong>Email:</strong> {tour.email}</div>
+                        <div><strong>SĐT:</strong> {tour.phone}</div>
+                        <div><strong>Điểm đến:</strong> {tour.destination}</div>
+                        <div><strong>Số người:</strong> Tổng: {tour.capacity} (Người lớn: {tour.adultsCapacity}, Trẻ em: {tour.childrenCapacity})</div>
+                        <div><strong>Thời gian:</strong> {formatDate(tour.startDate)} - {formatDate(tour.endDate)} ({tour.durationDays} ngày {tour.durationNights} đêm)</div>
+                        <div><strong>Khu vực:</strong> {tour.region === 'INTERNATIONAL' ? 'Quốc tế' : 'Trong nước'}</div>
+                      </div>
+                      <div className="user-card-actions d-flex flex-wrap gap-2">
+                        <Button 
+                          variant="info" 
+                          size="sm" 
+                          onClick={() => viewDetail(tour.id)}
+                          title="Xem chi tiết"
+                        >
+                          <FaEye />
+                        </Button>
+                        <Button 
+                          variant="danger" 
+                          size="sm"
+                          onClick={() => deleteCustomTour(tour.id)}
+                          title="Xóa"
+                        >
+                          <FaTrash />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center">Không có dữ liệu</div>
+                )}
+              </div>
               {/* Pagination */}
               <div className="pagination">
                 <button onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>Đầu</button>

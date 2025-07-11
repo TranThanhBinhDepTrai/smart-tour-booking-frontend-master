@@ -24,6 +24,11 @@ const History = () => {
     const [detailBooking, setDetailBooking] = useState(null);
     const [reviewTourId, setReviewTourId] = useState(null);
     const [reviewedTourIds, setReviewedTourIds] = useState([]);
+    // Thêm state cho phân trang
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(bookings.length / itemsPerPage);
+    const paginatedBookings = bookings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     useEffect(() => {
         console.log('Current user in History:', currentUser);
@@ -188,7 +193,7 @@ const History = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {bookings.map((booking) => (
+                            {paginatedBookings.map((booking) => (
                                 <tr key={booking.id}>
                                     <td>{booking.id}</td>
                                     <td>
@@ -254,6 +259,54 @@ const History = () => {
                             ))}
                         </tbody>
                     </Table>
+                    {/* PHÂN TRANG KIỂU MỚI - Responsive nhỏ gọn */}
+                    {totalPages > 1 && (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 18, gap: 16 }}>
+                        <button
+                          style={{
+                            border: '2px solid #1976d2',
+                            color: '#1976d2',
+                            background: '#fff',
+                            borderRadius: 16,
+                            padding: '8px 18px',
+                            fontWeight: 700,
+                            fontSize: '1.08rem',
+                            minWidth: 80,
+                            cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                            opacity: currentPage === 1 ? 0.5 : 1,
+                            transition: 'all 0.2s',
+                            outline: 'none',
+                          }}
+                          disabled={currentPage === 1}
+                          onClick={() => setCurrentPage(currentPage - 1)}
+                        >
+                          Trang trước
+                        </button>
+                        <span style={{ fontSize: '1.05rem', fontWeight: 500, color: '#222', minWidth: 40, textAlign: 'center' }}>
+                          Trang {currentPage}
+                        </span>
+                        <button
+                          style={{
+                            border: '2px solid #1976d2',
+                            color: '#1976d2',
+                            background: '#fff',
+                            borderRadius: 16,
+                            padding: '8px 18px',
+                            fontWeight: 700,
+                            fontSize: '1.08rem',
+                            minWidth: 80,
+                            cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                            opacity: currentPage === totalPages ? 0.5 : 1,
+                            transition: 'all 0.2s',
+                            outline: 'none',
+                          }}
+                          disabled={currentPage === totalPages}
+                          onClick={() => setCurrentPage(currentPage + 1)}
+                        >
+                          Trang sau
+                        </button>
+                      </div>
+                    )}
                 </div>
             )}
 
@@ -294,7 +347,7 @@ const History = () => {
                 <Modal.Body>
                     {reviewSuccess && <Alert variant="success">{reviewSuccess}</Alert>}
                     {reviewError && <Alert variant="danger">{reviewError}</Alert>}
-                    <div className="mb-3">
+                    <div className="mb-3 rating-stars-row">
                         <label className="form-label">Chọn số sao:</label><br/>
                         {[1,2,3,4,5].map(star => (
                             <span

@@ -77,7 +77,7 @@
     font-size: 1.15rem;
     border-radius: 32px 0 0 32px;
     background: transparent;
-    color: #fff;
+    color: #000;
     outline: none;
     min-height: 44px;
 }
@@ -232,4 +232,17 @@ body, #root, .main-content, .hero-section, .hero-content {
 
 .suggestions-dropdown li:hover {
   background: #f5faff;
+} 
+
+/* Luôn đảm bảo chữ trong ô tìm kiếm nhìn rõ */
+.hero-section.expanded .main-search-input,
+.hero-section.expanded .main-search-input::placeholder {
+  color: #333 !important;
+}
+.main-search-input {
+  color: #333 !important;
+} 
+.main-search-input::placeholder {
+  color: #888 !important;
+  opacity: 1;
 } 

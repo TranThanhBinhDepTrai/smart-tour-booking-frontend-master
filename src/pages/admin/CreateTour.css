@@ -275,17 +275,34 @@
 /* Responsive cho laptop 13-14 inch (1366-1440px) */
 @media (max-width: 1440px) and (min-width: 1200px) {
   .form-label, .form-input, .form-select, .form-textarea, label, input, select, textarea {
-    font-size: 11px !important;
-    line-height: 1.1 !important;
+    font-size: 13px !important;
+    line-height: 1.2 !important;
   }
-  .form-input, .form-select, .form-textarea, input, select, textarea {
+  .form-input, .form-select, input, select {
     padding: 4px 7px !important;
     min-height: 24px !important;
     height: 24px !important;
   }
+  .form-textarea, textarea {
+    padding: 4px 7px !important;
+    min-height: 100px !important;
+    /* height: auto !important; */
+  }
   .form-group, .form-section {
     padding: 6px 8px !important;
     margin-bottom: 6px !important;
+  }
+  .form-group.full-width {
+    width: 100% !important;
+    grid-column: 1/-1 !important;
+    display: block !important;
+  }
+  .form-group.full-width textarea,
+  .form-group.full-width .form-input {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    display: block !important;
   }
   .create-tour-card, .card {
     padding: 8px !important;

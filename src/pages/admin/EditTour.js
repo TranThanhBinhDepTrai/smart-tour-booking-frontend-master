@@ -344,7 +344,7 @@ const EditTour = () => {
               <textarea
                 id="description"
                 name="description"
-                className="form-input"
+                className="form-input form-textarea"
                 rows="3"
                 value={formData.description}
                 onChange={handleInputChange}
@@ -420,7 +420,7 @@ const EditTour = () => {
               <textarea
                 id="itinerary"
                 name="itinerary"
-                className="form-input"
+                className="form-input form-textarea"
                 rows="4"
                 value={formData.itinerary.join('\n')}
                 onChange={handleInputChange}

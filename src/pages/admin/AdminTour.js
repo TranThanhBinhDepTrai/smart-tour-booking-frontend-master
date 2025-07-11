@@ -181,78 +181,71 @@ const AdminTour = () => {
 
         {!loading && !error && (
           <>
-            <div className="tour-table-container">
-              <table className="tour-table">
-                <thead>
-                  <tr>
-                    <th>Ảnh</th>
-                    <th>Mã tour</th>
-                    <th>Tên tour</th>
-                    <th>Điểm đến</th>
-                    <th>Giá người lớn</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTours.map(tour => (
-                      <tr key={tour.id}>
-                        <td>
-                            <img 
-                          src={tour.images && tour.images[0] ? tour.images[0].url : 'https://via.placeholder.com/80x60?text=No+Image'} 
-                              alt={tour.title}
-                              className="tour-thumbnail"
-                            />
-                        </td>
-                      <td>{tour.code}</td>
-                      <td>{tour.title}</td>
-                      <td>{tour.destination}</td>
-                      <td>{new Intl.NumberFormat('vi-VN').format(tour.priceAdults)} VNĐ</td>
-                        <td>
-                        <Dropdown as={ButtonGroup}>
-                          <span className={`status-badge ${tour.available ? 'status-active' : 'status-inactive'}`}
-                                style={{marginRight: 8}}>
-                            {tour.available ? 'Hoạt động' : 'Ngừng'}
-                          </span>
-                          <Dropdown.Toggle split variant="light" id={`dropdown-status-${tour.id}`}/>
-                          <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => handleUpdateStatus(tour.id, true)} style={{color: 'green'}}>
-                              Hoạt động
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleUpdateStatus(tour.id, false)} style={{color: 'red'}}>
-                              Ngừng
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        </td>
-                        <td>
-                        <div className="action-buttons">
-                          <button 
-                            className="action-button view-btn"
-                            onClick={() => handleShowDetails(tour.id)}
-                          >
-                            Xem
-                          </button>
-                            <button
-                            className="action-button update-btn"
-                              onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
-                            >
-                              Sửa
-                            </button>
-                            <button
-                            className="action-button delete-btn"
-                              onClick={() => handleDelete(tour.id)}
-                            >
-                              Xóa
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="user-list">
+              {filteredTours.map(tour => (
+                <div className="user-card-item" key={tour.id}>
+                  <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                    <span className="user-id fw-bold">#{tour.code}</span>
+                    <span className="ms-2 badge bg-primary">{tour.available ? 'Hoạt động' : 'Ngừng'}</span>
+                  </div>
+                  <div className="user-card-body mb-2 d-flex gap-3 align-items-center">
+                    <img
+                      src={tour.images && tour.images[0] ? tour.images[0].url : 'https://via.placeholder.com/80x60?text=No+Image'}
+                      alt={tour.title}
+                      className="tour-thumbnail"
+                      style={{ width: 80, height: 60, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
+                    />
+                    <div>
+                      <div><strong>Tên tour:</strong> {tour.title}</div>
+                      <div><strong>Điểm đến:</strong> {tour.destination}</div>
+                      <div><strong>Giá người lớn:</strong> {new Intl.NumberFormat('vi-VN').format(tour.priceAdults)} VNĐ</div>
+                    </div>
+                  </div>
+                  <div className="user-card-status mb-2">
+                    <Dropdown as={ButtonGroup}>
+                      <span className={`badge ${tour.available ? 'bg-success' : 'bg-danger'} me-1`}>
+                        {tour.available ? 'Hoạt động' : 'Ngừng'}
+                      </span>
+                      <Dropdown.Toggle split variant="light" id={`dropdown-status-${tour.id}`}/>
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => handleUpdateStatus(tour.id, true)} style={{color: 'green'}}>
+                          Hoạt động
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleUpdateStatus(tour.id, false)} style={{color: 'red'}}>
+                          Ngừng
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
+                  <div className="user-card-actions d-flex flex-wrap gap-2">
+                    <Button 
+                      variant="info" 
+                      size="sm"
+                      onClick={() => handleShowDetails(tour.id)}
+                      title="Xem chi tiết"
+                    >
+                      <i className="fas fa-eye"></i>
+                    </Button>
+                    <Button 
+                      variant="primary" 
+                      size="sm"
+                      onClick={() => navigate(`/admin/tours/edit/${tour.id}`)}
+                      title="Chỉnh sửa"
+                    >
+                      <i className="fas fa-edit"></i>
+                    </Button>
+                    <Button 
+                      variant="danger" 
+                      size="sm"
+                      onClick={() => handleDelete(tour.id)}
+                      title="Xóa"
+                    >
+                      <i className="fas fa-trash"></i>
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
-
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="pagination">

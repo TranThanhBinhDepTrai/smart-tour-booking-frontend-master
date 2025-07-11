@@ -32,18 +32,39 @@
     color: #555;
   }
   
-  .form-group input {
+  .form-group input,
+  .form-group select,
+  .form-group input[type="date"] {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    padding: 10px 16px !important;
+    border: 1.5px solid #e3eaf3;
+    border-radius: 18px;
     font-size: 1rem;
+    background: #f8fbff;
+    box-sizing: border-box;
+    transition: border 0.2s;
   }
-  
-  .form-group input:focus {
+  @media (max-width: 600px) {
+    .form-group input,
+    .form-group select,
+    .form-group input[type="date"] {
+      min-height: 34px;
+      max-height: 38px;
+      font-size: 0.97rem;
+      border-radius: 12px;
+      padding: 7px 10px;
+    }
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group input[type="date"]:focus {
+    border-color: #2563eb;
+    background: #fff;
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    box-shadow: 0 0 0 2px rgba(0,116,188,0.10);
   }
   
   .auth-button {
@@ -93,3 +114,19 @@
     margin-bottom: 15px;
     text-align: center;
   } 
+
+.form-group select {
+  width: 100% !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  line-height: 1.1 !important;
+  padding: 10px 16px !important;
+  border-radius: 18px !important;
+  font-size: 1rem !important;
+  background: #f8fbff !important;
+  border: 1.5px solid #e3eaf3 !important;
+  box-sizing: border-box !important;
+  transition: border 0.2s;
+  display: block !important;
+} 

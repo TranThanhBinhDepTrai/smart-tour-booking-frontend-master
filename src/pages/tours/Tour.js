@@ -198,11 +198,26 @@ const SearchForm = ({ onSearch, initialValues }) => {
         <div className="search-group">
           <label>Đánh giá</label>
           <div style={{display: 'flex', flexDirection: 'column', gap: 4}}>
-            <label><input type="radio" name="rating" value="1-2" checked={ratingRange[0]===1 && ratingRange[1]===2} onChange={handleChange}/> 1-2 sao</label>
-            <label><input type="radio" name="rating" value="2-3" checked={ratingRange[0]===2 && ratingRange[1]===3} onChange={handleChange}/> 2-3 sao</label>
-            <label><input type="radio" name="rating" value="3-4" checked={ratingRange[0]===3 && ratingRange[1]===4} onChange={handleChange}/> 3-4 sao</label>
-            <label><input type="radio" name="rating" value="4-5" checked={ratingRange[0]===4 && ratingRange[1]===5} onChange={handleChange}/> 4-5 sao</label>
-            <label><input type="radio" name="rating" value="0-5" checked={ratingRange[0]===0 && ratingRange[1]===5} onChange={handleChange}/> Tất cả</label>
+            <div className="radio-row">
+              <input type="radio" name="rating" value="1-2" checked={ratingRange[0] === 1 && ratingRange[1] === 2} onChange={handleChange} />
+              <span style={{color: '#1976d2', fontWeight: 500}}>1-2 sao</span>
+            </div>
+            <div className="radio-row">
+              <input type="radio" name="rating" value="2-3" checked={ratingRange[0] === 2 && ratingRange[1] === 3} onChange={handleChange} />
+              <span style={{color: '#1976d2', fontWeight: 500}}>2-3 sao</span>
+            </div>
+            <div className="radio-row">
+              <input type="radio" name="rating" value="3-4" checked={ratingRange[0] === 3 && ratingRange[1] === 4} onChange={handleChange} />
+              <span style={{color: '#1976d2', fontWeight: 500}}>3-4 sao</span>
+            </div>
+            <div className="radio-row">
+              <input type="radio" name="rating" value="4-5" checked={ratingRange[0] === 4 && ratingRange[1] === 5} onChange={handleChange} />
+              <span style={{color: '#1976d2', fontWeight: 500}}>4-5 sao</span>
+            </div>
+            <div className="radio-row">
+              <input type="radio" name="rating" value="0-5" checked={ratingRange[0] === 0 && ratingRange[1] === 5} onChange={handleChange} />
+              <span style={{color: '#1976d2', fontWeight: 500}}>Tất cả</span>
+            </div>
           </div>
         </div>
 
@@ -302,41 +317,20 @@ const Tour = () => {
       let response;
       if (searchParams && Object.values(searchParams).some(v => v !== "")) {
         setIsSearching(true);
-        
         // Format params to match backend expectations
-        const formattedParams = {};
-        if (searchParams.keyword && searchParams.keyword.trim()) {
-          formattedParams.keyword = searchParams.keyword.trim();
-        }
-        if (searchParams.location) {
-          formattedParams.location = searchParams.location;
-        }
-        if (searchParams.startDate) {
-          formattedParams.startDate = searchParams.startDate;
-        }
-        if (searchParams.endDate) {
-          formattedParams.endDate = searchParams.endDate;
-        }
-        if (searchParams.minPrice) {
-          formattedParams.minPrice = Number(searchParams.minPrice);
-        }
-        if (searchParams.maxPrice) {
-          formattedParams.maxPrice = Number(searchParams.maxPrice);
-        }
-        if (searchParams.minRating) {
-          formattedParams.minRating = Number(searchParams.minRating);
-        }
-        if (searchParams.maxRating) {
-          formattedParams.maxRating = Number(searchParams.maxRating);
-        }
-        
-        console.log('Formatted search params:', formattedParams);
-        
+        const formattedParams = {
+          ...searchParams,
+          page: page,
+          size: size
+        };
+        // Xóa các trường undefined
+        Object.keys(formattedParams).forEach(key => (formattedParams[key] === undefined) && delete formattedParams[key]);
         response = await api.post('/tours/search', formattedParams);
-        console.log('Search response:', response.data);
-        
-        // Handle array response from search
-        if (Array.isArray(response.data)) {
+        // Xử lý kết quả phân trang
+        if (response.data && response.data.content) {
+          setTours(response.data.content);
+          setTotalElements(response.data.totalElements);
+        } else if (Array.isArray(response.data)) {
           setTours(response.data);
           setTotalElements(response.data.length);
         } else {
@@ -351,12 +345,7 @@ const Tour = () => {
           page: page.toString(),
           size: size.toString()
         });
-        
-        console.log('Fetching tours with params:', params.toString());
         response = await api.get(`/tours?${params.toString()}`);
-        
-        console.log('Get all tours response:', response.data);
-        // Handle paginated response from get all
         if (response.data && response.data.content) {
           setTours(response.data.content);
           setTotalElements(response.data.totalElements);
@@ -367,14 +356,7 @@ const Tour = () => {
         setError(null);
       }
     } catch (err) {
-      console.error("API Error:", err);
-      if (err.response) {
-        console.error("Response data:", err.response.data);
-        console.error("Response status:", err.response.status);
-        console.error("Response headers:", err.response.headers);
-      }
-      const errorMessage = err.response?.data?.message || err.message || 'Không thể tải danh sách tour';
-      setError(errorMessage);
+      setError(err.message || 'Không thể tải danh sách tour');
       setTours([]);
       setTotalElements(0);
     }
@@ -400,7 +382,7 @@ const Tour = () => {
     setIsSearching(false);
     setPage(0); // Reset page to 0
     setSearchParams({}); // Clear URL params
-    // The useEffect listening to `page` will refetch all tours.
+    fetchTours(); // Gọi lại API lấy tất cả tour
   };
 
   const initialValues = {

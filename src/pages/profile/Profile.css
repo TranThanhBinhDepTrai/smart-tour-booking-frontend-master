@@ -88,3 +88,194 @@
   .info-group { grid-template-columns: 1fr; gap: 0.3rem; }
   .profile-container h1 { font-size: 1rem; }
 } 
+
+/* Responsive & Centered Modal for all popups */
+@media (max-width: 991px) {
+  .modal-content {
+    width: 98vw !important;
+    min-width: unset !important;
+    max-width: 99vw !important;
+    margin: 0 auto !important;
+    border-radius: 12px !important;
+    padding: 0.5rem !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+  .modal-body, .modal-header, .modal-footer {
+    padding: 0.7rem 0.7rem !important;
+  }
+  .modal-title, .modal-header h4, .modal-header h5 {
+    text-align: center !important;
+    width: 100%;
+    font-size: 1.1rem !important;
+  }
+  .modal-footer {
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+  .modal-dialog {
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0 auto;
+  }
+  .form-control, .form-select, textarea {
+    font-size: 1rem !important;
+    border-radius: 10px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    margin-bottom: 8px !important;
+  }
+  .btn, .modal-footer .btn {
+    min-width: 90px !important;
+    font-size: 1rem !important;
+    border-radius: 8px !important;
+  }
+}
+@media (max-width: 575px) {
+  .modal-content {
+    width: 99vw !important;
+    padding: 0.2rem !important;
+    border-radius: 8px !important;
+  }
+  .modal-title, .modal-header h4, .modal-header h5 {
+    font-size: 1rem !important;
+  }
+  .form-control, .form-select, textarea {
+    font-size: 0.97rem !important;
+    border-radius: 8px !important;
+  }
+  .btn, .modal-footer .btn {
+    font-size: 0.97rem !important;
+    min-width: 80px !important;
+    border-radius: 7px !important;
+  }
+} 
+
+/* Fix combobox/select không bị dẹp, luôn đồng bộ input */
+.form-select {
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 10px 16px !important;
+  border-radius: 22px !important;
+  background-color: #f8fbff !important;
+  border: 1.5px solid #e3eaf3 !important;
+  font-size: 1rem !important;
+  box-shadow: none !important;
+  transition: border 0.2s;
+}
+.form-select:focus {
+  border-color: #2563eb !important;
+  background: #fff !important;
+}
+@media (max-width: 575px) {
+  .form-select {
+    min-height: 38px !important;
+    height: 38px !important;
+    font-size: 0.97rem !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
+  }
+} 
+
+/* Đảm bảo input và select trong cùng hàng luôn bằng kích thước nhau */
+.form-control, .form-select {
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 10px 16px !important;
+  border-radius: 22px !important;
+  font-size: 1rem !important;
+  width: 100% !important;
+  background-color: #f8fbff !important;
+  border: 1.5px solid #e3eaf3 !important;
+  box-shadow: none !important;
+  transition: border 0.2s;
+  display: block !important;
+}
+.form-control:focus, .form-select:focus {
+  border-color: #2563eb !important;
+  background: #fff !important;
+}
+@media (max-width: 575px) {
+  .form-control, .form-select {
+    min-height: 38px !important;
+    height: 38px !important;
+    font-size: 0.97rem !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
+  }
+} 
+
+/* Đảm bảo input và select luôn cùng baseline, không bị lệch khi nằm ngang hàng */
+.form-group, .mb-3 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .row > .col-md-6 > .form-group, .row > .col-md-6 > .mb-3 {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .row > .col-md-6 > .form-group > label,
+  .row > .col-md-6 > .mb-3 > label {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .row > .col-md-6 > .form-group > .form-control,
+  .row > .col-md-6 > .form-group > .form-select,
+  .row > .col-md-6 > .mb-3 > .form-control,
+  .row > .col-md-6 > .mb-3 > .form-select {
+    align-self: stretch;
+    margin-bottom: 0;
+  }
+}
+
+.form-control, .form-select {
+  vertical-align: middle !important;
+  display: flex !important;
+  align-items: center !important;
+} 
+
+/* Đánh giá: 5 ngôi sao nằm ngang, textarea nhận xét hình chữ nhật bo tròn vừa phải */
+.rating-stars-row, .star-row, .review-stars-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+}
+.rating-stars-row span, .star-row span, .review-stars-row span {
+  font-size: 2rem !important;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.rating-stars-row span:hover, .star-row span:hover, .review-stars-row span:hover {
+  transform: scale(1.15);
+}
+
+textarea.form-control, textarea {
+  border-radius: 12px !important;
+  min-height: 90px !important;
+  resize: vertical !important;
+  padding: 12px 16px !important;
+  font-size: 1.08rem !important;
+  background: #f8fbff !important;
+  border: 1.5px solid #e3eaf3 !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 575px) {
+  .rating-stars-row span, .star-row span, .review-stars-row span {
+    font-size: 1.5rem !important;
+  }
+  textarea.form-control, textarea {
+    min-height: 70px !important;
+    border-radius: 8px !important;
+    font-size: 0.97rem !important;
+    padding: 8px 10px !important;
+  }
+} 

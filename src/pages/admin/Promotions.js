@@ -278,56 +278,60 @@ const Promotions = () => {
     };
 
     return (
-        <Container fluid className="admin-page-container mt-4">
-            {error && <Alert variant="danger">{error}</Alert>}
-            <div className="admin-tour-header mb-3">
-                <div>
-                    <h1 className="admin-tour-title">Quản lý khuyến mãi</h1>
-                    <p className="admin-tour-subtitle">Danh sách các chương trình khuyến mãi</p>
-                </div>
-                <button
-                    onClick={() => navigate('/admin/promotions/create')}
-                    className="add-tour-button"
-                >
-                    + Thêm khuyến mãi
-                </button>
-            </div>
-            <div className="search-bar-wrapper">
-                <input
-                    type="text"
-                    className="search-bar-input"
-                    placeholder="Tìm theo mã hoặc mô tả"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                />
-                <button className="search-bar-btn" type="button" disabled>
-                    <FaSearch />
-                </button>
-            </div>
-
-            {loading ? (
-                <div className="text-center my-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Đang tải...</span>
+        <div className="admin-tour-container p-6">
+            <div className="admin-tour-card p-6">
+                {/* Header */}
+                <div className="admin-tour-header">
+                    <div>
+                        <h1 className="admin-tour-title">Quản Lý Khuyến Mãi</h1>
+                        <p className="admin-tour-subtitle">Danh sách các chương trình khuyến mãi</p>
                     </div>
+                    <button
+                        onClick={() => navigate('/admin/promotions/create')}
+                        className="add-tour-button d-flex align-items-center gap-2"
+                        style={{padding: '0.5rem 1.5rem', fontSize: '1rem', borderRadius: '2rem', boxShadow: '0 2px 8px rgba(59,130,246,0.10)', fontWeight: 700}}
+                    >
+                        <span style={{marginRight: 8, fontWeight: 900, fontSize: '1.2em'}}>+</span> Thêm Khuyến Mãi Mới
+                    </button>
                 </div>
-            ) : (
-                <>
-                    <Table striped bordered hover responsive className="admin-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Mã khuyến mãi</th>
-                                <th>Mô tả</th>
-                                <th>Giảm giá (%)</th>
-                                <th>Ngày bắt đầu</th>
-                                <th>Ngày kết thúc</th>
-                                <th>Giới hạn sử dụng</th>
-                                <th>Trạng thái</th>
-                                <th style={{width: "200px"}}>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+
+                {/* Search Bar */}
+                <div className="search-bar-wrapper">
+                    <input
+                        type="text"
+                        className="search-bar-input"
+                        placeholder="Tìm kiếm theo mã hoặc mô tả"
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
+                    <button className="search-bar-btn" type="button" disabled>
+                        <FaSearch />
+                    </button>
+                </div>
+
+                <div className="search-results-info">
+                    Hiển thị <strong>{promotions.filter(promotion => {
+                        const s = searchTerm.toLowerCase();
+                        return (
+                            promotion.code.toLowerCase().includes(s) ||
+                            promotion.description.toLowerCase().includes(s) ||
+                            promotion.discountPercent.toString().includes(s) ||
+                            (promotion.startAt && promotion.startAt.toLowerCase().includes(s)) ||
+                            (promotion.endAt && promotion.endAt.toLowerCase().includes(s))
+                        );
+                    }).length}</strong> trên tổng số <strong>{totalItems}</strong> khuyến mãi
+                </div>
+
+                {error && <Alert variant="danger">{error}</Alert>}
+                {loading ? (
+                    <div className="text-center my-5">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Đang tải...</span>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="user-list">
                             {promotions && promotions.filter(promotion => {
                                 const s = searchTerm.toLowerCase();
                                 return (
@@ -339,206 +343,219 @@ const Promotions = () => {
                                 );
                             })
                             .map((promotion) => (
-                                <tr key={promotion.id}>
-                                    <td>{promotion.id}</td>
-                                    <td>{promotion.code}</td>
-                                    <td>{promotion.description}</td>
-                                    <td>{promotion.discountPercent}%</td>
-                                    <td>{formatDate(promotion.startAt)}</td>
-                                    <td>{formatDate(promotion.endAt)}</td>
-                                    <td>{promotion.usageLimit}</td>
-                                    <td>
-                                        {promotion.active ? (
-                                            <span style={{ color: 'green', fontWeight: 'bold' }}>Còn hiệu lực</span>
-                                        ) : (
-                                            <span style={{ color: 'red', fontWeight: 'bold' }}>Hết hiệu lực</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <div className="d-flex gap-2 justify-content-center">
-                                            <button className="action-button edit-button" onClick={() => handleShow(promotion)} title="Sửa">Sửa</button>
-                                            <button className="action-button delete-btn" onClick={() => handleDelete(promotion)} title="Xóa">Xóa</button>
-                                            <Button
-                                                variant="success"
-                                                size="sm"
-                                                onClick={() => handleEmailModalShow(promotion)}
-                                            >
-                                                Gửi Email
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <div className="user-card-item" key={promotion.id}>
+                                    <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                                        <span className="user-id fw-bold">#{promotion.id} - {promotion.code}</span>
+                                        <span className="ms-2 badge bg-primary">{promotion.discountPercent}%</span>
+                                    </div>
+                                    <div className="user-card-body mb-2">
+                                        <div><strong>Mô tả:</strong> {promotion.description}</div>
+                                        <div><strong>Ngày bắt đầu:</strong> {formatDate(promotion.startAt)}</div>
+                                        <div><strong>Ngày kết thúc:</strong> {formatDate(promotion.endAt)}</div>
+                                        <div><strong>Giới hạn sử dụng:</strong> {promotion.usageLimit}</div>
+                                    </div>
+                                    <div className="user-card-status mb-2">
+                                        <span className={`badge ${promotion.active ? 'bg-success' : 'bg-danger'} me-1`}>
+                                            {promotion.active ? 'Còn hiệu lực' : 'Hết hiệu lực'}
+                                        </span>
+                                    </div>
+                                    <div className="user-card-actions d-flex flex-wrap gap-2">
+                                        <Button 
+                                            variant="primary" 
+                                            size="sm"
+                                            onClick={() => handleShow(promotion)}
+                                            title="Sửa"
+                                        >
+                                            <i className="fas fa-edit"></i>
+                                        </Button>
+                                        <Button 
+                                            variant="danger" 
+                                            size="sm"
+                                            onClick={() => handleDelete(promotion)}
+                                            title="Xóa"
+                                        >
+                                            <i className="fas fa-trash"></i>
+                                        </Button>
+                                        <Button
+                                            variant="success"
+                                            size="sm"
+                                            onClick={() => handleEmailModalShow(promotion)}
+                                            title="Gửi Email"
+                                        >
+                                            <i className="fas fa-envelope"></i>
+                                        </Button>
+                                    </div>
+                                </div>
                             ))}
-                        </tbody>
-                    </Table>
-
-                    {promotions && promotions.length > 0 && (
-                        <div className="pagination">
-                            <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>Đầu</button>
-                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trước</button>
-                            <span>Trang {currentPage + 1} / {totalPages} (Tổng: {totalItems} khuyến mãi)</span>
-                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>Sau</button>
-                            <button onClick={() => handlePageChange(totalPages - 1)} disabled={currentPage >= totalPages - 1}>Cuối</button>
                         </div>
-                    )}
-                </>
-            )}
-
-            <Modal show={showModal} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{isEditing ? 'Cập nhật khuyến mãi' : 'Thêm mới khuyến mãi'}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Mã khuyến mãi</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="code"
-                                value={formData.code}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Mô tả</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Phần trăm giảm giá (%)</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="discountPercent"
-                                value={formData.discountPercent}
-                                onChange={handleChange}
-                                min="0"
-                                max="100"
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Ngày bắt đầu</Form.Label>
-                            <Form.Control
-                                type="datetime-local"
-                                name="startAt"
-                                value={formData.startAt}
-                                onChange={handleChange}
-                                required
-                                min={minTodayISOString}
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Ngày kết thúc</Form.Label>
-                            <Form.Control
-                                type="datetime-local"
-                                name="endAt"
-                                value={formData.endAt}
-                                onChange={handleChange}
-                                required
-                                min={formData.startAt || minTodayISOString}
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Giới hạn sử dụng</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="usageLimit"
-                                value={formData.usageLimit}
-                                onChange={handleChange}
-                                min="0"
-                                required
-                            />
-                        </Form.Group>
-
-                        <div className="d-flex justify-content-end gap-2">
-                            <Button variant="secondary" onClick={handleClose}>
-                                Hủy
-                            </Button>
-                            <Button variant="primary" type="submit">
-                                {isEditing ? 'Cập nhật' : 'Thêm mới'}
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-
-            <Modal show={showEmailModal} onHide={handleEmailModalClose} size="lg">
-                <Modal.Header closeButton>
-                    <Modal.Title>Gửi mã khuyến mãi qua email</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleEmailSubmit}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Mã khuyến mãi</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={emailFormData.promotionCode}
-                                disabled
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Chọn người dùng</Form.Label>
-                            <div className="mb-2">
-                                <Form.Check
-                                    type="checkbox"
-                                    label="Chọn tất cả"
-                                    onChange={handleSelectAllUsers}
-                                    checked={selectedUsers.length === users.length && users.length > 0}
-                                />
+                        {promotions && promotions.length > 0 && (
+                            <div className="pagination mt-3">
+                                <button onClick={() => handlePageChange(0)} disabled={currentPage === 0}>Đầu</button>
+                                <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>Trước</button>
+                                <span>Trang {currentPage + 1} / {totalPages} (Tổng: {totalItems} khuyến mãi)</span>
+                                <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>Sau</button>
+                                <button onClick={() => handlePageChange(totalPages - 1)} disabled={currentPage >= totalPages - 1}>Cuối</button>
                             </div>
-                            <div style={{ maxHeight: '300px', overflowY: 'auto' }} className="border rounded p-2">
-                                {users.map(user => (
-                                    <Form.Check
-                                        key={user.id}
-                                        type="checkbox"
-                                        id={`user-${user.id}`}
-                                        label={`${user.fullName} (${user.email})`}
-                                        checked={selectedUsers.includes(user.id)}
-                                        onChange={() => handleUserSelect(user.id)}
-                                        className="mb-2"
-                                    />
-                                ))}
-                            </div>
-                            <Form.Text className="text-muted">
-                                Đã chọn {selectedUsers.length} người dùng
-                            </Form.Text>
-                        </Form.Group>
-
-                        {error && (
-                            <Alert variant="danger" className="mb-3">
-                                {error}
-                            </Alert>
                         )}
+                    </>
+                )}
 
-                        <div className="d-flex justify-content-end gap-2">
-                            <Button variant="secondary" onClick={handleEmailModalClose}>
-                                Hủy
-                            </Button>
-                            <Button 
-                                variant="primary" 
-                                type="submit"
-                                disabled={selectedUsers.length === 0}
-                            >
-                                Gửi
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-        </Container>
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{isEditing ? 'Cập nhật khuyến mãi' : 'Thêm mới khuyến mãi'}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Mã khuyến mãi</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="code"
+                                    value={formData.code}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Mô tả</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Phần trăm giảm giá (%)</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="discountPercent"
+                                    value={formData.discountPercent}
+                                    onChange={handleChange}
+                                    min="0"
+                                    max="100"
+                                    required
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Ngày bắt đầu</Form.Label>
+                                <Form.Control
+                                    type="datetime-local"
+                                    name="startAt"
+                                    value={formData.startAt}
+                                    onChange={handleChange}
+                                    required
+                                    min={minTodayISOString}
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Ngày kết thúc</Form.Label>
+                                <Form.Control
+                                    type="datetime-local"
+                                    name="endAt"
+                                    value={formData.endAt}
+                                    onChange={handleChange}
+                                    required
+                                    min={formData.startAt || minTodayISOString}
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Giới hạn sử dụng</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="usageLimit"
+                                    value={formData.usageLimit}
+                                    onChange={handleChange}
+                                    min="0"
+                                    required
+                                />
+                            </Form.Group>
+
+                            <div className="d-flex justify-content-end gap-2">
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Hủy
+                                </Button>
+                                <Button variant="primary" type="submit">
+                                    {isEditing ? 'Cập nhật' : 'Thêm mới'}
+                                </Button>
+                            </div>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+
+                <Modal show={showEmailModal} onHide={handleEmailModalClose} size="lg">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Gửi mã khuyến mãi qua email</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={handleEmailSubmit}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Mã khuyến mãi</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={emailFormData.promotionCode}
+                                    disabled
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Chọn người dùng</Form.Label>
+                                <div className="mb-2">
+                                    <Form.Check
+                                        type="checkbox"
+                                        label="Chọn tất cả"
+                                        onChange={handleSelectAllUsers}
+                                        checked={selectedUsers.length === users.length && users.length > 0}
+                                    />
+                                </div>
+                                <div style={{ maxHeight: '300px', overflowY: 'auto' }} className="border rounded p-2">
+                                    {users.map(user => (
+                                        <Form.Check
+                                            key={user.id}
+                                            type="checkbox"
+                                            id={`user-${user.id}`}
+                                            label={`${user.fullName} (${user.email})`}
+                                            checked={selectedUsers.includes(user.id)}
+                                            onChange={() => handleUserSelect(user.id)}
+                                            className="mb-2"
+                                        />
+                                    ))}
+                                </div>
+                                <Form.Text className="text-muted">
+                                    Đã chọn {selectedUsers.length} người dùng
+                                </Form.Text>
+                            </Form.Group>
+
+                            {error && (
+                                <Alert variant="danger" className="mb-3">
+                                    {error}
+                                </Alert>
+                            )}
+
+                            <div className="d-flex justify-content-end gap-2">
+                                <Button variant="secondary" onClick={handleEmailModalClose}>
+                                    Hủy
+                                </Button>
+                                <Button 
+                                    variant="primary" 
+                                    type="submit"
+                                    disabled={selectedUsers.length === 0}
+                                >
+                                    Gửi
+                                </Button>
+                            </div>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+            </div>
+        </div>
     );
 };
 

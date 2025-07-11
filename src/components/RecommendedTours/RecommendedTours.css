@@ -500,4 +500,35 @@
     flex-direction: column;
     gap: 8px;
   }
+  /* NEW: Đảm bảo mọi card đều full width và xếp dọc */
+  .tour-card-masonry.big,
+  .tour-card-masonry.small {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+} 
+
+@media (max-width: 1000px) {
+  .recommended-tours-2col {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .col-left, .col-right {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .small-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tour-card-masonry.big,
+  .tour-card-masonry.small {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
 } 

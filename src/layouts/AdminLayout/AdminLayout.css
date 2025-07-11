@@ -1,27 +1,61 @@
-
+/* Sidebar chính */
 .sidebar {
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    padding: 20px;
-    border-right: 1px solid #dee2e6;
+  width: 340px; /* Rộng hơn rõ rệt */
+  min-height: 100vh;
+  background-color: #23272b;
+  padding: 36px 28px 36px 28px;
+  border-right: 1px solid #222;
+  font-size: 1.65rem; /* Rất lớn */
+  font-weight: 600;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
+/* Wrapper layout nếu có dùng flex */
+.sidebar-wrapper {
+  flex: 0 0 340px;
+  max-width: 340px;
+}
+
+/* Nav item */
 .sidebar .nav-link {
-    color: #333;
-    padding: 10px 15px;
-    margin-bottom: 5px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+  color: #f5f6fa;
+  padding: 22px 28px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  font-size: 1.45rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: all 0.25s;
 }
 
-.sidebar .nav-link:hover {
-    background-color: #e9ecef;
-    color: #007bff;
+.sidebar .nav-link .me-2, .sidebar .nav-link svg {
+  font-size: 2.1rem !important;
+  min-width: 2.1rem;
 }
 
-.sidebar .nav-link.active {
-    background-color: #007bff;
-    color: white;
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Sub-menu */
+.sidebar .nav .nav-link,
+.sidebar .nav a.nav-link {
+  font-size: 1.18rem !important;
+  padding: 14px 48px;
+  margin-bottom: 6px;
+  color: #d1d3e2;
+  font-weight: 600;
+}
+
+.sidebar .nav .nav-link .me-2, .sidebar .nav .nav-link svg {
+  font-size: 1.5rem !important;
+  min-width: 1.5rem;
 }
 
 .main-content {
@@ -80,14 +114,45 @@ transition: 0.3s;
 
 /* Desktop lớn */
 @media (min-width: 1200px) {
-  .sidebar { min-height: 100vh; padding: 20px; border-right: 1px solid #dee2e6; }
-  .main-content { padding: 20px; }
+  .sidebar {
+    width: 280px !important;
+    font-size: 1.2rem !important;
+    padding: 24px 20px !important;
+    min-height: 100vh;
+    border-right: 1px solid #dee2e6;
+    background: #f8f9fa;
+    font-weight: 600;
+  }
+  .sidebar .nav-link {
+    font-size: 1.15rem !important;
+    padding: 14px 20px !important;
+    margin-bottom: 8px !important;
+    border-radius: 6px !important;
+    color: #333 !important;
+    background: none !important;
+  }
+  .sidebar .nav-link .me-2, .sidebar .nav-link svg {
+    font-size: 1.5rem !important;
+    min-width: 1.5rem !important;
+  }
+  .sidebar .nav .nav-link,
+  .sidebar .nav a.nav-link {
+    font-size: 1.05rem !important;
+    padding: 10px 32px !important;
+    color: #555 !important;
+    margin-bottom: 4px !important;
+  }
 }
 
 /* Laptop */
 @media (min-width: 992px) and (max-width: 1199px) {
-  .sidebar { min-height: 90vh; padding: 16px; }
-  .main-content { padding: 16px; }
+  .sidebar {
+    width: 340px !important;
+    font-size: 1.65rem !important;
+    padding: 36px 28px 36px 28px !important;
+    min-height: 100vh;
+    border-right: 1px solid #222;
+  }
 }
 
 /* Tablet */
@@ -178,5 +243,38 @@ transition: 0.3s;
     text-align: left;
     font-size: 1.1rem;
     padding: 1rem 0.7rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .sidebar {
+    width: 100vw;
+    font-size: 1.18rem;
+    padding: 18px 10px;
+  }
+  .sidebar .nav-link {
+    font-size: 1.12rem;
+    padding: 12px 14px;
+  }
+  .sidebar .nav .nav-link,
+  .sidebar .nav a.nav-link {
+    font-size: 1.05rem !important;
+    padding: 10px 32px;
+  }
+}
+
+@media (max-width: 575px) {
+  .sidebar {
+    font-size: 1.05rem;
+    padding: 4px 2px;
+  }
+  .sidebar .nav-link {
+    font-size: 1rem;
+    padding: 8px 8px;
+  }
+  .sidebar .nav .nav-link,
+  .sidebar .nav a.nav-link {
+    font-size: 0.98rem !important;
+    padding-left: 1.2rem;
   }
 }

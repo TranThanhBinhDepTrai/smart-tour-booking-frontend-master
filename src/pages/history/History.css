@@ -155,3 +155,104 @@ h2 {
   .search-filter-section { flex-direction: column !important; width: 100% !important; gap: 6px !important; align-items: center !important; justify-content: center !important; }
   .booking-search-input, .booking-search-btn { width: 98vw !important; max-width: 320px !important; font-size: 0.95rem !important; }
 }
+
+/* Responsive table for mobile */
+@media (max-width: 767px) {
+  .table-responsive {
+    overflow-x: auto !important;
+    width: 100vw !important;
+    margin-left: -8px !important;
+    margin-right: -8px !important;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .table th, .table td {
+    font-size: 12px !important;
+    padding: 0.2rem 0.1rem !important;
+    white-space: nowrap !important;
+  }
+  .modal-content {
+    width: 98vw !important;
+    min-width: unset !important;
+    max-width: 99vw !important;
+    margin: 0 auto !important;
+    border-radius: 10px !important;
+    padding: 0.5rem !important;
+  }
+  .modal-body, .modal-header, .modal-footer {
+    padding: 0.5rem 0.5rem !important;
+  }
+  h2 {
+    font-size: 1.1rem !important;
+    margin-bottom: 1rem !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .table th, .table td {
+    font-size: 11px !important;
+    padding: 0.15rem 0.08rem !important;
+  }
+  .modal-content {
+    width: 99vw !important;
+    padding: 0.2rem !important;
+  }
+  h2 {
+    font-size: 1rem !important;
+  }
+}
+
+/* Sửa triệt để modal popup luôn căn giữa dọc và ngang, không bị lệch */
+@media (max-width: 2000px) {
+  .modal-dialog {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 100vh !important;
+    margin: 0 auto !important;
+  }
+  .modal-content {
+    margin: 0 auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: unset !important;
+    top: 50px !important;
+    position: relative !important;
+    max-width: 98vw !important;
+    width: 100%;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+  }
+}
+@media (max-width: 767px) {
+  .modal-content {
+    width: 98vw !important;
+    min-width: unset !important;
+    max-width: 99vw !important;
+    border-radius: 10px !important;
+    padding: 0.5rem !important;
+  }
+  .modal-body, .modal-header, .modal-footer {
+    padding: 0.5rem 0.5rem !important;
+  }
+  h2, .modal-title, .modal-header h4, .modal-header h5 {
+    font-size: 1.1rem !important;
+    margin-bottom: 1rem !important;
+    text-align: center !important;
+    width: 100%;
+  }
+  .modal-footer {
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+}
+@media (max-width: 575px) {
+  .modal-content {
+    width: 99vw !important;
+    padding: 0.2rem !important;
+    border-radius: 8px !important;
+  }
+  .modal-title, .modal-header h4, .modal-header h5 {
+    font-size: 1rem !important;
+  }
+}

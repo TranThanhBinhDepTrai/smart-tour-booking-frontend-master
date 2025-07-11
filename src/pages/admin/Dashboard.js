@@ -54,33 +54,33 @@ const Revenue = () => {
         <div>Đang tải...</div>
       ) : data ? (
         <>
-          <Row className="mb-4">
-            <Col md={3} sm={6} className="mb-3">
-              <Card className="text-center">
+          <Row className="mb-4 g-4 justify-content-center dashboard-stats-row">
+            <Col xs={12} sm={6} md={3} className="d-flex">
+              <Card className="text-center flex-fill dashboard-stat-card">
                 <Card.Body>
                   <div className="fs-3 fw-bold text-success">{data.activeTours}</div>
                   <div>Tổng số tours đang hoạt động</div>
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={3} sm={6} className="mb-3">
-              <Card className="text-center">
+            <Col xs={12} sm={6} md={3} className="d-flex">
+              <Card className="text-center flex-fill dashboard-stat-card">
                 <Card.Body>
                   <div className="fs-3 fw-bold text-primary">{data.totalBookings}</div>
                   <div>Tổng số lượt booking</div>
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={3} sm={6} className="mb-3">
-              <Card className="text-center">
+            <Col xs={12} sm={6} md={3} className="d-flex">
+              <Card className="text-center flex-fill dashboard-stat-card">
                 <Card.Body>
                   <div className="fs-3 fw-bold text-info">{data.totalUsers}</div>
                   <div>Số người dùng đăng ký</div>
                 </Card.Body>
               </Card>
             </Col>
-            <Col md={3} sm={6} className="mb-3">
-              <Card className="text-center">
+            <Col xs={12} sm={6} md={3} className="d-flex">
+              <Card className="text-center flex-fill dashboard-stat-card">
                 <Card.Body>
                   <div className="fs-3 fw-bold text-danger">{data.totalRevenue?.toLocaleString('vi-VN')} VNĐ</div>
                   <div>Tổng doanh thu</div>

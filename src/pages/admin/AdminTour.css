@@ -8,6 +8,8 @@ image.png.admin-tour-container {
   background: white;
   border-radius: 1rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 2rem 1.2rem;
+  overflow: visible;
 }
 
 .admin-tour-header {
@@ -878,206 +880,133 @@ tbody td {
   }
 }
 
-@media (max-width: 767px) {
+.tour-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: #fff;
+}
+.tour-table {
+  width: 100%;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #fff;
+}
+.tour-table th {
+  background: #f1f5f9;
+  color: #222;
+  font-size: 0.98rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.7rem 0.4rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+.tour-table td {
+  font-size: 0.95rem;
+  color: #222;
+  text-align: center;
+  padding: 0.6rem 0.3rem;
+  vertical-align: middle;
+  background: #fff;
+}
+.tour-table td:first-child, .tour-table th:first-child {
+  text-align: center;
+  width: 70px;
+}
+.tour-thumbnail {
+  width: 56px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+.status-badge {
+  display: inline-block;
+  padding: 0.35em 1em;
+  border-radius: 1.2em;
+  font-size: 0.98rem;
+  font-weight: 700;
+  background: #e0e7ff;
+  color: #2563eb;
+  margin-bottom: 2px;
+}
+.status-active {
+  background: #d1fae5;
+  color: #059669;
+}
+.status-inactive {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.action-button {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.45rem 1.1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.view-btn { background: #2563eb; color: #fff; }
+.view-btn:hover { background: #1d4ed8; }
+.update-btn { background: #f59e42; color: #fff; }
+.update-btn:hover { background: #ea580c; }
+.delete-btn { background: #ef4444; color: #fff; }
+.delete-btn:hover { background: #b91c1c; }
+
+@media (max-width: 991px) {
   .tour-table-container {
-    width: 100vw !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    margin: 0;
-    padding: 0;
+    overflow-x: auto;
   }
   .tour-table {
-    min-width: 600px !important;
-    font-size: 0.92rem !important;
+    min-width: 540px;
   }
   .tour-table th, .tour-table td {
-    padding: 0.3rem 0.4rem !important;
-    font-size: 0.92rem !important;
-    white-space: nowrap !important;
-  }
-  .action-button, .edit-button, .delete-button, .view-btn {
-    font-size: 0.92rem !important;
-    padding: 0.3rem 0.7rem !important;
-    min-width: 54px !important;
-    border-radius: 8px !important;
+    font-size: 0.92rem;
+    padding: 0.4rem 0.2rem;
   }
   .tour-thumbnail {
-    width: 60px !important;
-    height: 40px !important;
-    object-fit: cover;
-    border-radius: 4px !important;
+    width: 40px;
+    height: 30px;
   }
 }
-
 @media (max-width: 767px) {
-  .search-filter-section {
-    flex-direction: row !important;
-    gap: 0 !important;
-    align-items: center !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    justify-content: stretch !important;
-    background: none !important;
+  .tour-table {
+    min-width: 400px;
   }
-  .admin-search-bar {
-    width: 100% !important;
-    min-width: 0 !important;
-    font-size: 1rem !important;
-    border-radius: 24px 0 0 24px !important;
-    padding: 0 1rem !important;
-    margin-bottom: 0 !important;
-    box-sizing: border-box !important;
-    border: 1.5px solid #0074bc !important;
-    border-right: none !important;
-    height: 44px !important;
-    outline: none !important;
-    background: #fff !important;
-    display: block !important;
-    line-height: 44px !important;
+  .tour-table th, .tour-table td {
+    font-size: 0.88rem;
+    padding: 0.2rem 0.1rem;
   }
-  .admin-search-btn {
-    width: 48px !important;
-    height: 44px !important;
-    min-width: 48px !important;
-    font-size: 1.2rem !important;
-    border-radius: 0 24px 24px 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: #0074bc !important;
-    color: #fff !important;
-    border: 1.5px solid #0074bc !important;
-    border-left: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-  }
-  .admin-search-btn svg {
-    color: #fff !important;
-    font-size: 1.3em !important;
-    display: block !important;
-    margin: 0 auto !important;
-    pointer-events: none;
+  .tour-thumbnail {
+    width: 28px;
+    height: 20px;
   }
 }
-
-/* OVERRIDE hoàn toàn các style cũ liên quan admin-search-bar */
-.admin-search-bar, .admin-search-bar .input-group, .admin-search-bar .form-control, .admin-search-bar .btn {
-  all: unset !important;
-  display: none !important;
-}
-
-/* Đảm bảo search-filter-section flush, không gap, input 80%, button 20% */
-.search-filter-section {
-  display: flex;
-  width: 100%;
-  margin-bottom: 1rem;
-  align-items: center;
-  gap: 0 !important;
-}
-.admin-search-input {
-  flex: 0 1 80%;
-  width: 80%;
-  min-width: 0;
-  max-width: unset;
-  border-radius: 32px 0 0 32px !important;
-  border: 1.5px solid #e3eaf3 !important;
-  padding: 0 1.2rem !important;
-  font-size: 1.1rem !important;
-  background: #fff !important;
-  height: 44px !important;
-  outline: none !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  margin: 0 !important;
-}
-.admin-search-btn {
-  flex: 0 1 20%;
-  width: 20%;
-  min-width: 44px;
-  max-width: 80px;
-  height: 44px !important;
-  border-radius: 0 32px 32px 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0074bc !important;
-  color: #fff !important;
-  border: none !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  font-size: 1.2rem !important;
-}
-.admin-search-btn svg {
-  color: #fff !important;
-  font-size: 1.2em;
-}
-@media (max-width: 900px) {
-  .admin-search-input {
-    flex: 0 1 75%;
-    width: 75%;
-    min-width: 0;
-    max-width: unset;
+@media (max-width: 575px) {
+  .tour-table {
+    min-width: 480px;
   }
-  .admin-search-btn {
-    flex: 0 1 25%;
-    width: 25%;
-    min-width: 44px;
-    max-width: 80px;
+  .tour-table th, .tour-table td {
+    font-size: 0.85rem;
+    padding: 0.2rem 0.1rem;
+  }
+  .tour-thumbnail {
+    width: 36px;
+    height: 28px;
   }
 }
-@media (max-width: 600px) {
-  .admin-search-input {
-    flex: 0 1 70%;
-    width: 70%;
-  }
-  .admin-search-btn {
-    flex: 0 1 30%;
-    width: 30%;
-  }
-}
-
-.search-bar-wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto 1.5rem auto;
-  background: #fff;
-  border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(59,130,246,0.10);
-  padding: 0 0.25rem;
-}
-.search-bar-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 1.1rem;
-  padding: 0.9rem 1.2rem;
-  border-radius: 999px;
-}
-.search-bar-btn {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  margin-left: 0.25rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.search-bar-btn:hover {
-  background: #1d4ed8;
-}
-
 
 /* 10 inch – Netbook, mini laptop (1024x600) */
 @media (min-width: 720px) and (max-width: 1023px) {

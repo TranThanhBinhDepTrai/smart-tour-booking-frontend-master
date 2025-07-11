@@ -265,45 +265,36 @@ const Users = () => {
     return (
         <Container fluid className="admin-page-container mt-4">
             {error && <Alert variant="danger">{error}</Alert>}
-            <div className="admin-header mb-3">
-                <h2 className="admin-title">Quản lý người dùng</h2>
-                <div className="admin-subtitle">Danh sách người dùng hệ thống</div>
-            </div>
-            <div className="search-bar-wrapper">
-                <input
-                    type="text"
-                    className="search-bar-input"
-                    placeholder="Tìm kiếm theo họ tên, email, số điện thoại"
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                />
-                <button className="search-bar-btn" type="button" disabled>
-                    <FaSearch />
-                </button>
-            </div>
-
-            {loading ? (
-                <div className="text-center my-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Đang tải...</span>
+            <div className="user-card">
+                <div className="admin-header user-header mb-3 text-start">
+                    <div>
+                        <h2 className="admin-title mb-0 text-start">Quản lý người dùng</h2>
+                        <div className="admin-subtitle text-start">Danh sách người dùng hệ thống</div>
                     </div>
+                    {/* Có thể thêm nút/thành phần bên phải nếu cần */}
                 </div>
-            ) : (
-                <>
-                    <Table striped bordered hover responsive className="admin-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Họ tên</th>
-                                <th>Email</th>
-                                <th>Số điện thoại</th>
-                                <th>Địa chỉ</th>
-                                <th>Vai trò</th>
-                                <th>Trạng thái</th>
-                                <th style={{width: "200px"}}>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <div className="search-bar-wrapper">
+                    <input
+                        type="text"
+                        className="search-bar-input"
+                        placeholder="Tìm kiếm theo họ tên, email, số điện thoại"
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                    />
+                    <button className="search-bar-btn" type="button" disabled>
+                        <FaSearch />
+                    </button>
+                </div>
+
+                {loading ? (
+                    <div className="text-center my-5">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Đang tải...</span>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="user-list">
                             {users.filter(user => {
                                 const s = searchTerm.toLowerCase();
                                 return (
@@ -314,91 +305,88 @@ const Users = () => {
                                     (user.role && user.role.name && user.role.name.toLowerCase().includes(s))
                                 );
                             }).map(user => (
-                                <tr key={user.id}>
-                                    <td>{user.id}</td>
-                                    <td>{user.fullName}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.phone}</td>
-                                    <td>{user.address}</td>
-                                    <td>
-                                        <Badge bg={user.role.id === 2 ? "danger" : "primary"} className="d-block">
-                                            {user.role.name}
-                                        </Badge>
-                                    </td>
-                                    <td>
-                                        <Badge bg={user.blocked ? "danger" : "success"} className="d-block mb-1">
+                                <div className="user-card-item" key={user.id}>
+                                    <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                                        <span className="user-id fw-bold">#{user.id}</span>
+                                        <Badge bg={user.role.id === 2 ? "danger" : "primary"} className="ms-2">{user.role.name}</Badge>
+                                    </div>
+                                    <div className="user-card-body mb-2">
+                                        <div><strong>Họ tên:</strong> {user.fullName}</div>
+                                        <div><strong>Email:</strong> {user.email}</div>
+                                        <div><strong>Số điện thoại:</strong> {user.phone}</div>
+                                        <div><strong>Địa chỉ:</strong> {user.address}</div>
+                                    </div>
+                                    <div className="user-card-status mb-2">
+                                        <Badge bg={user.blocked ? "danger" : "success"} className="me-1">
                                             {user.blocked ? "Đã khóa" : "Hoạt động"}
                                         </Badge>
-                                        <Badge bg={user.deleted ? "secondary" : "success"} className="d-block">
+                                        <Badge bg={user.deleted ? "secondary" : "success"}>
                                             {user.deleted ? "Đã xóa" : "Chưa xóa"}
                                         </Badge>
-                                    </td>
-                                    <td>
-                                        <div className="d-flex gap-2 justify-content-center">
-                                            <Button 
-                                                variant="info" 
-                                                size="sm"
-                                                onClick={() => handleShowDetail(user.id)}
-                                                title="Xem chi tiết"
-                                            >
-                                                <i className="fas fa-eye"></i>
-                                            </Button>
-                                            <Button 
-                                                variant="primary" 
-                                                size="sm"
-                                                onClick={() => handleShow(user)}
-                                                title="Chỉnh sửa"
-                                            >
-                                                <i className="fas fa-edit"></i>
-                                            </Button>
-                                            <Button 
-                                                variant="warning" 
-                                                size="sm"
-                                                onClick={() => handleBlockUser(user.id)}
-                                                title="Khóa tài khoản"
-                                            >
-                                                <i className="fas fa-lock"></i>
-                                            </Button>
-                                            <Button 
-                                                variant="success" 
-                                                size="sm"
-                                                onClick={() => handleUnblockUser(user.id)}
-                                                title="Mở khóa tài khoản"
-                                            >
-                                                <i className="fas fa-lock-open"></i>
-                                            </Button>
-                                            <Button 
-                                                variant="danger" 
-                                                size="sm"
-                                                onClick={() => handleDelete(user.id)}
-                                                title="Xóa tài khoản"
-                                            >
-                                                <i className="fas fa-trash"></i>
-                                            </Button>
-                                            <Button 
-                                                variant="secondary" 
-                                                size="sm"
-                                                onClick={() => handleShowHistory(user)}
-                                                title="Xem lịch sử đặt tour"
-                                            >
-                                                <i className="fas fa-history"></i>
-                                            </Button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                    <div className="user-card-actions d-flex flex-wrap gap-2">
+                                        <Button 
+                                            variant="info" 
+                                            size="sm"
+                                            onClick={() => handleShowDetail(user.id)}
+                                            title="Xem chi tiết"
+                                        >
+                                            <i className="fas fa-eye"></i>
+                                        </Button>
+                                        <Button 
+                                            variant="primary" 
+                                            size="sm"
+                                            onClick={() => handleShow(user)}
+                                            title="Chỉnh sửa"
+                                        >
+                                            <i className="fas fa-edit"></i>
+                                        </Button>
+                                        <Button 
+                                            variant="warning" 
+                                            size="sm"
+                                            onClick={() => handleBlockUser(user.id)}
+                                            title="Khóa tài khoản"
+                                        >
+                                            <i className="fas fa-lock"></i>
+                                        </Button>
+                                        <Button 
+                                            variant="success" 
+                                            size="sm"
+                                            onClick={() => handleUnblockUser(user.id)}
+                                            title="Mở khóa tài khoản"
+                                        >
+                                            <i className="fas fa-lock-open"></i>
+                                        </Button>
+                                        <Button 
+                                            variant="danger" 
+                                            size="sm"
+                                            onClick={() => handleDelete(user.id)}
+                                            title="Xóa tài khoản"
+                                        >
+                                            <i className="fas fa-trash"></i>
+                                        </Button>
+                                        <Button 
+                                            variant="secondary" 
+                                            size="sm"
+                                            onClick={() => handleShowHistory(user)}
+                                            title="Xem lịch sử đặt tour"
+                                        >
+                                            <i className="fas fa-history"></i>
+                                        </Button>
+                                    </div>
+                                </div>
                             ))}
-                        </tbody>
-                    </Table>
-
-                    <div className="pagination">
-                        <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>Đầu</button>
-                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
-                        <span>Trang {currentPage} / {totalPages} (Tổng: {totalItems} người dùng)</span>
-                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Sau</button>
-                        <button onClick={() => handlePageChange(totalPages)} disabled={currentPage >= totalPages}>Cuối</button>
-                    </div>
-                </>
-            )}
+                        </div>
+                        <div className="pagination mt-3">
+                            <button onClick={() => handlePageChange(1)} disabled={currentPage === 1}>Đầu</button>
+                            <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>Trước</button>
+                            <span>Trang {currentPage} / {totalPages} (Tổng: {totalItems} người dùng)</span>
+                            <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages}>Sau</button>
+                            <button onClick={() => handlePageChange(totalPages)} disabled={currentPage >= totalPages}>Cuối</button>
+                        </div>
+                    </>
+                )}
+            </div>
 
             {/* Modal chỉnh sửa thông tin */}
             <Modal show={showModal} onHide={handleClose}>

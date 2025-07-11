@@ -378,8 +378,7 @@
   }
 
   .search-button::before {
-    content: "🔍";
-    font-size: 14px;
+    content: none !important;
   }
 
   /* Responsive adjustments */
@@ -488,19 +487,22 @@
 
   .filter-bar .search-group input,
   .filter-bar .search-group select {
-    border-radius: 10px;
-    border: 1.5px solid #e3eaf3;
-    padding: 8px 12px;
-    font-size: 1rem;
-    background: #fafdff;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 10px 16px !important;
+    border-radius: 22px !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+    background-color: #f8fbff !important;
+    border: 1.5px solid #e3eaf3 !important;
+    box-shadow: none !important;
     transition: border 0.2s;
+    display: block !important;
   }
-
   .filter-bar .search-group input:focus,
   .filter-bar .search-group select:focus {
-    outline: none;
-    border-color: #0074bc;
-    background: #fff;
+    border-color: #2563eb !important;
+    background: #fff !important;
   }
 
   .search-group input[type="range"] {
@@ -709,6 +711,29 @@
   .tour-list-container { padding: 2px 0; }
   .tour-card { min-width: 100vw; max-width: 100vw; border-radius: 8px; }
   .tour-info { padding: 4px 1px 4px 1px; }
+  .filter-bar .search-group input,
+  .filter-bar .search-group select {
+    min-height: 38px !important;
+    height: 38px !important;
+    font-size: 0.97rem !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
+  }
+  .main-search-input {
+    min-height: 38px !important;
+    height: 38px !important;
+    font-size: 0.97rem !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
+  }
+  .filter-bar .search-group input[type="radio"] {
+    width: 0.95em !important;
+    height: 0.95em !important;
+    min-width: 0.95em !important;
+    min-height: 0.95em !important;
+    max-width: 0.95em !important;
+    max-height: 0.95em !important;
+  }
 }
 
 /* Hiệu ứng hover cho input, select, filter, nút */
@@ -803,4 +828,84 @@
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
+}
+
+/* Thu nhỏ radio button toàn bộ trang về kích thước 1.1em */
+input[type="radio"], .form-check-input[type="radio"] {
+  width: 1.1em !important;
+  height: 1.1em !important;
+  min-width: 1.1em !important;
+  min-height: 1.1em !important;
+  max-width: 1.1em !important;
+  max-height: 1.1em !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1/1 !important;
+  accent-color: #0074bc;
+  border: 2px solid #0074bc;
+  background: #fff;
+  margin-top: 0.2em;
+  margin-right: 0.7em;
+  box-shadow: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Đảm bảo ô tìm kiếm ngang bằng ô khu vực */
+.main-search-input {
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 10px 16px !important;
+  border-radius: 22px !important;
+  font-size: 1rem !important;
+  width: 100% !important;
+  background-color: #f8fbff !important;
+  border: 1.5px solid #e3eaf3 !important;
+  box-shadow: none !important;
+  transition: border 0.2s;
+  display: block !important;
+}
+.main-search-input:focus {
+  border-color: #2563eb !important;
+  background: #fff !important;
+}
+@media (max-width: 575px) {
+  input[type="radio"], .form-check-input[type="radio"] {
+    width: 0.95em !important;
+    height: 0.95em !important;
+    min-width: 0.95em !important;
+    min-height: 0.95em !important;
+    max-width: 0.95em !important;
+    max-height: 0.95em !important;
+  }
+  .main-search-input {
+    min-height: 38px !important;
+    height: 38px !important;
+    font-size: 0.97rem !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
+  }
+}
+
+/* Đảm bảo các radio button luôn nằm ngang hàng */
+.filter-bar .search-group .radio-list,
+.radio-list,
+.form-check-group,
+.radio-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin-bottom: 8px !important;
+}
+.filter-bar .search-group .radio-list label,
+.radio-list label,
+.form-check-group label,
+.radio-row label {
+  margin-bottom: 0 !important;
+  margin-right: 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 1rem;
 }

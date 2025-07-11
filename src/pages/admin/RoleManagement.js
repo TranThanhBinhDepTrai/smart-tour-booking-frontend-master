@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form, Alert } from 'react-bootstrap';
 import { roleService } from '../../services/roleService';
 import './RoleManagement.css';
+import { FaPlus } from 'react-icons/fa';
 
 const RoleManagement = () => {
     const [roles, setRoles] = useState([]);
@@ -166,146 +167,147 @@ const RoleManagement = () => {
     }
 
     return (
-        <Container fluid className="mt-4">
-            {error && <Alert variant="danger">{error}</Alert>}
-            
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2>Quản lý vai trò</h2>
-                <Button variant="primary" onClick={() => handleShow()}>
-                    Tạo mới vai trò
-                </Button>
-            </div>
-
-            {loading ? (
-                <div className="text-center my-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Đang tải...</span>
+        <div className="admin-tour-container p-6">
+            <div className="admin-tour-card p-6">
+                <div className="admin-tour-header">
+                    <div>
+                        <h1 className="admin-tour-title">Quản Lý Vai Trò</h1>
+                        <p className="admin-tour-subtitle">Danh sách vai trò hệ thống</p>
                     </div>
+                    <button
+                        onClick={() => handleShow()}
+                        className="add-tour-button d-flex align-items-center gap-2"
+                        style={{padding: '0.5rem 1.5rem', fontSize: '1rem', borderRadius: '2rem', boxShadow: '0 2px 8px rgba(59,130,246,0.10)', fontWeight: 700}}
+                    >
+                        <FaPlus style={{marginRight: 8}} /> Tạo mới vai trò
+                    </button>
                 </div>
-            ) : (
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên vai trò</th>
-                            <th>Mô tả</th>
-                            <th>Số quyền</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {roles.map(role => (
-                            <tr key={role.id}>
-                                <td>{role.id}</td>
-                                <td>{role.name}</td>
-                                <td>{role.description}</td>
-                                <td>{role.permissions?.length || 0}</td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button className="tour-action-btn view-button" 
-                                            size="sm"
-                                            onClick={() => handleShowPermissionModal(role)}
-                                        >
-                                            Xem
-                                        </Button>
-                                        <Button className="tour-action-btn edit-button" 
-                                            size="sm"
-                                            onClick={() => handleShow(role)}
-                                        >
-                                            Sửa
-                                        </Button>
-                                        <Button className="tour-action-btn delete-button" 
-                                            size="sm"
-                                            onClick={() => handleDelete(role.id)}
-                                        >
-                                            Xóa
-                                        </Button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
-            )}
-
-            <Modal show={showModal} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        {formData.id ? 'Cập nhật vai trò' : 'Tạo mới vai trò'}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Tên vai trò</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={formData.name}
-                                onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
-                                required
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Mô tả</Form.Label>
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={formData.description}
-                                onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))}
-                            />
-                        </Form.Group>
-
-                        <div className="d-flex justify-content-end gap-2">
-                            <Button variant="secondary" onClick={handleClose}>
-                                Hủy
-                            </Button>
-                            <Button variant="primary" type="submit">
-                                {formData.id ? 'Cập nhật' : 'Tạo mới'}
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-
-            {/* Modal cập nhật quyền */}
-            <Modal show={showPermissionModal} onHide={handlePermissionModalClose} size="lg">
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Cập nhật quyền cho vai trò: {selectedRole?.name}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="mb-3">
-                        <strong>Chọn quyền:</strong>
-                        <div style={{ maxHeight: '400px', overflowY: 'auto' }} className="border rounded p-3 mt-2">
-                            {Array.isArray(permissions) && permissions.map(permission => (
-                                <Form.Check
-                                    key={permission.id}
-                                    type="checkbox"
-                                    id={`permission-${permission.id}`}
-                                    label={`${permission.name} (${permission.module} - ${permission.method})`}
-                                    checked={selectedPermissions.includes(permission.id)}
-                                    onChange={() => handlePermissionChange(permission.id)}
-                                    className="mb-2"
-                                />
-                            ))}
-                        </div>
-                        <div className="mt-2 text-muted">
-                            Đã chọn {selectedPermissions.length} quyền
+                {error && <Alert variant="danger">{error}</Alert>}
+                {loading ? (
+                    <div className="text-center my-5">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Đang tải...</span>
                         </div>
                     </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handlePermissionModalClose}>
-                        Hủy
-                    </Button>
-                    <Button variant="primary" onClick={handleUpdatePermissions}>
-                        Lưu thay đổi
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </Container>
+                ) : (
+                    <div className="user-list">
+                        {roles.map(role => (
+                            <div className="user-card-item" key={role.id}>
+                                <div className="user-card-header d-flex justify-content-between align-items-center mb-2">
+                                    <span className="user-id fw-bold">#{role.id}</span>
+                                    <span className="badge bg-primary">{role.name}</span>
+                                </div>
+                                <div className="user-card-body mb-2">
+                                    <div><strong>Mô tả:</strong> {role.description}</div>
+                                    <div><strong>Số quyền:</strong> {role.permissions?.length || 0}</div>
+                                </div>
+                                <div className="user-card-actions d-flex flex-wrap gap-2">
+                                    <Button className="tour-action-btn view-button" 
+                                        size="sm"
+                                        onClick={() => handleShowPermissionModal(role)}
+                                        title="Xem quyền"
+                                    >
+                                        <i className="fas fa-eye"></i>
+                                    </Button>
+                                    <Button className="tour-action-btn edit-button" 
+                                        size="sm"
+                                        onClick={() => handleShow(role)}
+                                        title="Sửa"
+                                    >
+                                        <i className="fas fa-edit"></i>
+                                    </Button>
+                                    <Button className="tour-action-btn delete-button" 
+                                        size="sm"
+                                        onClick={() => handleDelete(role.id)}
+                                        title="Xóa"
+                                    >
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {/* Modal giữ nguyên */}
+                <Modal show={showModal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            {formData.id ? 'Cập nhật vai trò' : 'Tạo mới vai trò'}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tên vai trò</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
+                                    required
+                                />
+                            </Form.Group>
+
+                            <Form.Group className="mb-3">
+                                <Form.Label>Mô tả</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    value={formData.description}
+                                    onChange={(e) => setFormData(prev => ({...prev, description: e.target.value}))}
+                                />
+                            </Form.Group>
+
+                            <div className="d-flex justify-content-end gap-2">
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Hủy
+                                </Button>
+                                <Button variant="primary" type="submit">
+                                    {formData.id ? 'Cập nhật' : 'Tạo mới'}
+                                </Button>
+                            </div>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+
+                {/* Modal cập nhật quyền */}
+                <Modal show={showPermissionModal} onHide={handlePermissionModalClose} size="lg">
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            Cập nhật quyền cho vai trò: {selectedRole?.name}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="mb-3">
+                            <strong>Chọn quyền:</strong>
+                            <div style={{ maxHeight: '400px', overflowY: 'auto' }} className="border rounded p-3 mt-2">
+                                {Array.isArray(permissions) && permissions.map(permission => (
+                                    <Form.Check
+                                        key={permission.id}
+                                        type="checkbox"
+                                        id={`permission-${permission.id}`}
+                                        label={`${permission.name} (${permission.module} - ${permission.method})`}
+                                        checked={selectedPermissions.includes(permission.id)}
+                                        onChange={() => handlePermissionChange(permission.id)}
+                                        className="mb-2"
+                                    />
+                                ))}
+                            </div>
+                            <div className="mt-2 text-muted">
+                                Đã chọn {selectedPermissions.length} quyền
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handlePermissionModalClose}>
+                            Hủy
+                        </Button>
+                        <Button variant="primary" onClick={handleUpdatePermissions}>
+                            Lưu thay đổi
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
+        </div>
     );
 };
 
